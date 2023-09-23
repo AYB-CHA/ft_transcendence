@@ -1,0 +1,43 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/db/prisma.service';
+import { RegisterUserType } from 'src/types';
+import { genSaltSync, hashSync } from 'bcrypt';
+@Injectable()
+export class UserService {
+  constructor(readonly prisma: PrismaService) {}
+
+  async createUser(userData: RegisterUserType) {
+    // bcrypt
+    const password = userData.password
+      ? hashSync(userData?.password, 10)
+      : null;
+
+    return (
+      await this.prisma.user.create({
+        data: {
+          ...userData,
+          password,
+        },
+        select: {
+          id: true,
+        },
+      })
+    ).id;
+  }
+
+  async findUserByEmailOrUsername(usernameOrEmail: string) {
+    return await this.prisma.user.findFirstOrThrow({
+      where: {
+        OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+      },
+    });
+  }
+
+  async findUserByUsername(username: string) {
+    return await this.prisma.user.findFirstOrThrow({ where: { username } });
+  }
+
+  async findUserByEmail(email: string) {
+    return await this.prisma.user.findFirstOrThrow({ where: { email } });
+  }
+}
