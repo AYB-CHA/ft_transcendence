@@ -5,7 +5,7 @@ import { RegisterUserType } from 'src/types';
 @Injectable()
 export class GithubStrategy {
   baseUrl = '';
-  constructor(readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
   getRedirectUrl() {
     let url = new URL('https://github.com/login/oauth/authorize');
     url.searchParams.append(

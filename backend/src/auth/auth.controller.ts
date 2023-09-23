@@ -19,9 +19,9 @@ import { GithubStrategy } from './OAuth/github.strategy';
 @Controller('/auth')
 export class AuthController {
   constructor(
-    readonly authService: AuthService,
-    readonly ftStrategy: FtStrategy,
-    readonly githubStrategy: GithubStrategy,
+    private readonly authService: AuthService,
+    private readonly ftStrategy: FtStrategy,
+    private readonly githubStrategy: GithubStrategy,
   ) {}
 
   @Post('register')

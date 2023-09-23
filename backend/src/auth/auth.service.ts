@@ -8,9 +8,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
-    readonly userService: UserService,
-    readonly jwtService: JwtService,
-    readonly configService: ConfigService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async registerNewUser(userData: RegisterUserType) {

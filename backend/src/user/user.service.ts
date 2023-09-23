@@ -4,7 +4,7 @@ import { RegisterUserType } from 'src/types';
 import { genSaltSync, hashSync } from 'bcrypt';
 @Injectable()
 export class UserService {
-  constructor(readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createUser(userData: RegisterUserType) {
     // bcrypt

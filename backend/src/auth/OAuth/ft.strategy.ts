@@ -5,7 +5,7 @@ import { RegisterUserType } from 'src/types';
 @Injectable()
 export class FtStrategy {
   redirectUrl = 'http://localhost:4000/auth/back?provider=ft';
-  constructor(readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
   getRedirectUrl() {
     let url = new URL('https://api.intra.42.fr/oauth/authorize');
     url.searchParams.append(
