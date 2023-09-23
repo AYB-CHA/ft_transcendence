@@ -25,6 +25,14 @@ export class UserService {
     ).id;
   }
 
+  async findUser(id: string) {
+    return await this.prisma.user.findFirstOrThrow({
+      where: {
+        id,
+      },
+    });
+  }
+
   async findUserByEmailOrUsername(usernameOrEmail: string) {
     return await this.prisma.user.findFirstOrThrow({
       where: {

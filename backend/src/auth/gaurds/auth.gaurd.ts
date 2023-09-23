@@ -28,8 +28,6 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string {
-    console.log(request.headers.authorization?.replace('Bearer ', ''));
-
     return request.headers.authorization?.replace('Bearer ', '');
   }
 }
