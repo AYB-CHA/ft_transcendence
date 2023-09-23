@@ -23,4 +23,7 @@ model User {
   password String?
 
   authProvider AuthProvider?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

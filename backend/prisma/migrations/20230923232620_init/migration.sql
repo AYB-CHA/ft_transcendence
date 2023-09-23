@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AuthProvider" AS ENUM ('FT', 'GOOGLE', 'GITHUB');
+CREATE TYPE "AuthProvider" AS ENUM ('FT', 'GITHUB');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -9,6 +9,8 @@ CREATE TABLE "User" (
     "fullName" TEXT NOT NULL,
     "password" TEXT,
     "authProvider" "AuthProvider",
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
