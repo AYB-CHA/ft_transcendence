@@ -35,7 +35,7 @@ export class ChannelController {
     @Param('id') channelId: string,
     @Body() body: JoinProtectedChannelDto,
   ) {
-    return this.channelService.joinPrivateChannel(
+    return this.channelService.joinProtectedChannel(
       channelId,
       body.password,
       request.userPayload.sub,

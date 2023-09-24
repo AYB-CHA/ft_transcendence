@@ -7,7 +7,7 @@ import { compareSync, hashSync } from 'bcrypt';
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async joinPrivateChannel(
+  async joinProtectedChannel(
     channelId: string,
     password: string,
     userId: string,
