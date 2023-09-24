@@ -1,15 +1,37 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
-import { ChannelType, newChannelType } from '../types';
-import { Channel } from '@prisma/client';
+import { newChannelType } from '../types';
 import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async joinChannel(channelId: string, userId: string) {
+    try {
+      await this.prisma.channel.findFirstOrThrow({
+        where: {
+          id: channelId,
+          type: 'PUBLIC',
+        },
+      });
+
+      return await this.prisma.channelsOnUsers.create({
+        data: {
+          channelId,
+          userId,
+        },
+        select: {
+          Channel: true,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(['no channel found']);
+    }
+  }
+
   async createChannel(channelData: newChannelType, userId: string) {
-    console.log(channelData);
     if (channelData.type === 'protected' && !channelData.password)
       throw new BadRequestException([
         'protected channels should have a password',

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/gaurds/auth.gaurd';
 import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
@@ -11,6 +19,12 @@ export class ChannelController {
   @Get()
   async getChannels(@Req() request: RequestType) {
     return await this.channelService.getUserChannels(request.userPayload.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/join/:id')
+  joinChannel(@Req() request: RequestType, @Param('id') channelId: string) {
+    return this.channelService.joinChannel(channelId, request.userPayload.sub);
   }
 
   @UseGuards(AuthGuard)
