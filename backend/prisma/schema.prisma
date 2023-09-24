@@ -21,11 +21,41 @@ model User {
   email    String  @unique
   fullName String
   password String?
-
-  avatar String
+  avatar   String
 
   authProvider AuthProvider?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  channels ChannelsOnUsers[]
+}
+
+model Channel {
+  id     String @id @default(uuid())
+  name   String
+  avatar String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users ChannelsOnUsers[]
+}
+
+enum ChannelUserRole {
+  ADMINISTRATOR
+  MODERATOR
+  MEMBER
+}
+
+model ChannelsOnUsers {
+  Channel   Channel  @relation(fields: [channelId], references: [id])
+  channelId String
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+
+  role ChannelUserRole @default(MEMBER)
+
+  @@id([userId, channelId])
 }

@@ -8,11 +8,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
+    ChatModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
