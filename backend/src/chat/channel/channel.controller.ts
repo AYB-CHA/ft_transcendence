@@ -11,6 +11,7 @@ import { AuthGuard } from 'src/auth/gaurds/auth.gaurd';
 import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
 import NewChannelDto from './dtos/new-channel.dto';
+import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
 
 @Controller('/chat/channel')
 export class ChannelController {
@@ -25,6 +26,20 @@ export class ChannelController {
   @Post('/join/:id')
   joinChannel(@Req() request: RequestType, @Param('id') channelId: string) {
     return this.channelService.joinChannel(channelId, request.userPayload.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/protected/join/:id')
+  joinProtectedChannel(
+    @Req() request: RequestType,
+    @Param('id') channelId: string,
+    @Body() body: JoinProtectedChannelDto,
+  ) {
+    return this.channelService.joinPrivateChannel(
+      channelId,
+      body.password,
+      request.userPayload.sub,
+    );
   }
 
   @UseGuards(AuthGuard)

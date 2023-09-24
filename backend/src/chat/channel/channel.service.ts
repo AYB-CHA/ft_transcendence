@@ -1,34 +1,65 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
-import { hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async joinChannel(channelId: string, userId: string) {
+  async joinPrivateChannel(
+    channelId: string,
+    password: string,
+    userId: string,
+  ) {
+    let channel: { password: string } | null = null;
     try {
-      await this.prisma.channel.findFirstOrThrow({
+      channel = await this.prisma.channel.findFirstOrThrow({
         where: {
           id: channelId,
-          type: 'PUBLIC',
-        },
-      });
-
-      return await this.prisma.channelsOnUsers.create({
-        data: {
-          channelId,
-          userId,
+          type: 'PROTECTED',
+          users: { none: { userId } },
         },
         select: {
-          Channel: true,
+          password: true,
         },
       });
     } catch (error) {
       console.error(error);
       throw new BadRequestException(['no channel found']);
     }
+
+    if (compareSync(password, channel.password)) {
+      await this.prisma.channelsOnUsers.create({
+        data: {
+          channelId,
+          userId,
+        },
+      });
+      return;
+    }
+    throw new BadRequestException(['the password is wrong']);
+  }
+
+  async joinChannel(channelId: string, userId: string) {
+    if (
+      (await this.prisma.channel.count({
+        where: {
+          id: channelId,
+          type: 'PUBLIC',
+          users: { none: { userId } },
+        },
+      })) > 0
+    ) {
+      await this.prisma.channelsOnUsers.create({
+        data: {
+          channelId,
+          userId,
+        },
+      });
+      return;
+    }
+    throw new BadRequestException(['no channel found']);
   }
 
   async createChannel(channelData: newChannelType, userId: string) {
@@ -44,7 +75,9 @@ export class ChannelService {
     return await this.prisma.channel.create({
       data: {
         ...channelData,
-        password: hashSync(channelData.password, 10),
+        password: channelData.password
+          ? hashSync(channelData.password, 10)
+          : null,
         type: channelData.type.toUpperCase() as
           | 'PUBLIC'
           | 'PRIVATE'
@@ -52,6 +85,12 @@ export class ChannelService {
         users: {
           create: { userId, role: 'ADMINISTRATOR' },
         },
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        type: true,
       },
     });
   }
