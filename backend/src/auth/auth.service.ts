@@ -17,24 +17,13 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly prismaService: PrismaService,
   ) {}
 
   async registerNewUser(userData: RegisterUserType) {
-    if (
-      (await this.prismaService.user.count({
-        where: { username: userData.username },
-      })) > 0
-    )
-      throw new BadRequestException(['username is already taken']);
-    if (
-      (await this.prismaService.user.count({
-        where: { email: userData.email },
-      })) > 0
-    )
-      throw new BadRequestException([
-        'an account with the same email is already registered',
-      ]);
+    await this.userService.validateUniquenessOfEmailAndUsername(
+      userData.username,
+      userData.email,
+    );
     let userId = await this.userService.createUser(userData);
     return this.generateJwtResponse(userId);
   }

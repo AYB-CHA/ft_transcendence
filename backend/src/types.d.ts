@@ -12,6 +12,18 @@ export type RegisterUserType = {
   authProvider?: 'FT' | 'GITHUB';
 };
 
+export type UpdateUserType = {
+  username: string;
+  email: string;
+  fullName: string;
+  avatar: string;
+};
+
+export type UpdateUserPasswordType = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export type LoginUserType = {
   usernameOrEmail: string;
   password: string;
