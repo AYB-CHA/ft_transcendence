@@ -1,9 +1,15 @@
-import { Injectable, Redirect, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Redirect,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserType, RegisterUserType } from 'src/types';
 import { UserService } from 'src/user/user.service';
 import { compareSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -11,10 +17,24 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async registerNewUser(userData: RegisterUserType) {
-    // todo: validate the uniqueness of the email and username.
+    if (
+      (await this.prismaService.user.count({
+        where: { username: userData.username },
+      })) > 0
+    )
+      throw new BadRequestException(['username is already taken']);
+    if (
+      (await this.prismaService.user.count({
+        where: { email: userData.email },
+      })) > 0
+    )
+      throw new BadRequestException([
+        'an account with the same email is already registered',
+      ]);
     let userId = await this.userService.createUser(userData);
     return this.generateJwtResponse(userId);
   }

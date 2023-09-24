@@ -8,6 +8,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "password" TEXT,
+    "avatar" TEXT NOT NULL,
     "authProvider" "AuthProvider",
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

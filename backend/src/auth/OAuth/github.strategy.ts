@@ -38,7 +38,7 @@ export class GithubStrategy {
         username: data.login,
       };
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     throw new InternalServerErrorException();
   }

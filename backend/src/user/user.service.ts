@@ -12,11 +12,14 @@ export class UserService {
       ? hashSync(userData?.password, 10)
       : null;
 
+    const avatar = `${Math.ceil(Math.random() * 7)}.png`;
+
     return (
       await this.prisma.user.create({
         data: {
           ...userData,
           password,
+          avatar,
         },
         select: {
           id: true,

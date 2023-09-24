@@ -22,6 +22,8 @@ model User {
   fullName String
   password String?
 
+  avatar String
+
   authProvider AuthProvider?
 
   createdAt DateTime @default(now())

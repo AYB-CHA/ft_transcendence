@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { PrismaModule } from './db/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,6 +19,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       global: true,
       secret: new ConfigService().get<string>('JWT_SECRET_TOKE'),
       signOptions: { expiresIn: '1d' },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/public',
+      renderPath: '/',
+      serveStaticOptions: {
+        // this is not working, open an issue in github.
+        index: false,
+      },
     }),
   ],
   controllers: [AppController],

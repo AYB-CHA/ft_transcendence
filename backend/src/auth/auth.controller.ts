@@ -9,6 +9,7 @@ import {
   Redirect,
   UnauthorizedException,
 } from '@nestjs/common';
+
 import RegisterDto from './dtos/register.dto';
 import { AuthService } from './auth.service';
 import LoginDto from './dtos/login.dto';
@@ -48,7 +49,6 @@ export class AuthController {
     if (provider === 'ft') url = this.ftStrategy.getRedirectUrl();
     else if (provider === 'github') url = this.githubStrategy.getRedirectUrl();
     else throw new BadRequestException();
-
     return {
       redirect_url: url,
     };
@@ -60,10 +60,9 @@ export class AuthController {
     @Query('code') code?: string,
     @Query('provider') provider?: 'ft' | 'github',
   ) {
-    if (!code || !provider) throw new UnauthorizedException();
-
+    if (!code || (provider != 'ft' && provider != 'github'))
+      throw new UnauthorizedException();
     let userData: RegisterUserType;
-
     if (provider === 'ft') {
       userData = await this.ftStrategy.getUserData(code ?? '');
       return this.authService.logInUserOAuth(userData, 'FT');
