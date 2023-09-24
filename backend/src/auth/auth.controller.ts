@@ -61,7 +61,6 @@ export class AuthController {
     @Query('provider') provider?: 'ft' | 'github',
   ) {
     if (!code || !provider) throw new UnauthorizedException();
-    console.log(provider);
 
     let userData: RegisterUserType;
 

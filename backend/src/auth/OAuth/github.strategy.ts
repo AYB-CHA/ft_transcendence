@@ -18,7 +18,6 @@ export class GithubStrategy {
 
   async getUserData(code: string): Promise<RegisterUserType> {
     const accessToken = await this.getAccessToken(code);
-    console.log(accessToken);
     try {
       let response = await fetch('https://api.github.com/user', {
         headers: {
