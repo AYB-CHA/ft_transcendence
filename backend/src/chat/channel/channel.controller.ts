@@ -23,6 +23,8 @@ export class ChannelController {
       {
         name: body.name,
         avatar: body.avatar,
+        type: body.type,
+        password: body.password ?? null,
       },
       request.userPayload.sub,
     );

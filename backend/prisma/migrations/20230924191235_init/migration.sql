@@ -2,6 +2,9 @@
 CREATE TYPE "AuthProvider" AS ENUM ('FT', 'GITHUB');
 
 -- CreateEnum
+CREATE TYPE "ChannelType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
+
+-- CreateEnum
 CREATE TYPE "ChannelUserRole" AS ENUM ('ADMINISTRATOR', 'MODERATOR', 'MEMBER');
 
 -- CreateTable
@@ -24,6 +27,8 @@ CREATE TABLE "Channel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
+    "type" "ChannelType" NOT NULL DEFAULT 'PUBLIC',
+    "password" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
