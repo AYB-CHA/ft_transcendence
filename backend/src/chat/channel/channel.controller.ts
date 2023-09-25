@@ -8,7 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/gaurds/auth.gaurd';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
 import NewChannelDto from './dtos/new-channel.dto';

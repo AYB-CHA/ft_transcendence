@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/gaurds/auth.gaurd';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserService } from './user.service';
 import { RequestType } from 'src/types';
 import UpdateUserDto from './dtos/update-user.dto';
@@ -12,7 +12,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('/me')
   async me(@Req() request: RequestType) {
-    let user = await this.userService.findUser(request.userPayload.sub);
+    const user = await this.userService.findUser(request.userPayload.sub);
     delete user['createdAt'];
     delete user['updatedAt'];
     delete user['password'];
@@ -28,7 +28,7 @@ export class UserController {
       body.email,
       request.userPayload.sub,
     );
-    let user = await this.userService.updateUser(request.userPayload.sub, {
+    const user = await this.userService.updateUser(request.userPayload.sub, {
       avatar: body.avatar,
       email: body.email,
       fullName: body.fullName,
