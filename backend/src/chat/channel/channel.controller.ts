@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -56,6 +57,20 @@ export class ChannelController {
         type: body.type,
         password: body.password ?? null,
       },
+      request.userPayload.sub,
+    );
+  }
+  @UseGuards(AuthGuard)
+  @Post('/kick/:id')
+  async kickUser(
+    @Req() request: RequestType,
+    @Body('userId') userId: string | null,
+    @Param('id') channelId: string,
+  ) {
+    if (!userId) throw new BadRequestException(['userId is required']);
+    return this.channelService.kickUserFromChannel(
+      channelId,
+      userId,
       request.userPayload.sub,
     );
   }

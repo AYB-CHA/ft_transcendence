@@ -9,6 +9,33 @@ import { compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class ChannelService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async kickUserFromChannel(
+    channelId: string,
+    userId: string,
+    adminId: string,
+  ) {
+    try {
+      await this.prisma.channelsOnUsers.delete({
+        where: {
+          userId_channelId: { channelId, userId },
+          Channel: {
+            users: {
+              some: {
+                userId: adminId,
+                role: 'ADMINISTRATOR',
+              },
+            },
+          },
+        },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new UnauthorizedException(["you can't kick user"]);
+  }
   async deleteChannelByOwner(channelId: string, userId: string) {
     try {
       await this.prisma.channel.delete({
@@ -28,8 +55,6 @@ export class ChannelService {
     }
     throw new UnauthorizedException(["You can't delete this channel"]);
   }
-
-  constructor(private readonly prisma: PrismaService) {}
 
   async joinProtectedChannel(
     channelId: string,
