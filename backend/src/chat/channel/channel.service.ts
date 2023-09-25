@@ -17,17 +17,17 @@ export class ChannelService {
     adminId: string,
   ) {
     try {
+      const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
+        where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
+        select: { role: true },
+      });
       await this.prisma.channelsOnUsers.delete({
         where: {
           userId_channelId: { channelId, userId },
-          Channel: {
-            users: {
-              some: {
-                userId: adminId,
-                role: 'ADMINISTRATOR',
-              },
-            },
-          },
+          role:
+            role === 'ADMINISTRATOR'
+              ? { in: ['MEMBER', 'MODERATOR'] }
+              : 'MEMBER',
         },
       });
       return;
