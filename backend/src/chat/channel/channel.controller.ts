@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
 import NewChannelDto from './dtos/new-channel.dto';
 import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
+import UpgradeUserDto from './dtos/upgrade-user.dto';
 
 @Controller('/chat/channel')
 export class ChannelController {
@@ -80,6 +82,20 @@ export class ChannelController {
     return this.channelService.deleteChannelByOwner(
       id,
       request.userPayload.sub,
+    );
+  }
+  @UseGuards(AuthGuard)
+  @Put('/upgrade/:id')
+  upgradeUser(
+    @Param('id') id: string,
+    @Req() request: RequestType,
+    @Body() body: UpgradeUserDto,
+  ) {
+    return this.channelService.upgradeUserGrade(
+      id,
+      request.userPayload.sub,
+      body.userId,
+      body.grade,
     );
   }
 }

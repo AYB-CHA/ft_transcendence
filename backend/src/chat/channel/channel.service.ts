@@ -6,11 +6,41 @@ import {
 import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
+import { ChannelUserRole } from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
-
+  async upgradeUserGrade(
+    channelId: string,
+    adminId: string,
+    userId: string,
+    grade: ChannelUserRole,
+  ) {
+    try {
+      await this.prisma.channelsOnUsers.findFirstOrThrow({
+        where: {
+          channelId,
+          userId: adminId,
+          role: 'ADMINISTRATOR',
+        },
+        select: { userId: true },
+      });
+      await this.prisma.channelsOnUsers.update({
+        where: {
+          userId_channelId: { channelId, userId },
+          role: { not: 'ADMINISTRATOR' },
+        },
+        data: {
+          role: grade,
+        },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new UnauthorizedException(["you can't upgrade the user grade"]);
+  }
   async kickUserFromChannel(
     channelId: string,
     userId: string,
