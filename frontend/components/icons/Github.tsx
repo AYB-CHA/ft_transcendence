@@ -1,4 +1,3 @@
-"use client"
 export default function Github() {
   return (
     <svg
@@ -22,5 +21,5 @@ export default function Github() {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
