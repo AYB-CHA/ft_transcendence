@@ -62,6 +62,7 @@ export class ChannelController {
       request.userPayload.sub,
     );
   }
+
   @UseGuards(AuthGuard)
   @Post('/kick/:id')
   async kickUser(
@@ -76,6 +77,7 @@ export class ChannelController {
       request.userPayload.sub,
     );
   }
+
   @UseGuards(AuthGuard)
   @Delete('/:id')
   deleteChannel(@Param('id') id: string, @Req() request: RequestType) {
@@ -84,6 +86,7 @@ export class ChannelController {
       request.userPayload.sub,
     );
   }
+
   @UseGuards(AuthGuard)
   @Put('/upgrade/:id')
   upgradeUser(
