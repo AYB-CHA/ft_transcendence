@@ -57,18 +57,18 @@ export class AuthController {
   @Get('/back')
   @Redirect()
   async backUrl(
-    @Query('code') code?: string,
+    @Query('code') code: string | null,
     @Query('provider') provider?: 'ft' | 'github',
   ) {
     if (!code || (provider != 'ft' && provider != 'github'))
       throw new UnauthorizedException();
     let userData: RegisterUserType;
     if (provider === 'ft') {
-      userData = await this.ftStrategy.getUserData(code ?? '');
+      userData = await this.ftStrategy.getUserData(code);
       return this.authService.logInUserOAuth(userData, 'FT');
     }
     if (provider === 'github') {
-      userData = await this.githubStrategy.getUserData(code ?? '');
+      userData = await this.githubStrategy.getUserData(code);
       return this.authService.logInUserOAuth(userData, 'GITHUB');
     }
   }

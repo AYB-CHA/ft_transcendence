@@ -1,15 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  Redirect,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserType, RegisterUserType } from 'src/types';
 import { UserService } from 'src/user/user.service';
 import { compareSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -24,13 +18,13 @@ export class AuthService {
       userData.username,
       userData.email,
     );
-    let userId = await this.userService.createUser(userData);
+    const userId = await this.userService.createUser(userData);
     return this.generateJwtResponse(userId);
   }
 
   async loginUser(userData: LoginUserType) {
     try {
-      let user = await this.userService.findUserByEmailOrUsername(
+      const user = await this.userService.findUserByEmailOrUsername(
         userData.usernameOrEmail,
       );
 
@@ -54,8 +48,8 @@ export class AuthService {
       userId = await this.userService.createUser({ ...userData, authProvider });
     }
 
-    let redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
-    redirectUrl.pathname = '/auth/login';
+    const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
+    redirectUrl.pathname = '/auth/login/provider';
     redirectUrl.searchParams.append(
       'access_token',
       (await this.generateJwtResponse(userId)).jwtToken,
@@ -66,7 +60,7 @@ export class AuthService {
   }
 
   async generateJwtResponse(sub: string) {
-    let jwtToken = await this.jwtService.signAsync({
+    const jwtToken = await this.jwtService.signAsync({
       sub,
     });
     return {

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { PropsWithChildren } from "react"
+import { PropsWithChildren } from "react";
 
 export default function Button({
   children,
@@ -8,15 +8,15 @@ export default function Button({
   variant = "primary",
   className,
 }: PropsWithChildren & {
-  onClick?: () => void
-  variant: "primary" | "secondary" | "dark"
-  className?: string
+  onClick?: () => void;
+  variant?: "primary" | "secondary" | "dark";
+  className?: string;
 }) {
   const variants = {
     primary: "bg-primary hover:bg-primary-400",
     secondary: "bg-gray-100 hover:bg-gray-100/80",
     dark: "bg-black border border-[#4B5563] text-gray-200",
-  }
+  };
   return (
     <button
       onClick={onClick}
@@ -24,5 +24,5 @@ export default function Button({
     >
       {children}
     </button>
-  )
+  );
 }

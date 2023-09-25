@@ -28,7 +28,9 @@ const config: Config = {
         },
         dark: {
           DEFAULT: "#0F1015",
-          dim: "#1F2329",
+          dim: "#171B24",
+          "semi-dim": "#1F2329",
+          "semi-light": "#4B5563",
         },
       },
     },
