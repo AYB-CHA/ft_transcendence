@@ -58,7 +58,7 @@ enum ChannelUserRole {
 }
 
 model ChannelsOnUsers {
-  Channel   Channel  @relation(fields: [channelId], references: [id])
+  Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId String
   User      User     @relation(fields: [userId], references: [id])
   userId    String

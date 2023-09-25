@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -55,6 +56,14 @@ export class ChannelController {
         type: body.type,
         password: body.password ?? null,
       },
+      request.userPayload.sub,
+    );
+  }
+  @UseGuards(AuthGuard)
+  @Delete('/:id')
+  deleteChannel(@Param('id') id: string, @Req() request: RequestType) {
+    return this.channelService.deleteChannelByOwner(
+      id,
       request.userPayload.sub,
     );
   }

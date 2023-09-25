@@ -1,10 +1,34 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class ChannelService {
+  async deleteChannelByOwner(channelId: string, userId: string) {
+    try {
+      await this.prisma.channel.delete({
+        where: {
+          id: channelId,
+          users: {
+            some: {
+              userId,
+              role: 'ADMINISTRATOR',
+            },
+          },
+        },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new UnauthorizedException(["You can't delete this channel"]);
+  }
+
   constructor(private readonly prisma: PrismaService) {}
 
   async joinProtectedChannel(
