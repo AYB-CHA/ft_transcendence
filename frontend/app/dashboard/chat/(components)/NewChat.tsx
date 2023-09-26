@@ -16,6 +16,7 @@ import {
 import { Search } from "lucide-react";
 import UserLabel from "./UserLabel";
 import ChannelLabel from "./ChannelLabel";
+import NewChannel from "./NewChannel";
 
 export default function NewChat() {
   return (
@@ -45,7 +46,7 @@ export default function NewChat() {
             </div>
           </CardBody>
           <CardFooter>
-            <Button>Create New Channel</Button>
+            <NewChannel />
           </CardFooter>
         </DialogContent>
       </Dialog>
