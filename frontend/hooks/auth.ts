@@ -50,5 +50,10 @@ export function useAuth() {
     }
   };
 
-  return { user, error, register, login };
+  const logOut = () => {
+    Cookies.remove("access_token");
+    push("/");
+  };
+
+  return { user, error, register, login, logOut };
 }
