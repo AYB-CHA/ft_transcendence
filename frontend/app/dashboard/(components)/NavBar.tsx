@@ -49,7 +49,7 @@ export default function NavBar() {
     <>
       <div className="flex justify-between items-center border-t border-gray-800 grow pr-4 bg-dark">
         <div className="flex pl-2 items-center">
-          <Avatar className="h-10 w-10" src={user?.avatar ?? ""}>
+          <Avatar className="h-10 w-10" src={user?.avatar ?? null}>
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
@@ -71,8 +71,12 @@ export default function NavBar() {
             </DropdownMenuItem>
           </Avatar>
           <div className="text-sm pl-2 mt-1.5">
-            <h3 className="font-semibold leading-3">@{user?.username}</h3>
-            <span className="text-primary text leading-3">lvl 5.7</span>
+            <h3 className="font-semibold leading-3">
+              {user && "@" + user?.username}
+            </h3>
+            <span className="text-primary text leading-3">
+              {user && "lvl 7.4"}
+            </span>
           </div>
         </div>
         <div className="flex gap-4 h-full">

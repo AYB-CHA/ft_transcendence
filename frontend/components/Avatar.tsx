@@ -10,25 +10,27 @@ import {
 import { PropsWithChildren } from "react";
 
 export default function Avatar({
-  src,
+  src = null,
   className,
   children,
 }: {
-  src: string;
+  src: string | null;
   className?: string;
 } & PropsWithChildren) {
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Image
-            className={`rounded-full border border-primary cursor-pointer ${className}`}
-            height={60}
-            width={60}
-            src={src}
-            unoptimized
-            alt="avatar"
-          />
+          {src && (
+            <Image
+              src={src}
+              className={`rounded-full border border-primary cursor-pointer ${className}`}
+              height={60}
+              width={60}
+              unoptimized
+              alt="avatar"
+            />
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" sideOffset={10}>
           {children}
