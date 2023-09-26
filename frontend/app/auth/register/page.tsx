@@ -1,11 +1,11 @@
 import ProvidersButtons from "../(components)/ProvidersButtons";
 import Link from "next/link";
-import LoginBoard from "./(components)/LoginBoard";
+import RegisterBoard from "./(components)/RegisterBoard";
 
 export default function page() {
   return (
     <div>
-      <LoginBoard />
+      <RegisterBoard />
       <div className="h-px bg-dark-semi-light relative mb-6">
         <span className="bg-dark absolute left-1/2 text-xs top-1/2 -translate-y-1/2 -translate-x-1/2 px-1">
           OR
@@ -15,9 +15,9 @@ export default function page() {
         <ProvidersButtons />
       </div>
       <div className="text-center">
-        <span className="text-gray-500">Don’t have an account? </span>
-        <Link href={"/auth/register"}>
-          <span className="text-primary font-medium">sign up</span>
+        <span className="text-gray-500">You have an account? </span>
+        <Link href={"/auth/login"}>
+          <span className="text-primary font-medium">Login</span>
         </Link>
       </div>
     </div>

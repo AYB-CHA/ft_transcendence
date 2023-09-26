@@ -9,17 +9,20 @@ import {
 
 export default class UpdateUserDto {
   @IsString()
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(20)
+  fullName: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(5)
   @MaxLength(20)
   @IsAlphanumeric()
   username: string;
 
   @IsString()
-  @MinLength(5)
-  @MaxLength(20)
-  fullName: string;
-
-  @IsString()
+  @IsNotEmpty()
   @IsEmail()
   @MinLength(5)
   @MaxLength(100)

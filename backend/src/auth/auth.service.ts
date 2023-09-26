@@ -32,7 +32,7 @@ export class AuthService {
         return this.generateJwtResponse(user.id);
       }
     } catch {}
-    throw new UnauthorizedException();
+    throw new UnauthorizedException(['username or password is wrong']);
   }
 
   async logInUserOAuth(

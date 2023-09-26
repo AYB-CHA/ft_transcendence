@@ -1,6 +1,7 @@
 import {
   IsAlphanumeric,
   IsEmail,
+  IsNotEmpty,
   IsString,
   IsStrongPassword,
   MaxLength,
@@ -9,22 +10,22 @@ import {
 
 export default class RegisterDto {
   @IsString()
-  @MinLength(5)
-  @MaxLength(20)
-  @IsAlphanumeric()
-  username: string;
-
-  @IsString()
-  @MinLength(5)
+  @IsNotEmpty()
   @MaxLength(20)
   fullName: string;
 
   @IsString()
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  username: string;
+
+  @IsString()
+  @IsNotEmpty()
   @IsEmail()
-  @MinLength(5)
   @MaxLength(100)
   email: string;
 
+  @IsNotEmpty()
   @IsString()
   @IsStrongPassword()
   password: string;
