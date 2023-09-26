@@ -24,7 +24,7 @@ import {
 
 export default function NavBar() {
   const pathname = usePathname();
-  let { user } = useAuth();
+  let { user, logOut } = useAuth();
 
   let navLinks: { href: string; icon: React.ReactNode }[] = [
     {
@@ -65,7 +65,7 @@ export default function NavBar() {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logOut}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>
