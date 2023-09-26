@@ -49,7 +49,7 @@ export class AuthService {
     }
 
     const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
-    redirectUrl.pathname = '/auth/login/provider';
+    redirectUrl.pathname = '/auth/provider';
     redirectUrl.searchParams.append(
       'access_token',
       (await this.generateJwtResponse(userId)).jwtToken,

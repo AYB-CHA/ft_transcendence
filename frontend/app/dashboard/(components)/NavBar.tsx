@@ -9,9 +9,12 @@ import {
   Settings,
   Swords,
 } from "lucide-react";
+import { useAuth } from "@/hooks/auth";
 
 export default function NavBar() {
   const pathname = usePathname();
+  let { user } = useAuth();
+
   let navLinks: { href: string; icon: React.ReactNode }[] = [
     {
       href: "/dashboard/settings",
@@ -35,9 +38,9 @@ export default function NavBar() {
     <>
       <div className="flex justify-between items-center border-t border-gray-800 grow pr-4 bg-dark">
         <div className="flex pl-2 items-center">
-          <Avatar className="h-10 w-10" src="/avatar-1.png" />
+          <Avatar className="h-10 w-10" src={user?.avatar ?? ""} />
           <div className="text-sm pl-2 mt-1.5">
-            <h3 className="font-semibold leading-3">PLAYERBR3</h3>
+            <h3 className="font-semibold leading-3">@{user?.username}</h3>
             <span className="text-primary text leading-3">lvl 5.7</span>
           </div>
         </div>

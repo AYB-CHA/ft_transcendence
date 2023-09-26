@@ -50,7 +50,7 @@ export class AuthController {
     else if (provider === 'github') url = this.githubStrategy.getRedirectUrl();
     else throw new BadRequestException();
     return {
-      redirect_url: url,
+      redirectUrl: url,
     };
   }
 

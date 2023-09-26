@@ -26,6 +26,7 @@ export default function RegisterBoard() {
           onChange={(e) => setFullName(e.target.value)}
         />
       </div>
+
       <div className="mb-6">
         <Label>Username</Label>
         <Input

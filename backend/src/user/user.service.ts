@@ -6,9 +6,13 @@ import {
   UpdateUserType,
 } from 'src/types';
 import { compareSync, hashSync } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
+  ) {}
   // the third param is provided if you want to exclude a user from the check (useful in the updates).
   async validateUniquenessOfEmailAndUsername(
     username: string,
@@ -44,14 +48,16 @@ export class UserService {
       ? hashSync(userData?.password, 10)
       : null;
 
-    const avatar = `${Math.ceil(Math.random() * 7)}.png`;
+    const avatar = new URL(this.config.get('BACKEND_BASEURL'));
+
+    avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
 
     return (
       await this.prisma.user.create({
         data: {
           ...userData,
           password,
-          avatar,
+          avatar: avatar.toString(),
         },
         select: {
           id: true,
@@ -61,7 +67,7 @@ export class UserService {
   }
 
   async updatePassword(userPasswords: UpdateUserPasswordType, id: string) {
-    let user = await this.findUser(id);
+    const user = await this.findUser(id);
     if (compareSync(userPasswords.oldPassword, user.password)) {
       await this.prisma.user.update({
         where: { id },

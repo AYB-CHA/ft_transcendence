@@ -8,6 +8,10 @@ import useSWR from "swr";
 
 export type UserType = {
   id: string;
+  avatar: string;
+  email: string;
+  fullName: string;
+  username: string;
 };
 
 export function useAuth() {

@@ -8,7 +8,7 @@ export default function Avatar({
   className?: string;
 }) {
   return (
-    <Image
+    <img
       className={`rounded-full border border-primary cursor-pointer ${className}`}
       height={60}
       width={60}
