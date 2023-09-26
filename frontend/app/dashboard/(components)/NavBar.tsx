@@ -8,8 +8,19 @@ import {
   Trophy,
   Settings,
   Swords,
+  User,
+  SettingsIcon,
+  LogOut,
+  Users,
 } from "lucide-react";
+
 import { useAuth } from "@/hooks/auth";
+
+import {
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/DropDown";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -38,7 +49,27 @@ export default function NavBar() {
     <>
       <div className="flex justify-between items-center border-t border-gray-800 grow pr-4 bg-dark">
         <div className="flex pl-2 items-center">
-          <Avatar className="h-10 w-10" src={user?.avatar ?? ""} />
+          <Avatar className="h-10 w-10" src={user?.avatar ?? ""}>
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Users className="mr-2 h-4 w-4" />
+              <span>Friends</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <SettingsIcon className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </Avatar>
           <div className="text-sm pl-2 mt-1.5">
             <h3 className="font-semibold leading-3">@{user?.username}</h3>
             <span className="text-primary text leading-3">lvl 5.7</span>
