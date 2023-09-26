@@ -29,7 +29,7 @@ export default function NewChannel() {
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="mx-auto">Enter a New Chat</Button>
+          <Button className="mx-auto">Create New Channel</Button>
         </DialogTrigger>
         <DialogContent className="max-w-3xl">
           <CardHeader>New Channel</CardHeader>

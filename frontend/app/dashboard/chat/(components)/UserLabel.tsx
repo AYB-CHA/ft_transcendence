@@ -15,7 +15,7 @@ export default function UserLabel() {
         </div>
       </div>
       <div>
-        <Button className="w-28">Send DM</Button>
+        <Button className="w-32">Send DM</Button>
       </div>
     </div>
   );
