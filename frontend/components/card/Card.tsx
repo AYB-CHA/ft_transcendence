@@ -1,12 +1,12 @@
-import React, { PropsWithChildren } from "react"
+import React, { PropsWithChildren } from "react";
 
 export default function Card({
   children,
   className,
 }: PropsWithChildren & { className?: string }) {
   return (
-    <div className={`bg-dark/90 backdrop-blur-md border border-gray-700 ${className}`}>
+    <div className={`bg-dark-dim border border-dark-semi-dim ${className}`}>
       {children}
     </div>
-  )
+  );
 }
