@@ -1,8 +1,8 @@
 import Avatar from "@/components/Avatar";
-import Button from "@/components/Button";
+import { AlignVerticalJustifyStart } from "lucide-react";
 import React from "react";
 
-export default function UserLabel() {
+export default function MemberLabel() {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
@@ -15,9 +15,10 @@ export default function UserLabel() {
         </div>
       </div>
       <div>
-        <Button className="w-32" variant="secondary">
-          Send DM
-        </Button>
+        <div className="mb-2">
+          <span className="text-gray-500 text-xs">5:16 PM</span>
+        </div>
+        <div className="rounded-full h-2 w-2 bg-primary-500 border border-white ml-auto"></div>
       </div>
     </div>
   );

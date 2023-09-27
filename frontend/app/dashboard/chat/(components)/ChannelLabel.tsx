@@ -21,7 +21,9 @@ export default function ChannelLabel() {
         </div>
       </div>
       <div>
-        <Button className="w-32">Join Channel</Button>
+        <Button className="w-32" variant="secondary">
+          Join Channel
+        </Button>
       </div>
     </div>
   );

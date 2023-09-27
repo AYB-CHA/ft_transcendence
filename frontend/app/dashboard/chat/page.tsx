@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import NewChat from "./(components)/NewChat";
 import Image from "next/image";
+import Avatar from "@/components/Avatar";
+import MemberLabel from "./(components)/MemberLabel";
 
 export default function Page() {
   return (
@@ -52,14 +54,29 @@ export default function Page() {
       </Card>
       <Card className="col-span-2">
         <div className="flex flex-col h-full">
-          <div>hey</div>
+          <CardHeader>
+            <div className="flex justify-between">
+              <div className="flex gap-2">
+                <div>
+                  <Avatar src={"/avatar-1.png"} className="h-10 w-10" />
+                </div>
+                <div>
+                  <h4>Pong gang</h4>
+                  <h5 className="text-gray-500 text-xs">33 members</h5>
+                </div>
+              </div>
+              <div>
+                <span className="text-gray-500">5:15 pm</span>
+              </div>
+            </div>
+          </CardHeader>
           <div className="grow">man</div>
           <CardFooter>
             <div className="flex w-full py-2 gap-4">
               <div className="flex gap-3 text-gray-500">
-                <ImageIcon size={20} />
-                <Link size={20} />
-                <Swords size={20} />
+                <ImageIcon size={20} strokeWidth={1} />
+                <Link size={20} strokeWidth={1} />
+                <Swords size={20} strokeWidth={1} />
               </div>
               <div className="grow">
                 <input
@@ -69,7 +86,11 @@ export default function Page() {
                 />
               </div>
               <div>
-                <SendHorizonal className="text-primary-500" size={20} />
+                <SendHorizonal
+                  className="text-primary-500"
+                  size={20}
+                  strokeWidth={1}
+                />
               </div>
             </div>
           </CardFooter>
@@ -103,8 +124,17 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <div className="text-gray-500">
-            <span>Members</span>
+          <div>
+            <span className="text-gray-500">Members:</span>
+            <div className="flex flex-col gap-4 mt-6">
+              <MemberLabel />
+              <hr className="border-dark-semi-dim" />
+              <MemberLabel />
+              <hr className="border-dark-semi-dim" />
+              <MemberLabel />
+              <hr className="border-dark-semi-dim" />
+              <MemberLabel />
+            </div>
           </div>
         </div>
         <CardFooter>
