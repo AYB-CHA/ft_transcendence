@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
-import { ChannelUserRole } from '@prisma/client';
+import { ChannelType, ChannelUserRole } from '@prisma/client';
 
 @Injectable()
 export class ChannelService {
@@ -177,12 +177,32 @@ export class ChannelService {
   async getUserChannels(userId: string) {
     const channels = this.prisma.channel.findMany({
       where: { users: { some: { User: { id: userId } } } },
+      select: {
+        id: true,
+        type: true,
+        avatar: true,
+        name: true,
+        topic: true,
+        users: { where: { role: 'ADMINISTRATOR' }, select: { userId: true } },
+      },
     });
     return (await channels).map((channel) => {
-      delete channel['password'];
-      delete channel['createdAt'];
-      delete channel['updatedAt'];
-      return channel;
+      const newChannel: {
+        id: string;
+        name: string;
+        avatar: string;
+        topic: string;
+        type: ChannelType;
+        isAdmin?: boolean;
+        users: {
+          userId: string;
+        }[];
+      } = channel;
+
+      if (newChannel.users.filter((user) => user.userId === userId).length > 0)
+        newChannel.isAdmin = true;
+      delete newChannel['users'];
+      return newChannel;
     });
   }
 }

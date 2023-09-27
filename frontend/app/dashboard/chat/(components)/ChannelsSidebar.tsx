@@ -12,6 +12,7 @@ export type ChannelType = {
   avatar: string;
   name: string;
   topic: string;
+  isAdmin?: boolean;
   type: "PRIVATE" | "PUBLIC" | "PROTECTED";
 };
 
@@ -27,9 +28,9 @@ export default function ChannelsSidebar() {
     getMyChannels
   );
 
-  useEffect(() => {
-    mutate();
-  }, [id, mutate]);
+  //   useEffect(() => {
+  //     mutate();
+  //   }, [id]);
 
   if (isLoading)
     return (
@@ -48,9 +49,7 @@ export default function ChannelsSidebar() {
   const Elements = data?.map((channel, index) => {
     return (
       <React.Fragment key={channel.id}>
-        <Link href={`/dashboard/chat/channel/${channel.id}`}>
-          <ChatGroup data={channel} />
-        </Link>
+        <ChatGroup data={channel} />
         {index != (data?.length ?? 0) - 1 && (
           <hr className="border-dark-semi-dim" />
         )}
