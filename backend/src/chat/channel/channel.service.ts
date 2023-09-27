@@ -141,6 +141,23 @@ export class ChannelService {
     throw new BadRequestException(['no channel found']);
   }
 
+  async leaveChannel(channelId: string, userId: string) {
+    try {
+      await this.prisma.channelsOnUsers.delete({
+        where: {
+          userId_channelId: {
+            channelId,
+            userId,
+          },
+        },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new BadRequestException(['no channel found']);
+  }
+
   async createChannel(channelData: newChannelType, userId: string) {
     if (channelData.type === 'protected' && !channelData.password)
       throw new BadRequestException([

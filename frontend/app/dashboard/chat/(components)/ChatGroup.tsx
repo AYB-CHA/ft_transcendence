@@ -8,6 +8,7 @@ import {
   Target,
   Trash,
 } from "lucide-react";
+
 import {
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -31,12 +32,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function ChatGroup({ data }: { data: ChannelType }) {
-  const [confirmDialogStatus, setConfirmDialogStatus] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [leaveConfirm, setLeaveConfirm] = useState(false);
+
   const router = useRouter();
+
   async function deleteCurrentChannel() {
     await axios.delete(`/chat/channel/${data.id}`);
     router.push("/dashboard/chat/channel");
-    setConfirmDialogStatus(false);
+    setDeleteConfirm(false);
+  }
+
+  async function leaveCurrentChannel() {
+    await axios.delete(`/chat/channel/leave/${data.id}`);
+    router.push("/dashboard/chat/channel");
+    setLeaveConfirm(false);
   }
 
   return (
@@ -50,14 +60,14 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
               <LinkIcon className="mr-2 h-4 w-4" />
               <span>Invite People</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLeaveConfirm(true)}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Leave Channel</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={!data?.isAdmin}
-              onClick={() => setConfirmDialogStatus(true)}
+              onClick={() => setDeleteConfirm(true)}
             >
               <Trash className="mr-2 h-4 w-4" />
               <span>Delete Channel</span>
@@ -88,7 +98,7 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
           <Target size={11} className="text-gray-500 ml-auto" />
         )}
       </div>
-      <Dialog open={confirmDialogStatus} onOpenChange={setConfirmDialogStatus}>
+      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
         <DialogContent className="max-w-md">
           <Card>
             <CardHeader>
@@ -109,7 +119,34 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => setConfirmDialogStatus(false)}
+                onClick={() => setDeleteConfirm(false)}
+              >
+                Cancel
+              </Button>
+            </CardFooter>
+          </Card>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={leaveConfirm} onOpenChange={setLeaveConfirm}>
+        <DialogContent className="max-w-md">
+          <Card>
+            <CardHeader>
+              <DialogTitle>Are you sure you want to Leave ?</DialogTitle>
+            </CardHeader>
+            <CardBody>
+              <DialogDescription>
+                Are you certain you want to proceed? Leaving this channel may
+                result in irreversible consequences.
+              </DialogDescription>
+            </CardBody>
+            <CardFooter>
+              <Button variant="danger" onClick={leaveCurrentChannel}>
+                Leave Channel
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setLeaveConfirm(false)}
               >
                 Cancel
               </Button>

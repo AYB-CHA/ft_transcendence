@@ -33,6 +33,12 @@ export class ChannelController {
   }
 
   @UseGuards(AuthGuard)
+  @Delete('/leave/:id')
+  leaveChannel(@Req() request: RequestType, @Param('id') channelId: string) {
+    return this.channelService.leaveChannel(channelId, request.userPayload.sub);
+  }
+
+  @UseGuards(AuthGuard)
   @Post('/protected/join/:id')
   joinProtectedChannel(
     @Req() request: RequestType,
