@@ -4,7 +4,7 @@ import React, { LegacyRef, PropsWithChildren } from "react";
 
 type ButtonPropsType = PropsWithChildren & {
   onClick?: () => void;
-  variant?: "primary" | "secondary" | "dark";
+  variant?: "primary" | "secondary" | "dark" | "danger";
   className?: string;
 };
 
@@ -16,6 +16,7 @@ export default React.forwardRef<HTMLButtonElement, ButtonPropsType>(
     const variants = {
       primary: "bg-primary hover:bg-primary-400",
       secondary: "bg-gray-100 hover:bg-gray-100/80",
+      danger: "bg-red-500 hover:bg-gray-red-600 text-gray-100",
       dark: "bg-black border border-[#4B5563] text-gray-200",
     };
     return (
