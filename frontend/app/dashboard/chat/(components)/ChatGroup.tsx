@@ -30,24 +30,14 @@ import CardHeader from "@/components/card/CardHeader";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import LeaveChannel from "./LeaveChannel";
+import DeleteChannel from "./DeleteChannel";
 
 export default function ChatGroup({ data }: { data: ChannelType }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [leaveConfirm, setLeaveConfirm] = useState(false);
 
   const router = useRouter();
-
-  async function deleteCurrentChannel() {
-    await axios.delete(`/chat/channel/${data.id}`);
-    router.push("/dashboard/chat/channel");
-    setDeleteConfirm(false);
-  }
-
-  async function leaveCurrentChannel() {
-    await axios.delete(`/chat/channel/leave/${data.id}`);
-    router.push("/dashboard/chat/channel");
-    setLeaveConfirm(false);
-  }
 
   return (
     <div className="flex items-center">
@@ -61,8 +51,10 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
               <span>Invite People</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setLeaveConfirm(true)}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Leave Channel</span>
+              <div className="flex">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Leave Channel</span>
+              </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -98,62 +90,17 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
           <Target size={11} className="text-gray-500 ml-auto" />
         )}
       </div>
-      <Dialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
-        <DialogContent className="max-w-md">
-          <Card>
-            <CardHeader>
-              <DialogTitle>
-                Are you sure you want to delete channel ?
-              </DialogTitle>
-            </CardHeader>
-            <CardBody>
-              <DialogDescription>
-                This action cannot be undone and will permanently remove all
-                content and members associated with the channel. Please confirm
-                your decision to proceed with the deletion.
-              </DialogDescription>
-            </CardBody>
-            <CardFooter>
-              <Button variant="danger" onClick={deleteCurrentChannel}>
-                Delete Channel
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setDeleteConfirm(false)}
-              >
-                Cancel
-              </Button>
-            </CardFooter>
-          </Card>
-        </DialogContent>
-      </Dialog>
 
-      <Dialog open={leaveConfirm} onOpenChange={setLeaveConfirm}>
-        <DialogContent className="max-w-md">
-          <Card>
-            <CardHeader>
-              <DialogTitle>Are you sure you want to Leave ?</DialogTitle>
-            </CardHeader>
-            <CardBody>
-              <DialogDescription>
-                Are you certain you want to proceed? Leaving this channel may
-                result in irreversible consequences.
-              </DialogDescription>
-            </CardBody>
-            <CardFooter>
-              <Button variant="danger" onClick={leaveCurrentChannel}>
-                Leave Channel
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setLeaveConfirm(false)}
-              >
-                Cancel
-              </Button>
-            </CardFooter>
-          </Card>
-        </DialogContent>
-      </Dialog>
+      <LeaveChannel
+        id={data.id}
+        status={leaveConfirm}
+        setStatus={setLeaveConfirm}
+      ></LeaveChannel>
+      <DeleteChannel
+        id={data.id}
+        status={deleteConfirm}
+        setStatus={setDeleteConfirm}
+      ></DeleteChannel>
     </div>
   );
 }
