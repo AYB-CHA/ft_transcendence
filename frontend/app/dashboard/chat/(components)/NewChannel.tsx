@@ -8,23 +8,34 @@ import Label from "@/components/input/Label";
 import TextArea from "@/components/input/TextArea";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+
+import {
   AlignRight,
   Eye,
   Fingerprint,
-  KeyRound,
   KeyRoundIcon,
-  Pen,
   PenIcon,
+  SettingsIcon,
 } from "lucide-react";
+
 import Image from "next/image";
 import React, { useState } from "react";
+
+type ChannelVisibilityType = "public" | "private" | "protected";
 
 export default function NewChannel() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState<
-    "public" | "private" | "protected"
-  >("public");
+  const [visibility, setVisibility] = useState<ChannelVisibilityType>("public");
+
   return (
     <div>
       <Dialog>
@@ -47,7 +58,21 @@ export default function NewChannel() {
                 </div>
                 <div className="mb-6">
                   <Label>Viability</Label>
-                  <Input placeholder="Public" icon={<Eye size={17} />} />
+                  <Select
+                    defaultValue={visibility}
+                    onValueChange={(value: ChannelVisibilityType) =>
+                      setVisibility(value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent sideOffset={4}>
+                      <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
+                      <SelectItem value="protected">Protected</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {visibility === "protected" && (
                   <div className="mb-6">

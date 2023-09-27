@@ -8,6 +8,13 @@ const config: Config = {
   theme: {
     container: {
       center: true,
+      screens: {
+        sm: "600px",
+        md: "728px",
+        lg: "984px",
+        xl: "1440px",
+        "2xl": "1696px",
+      },
     },
     extend: {
       colors: {
