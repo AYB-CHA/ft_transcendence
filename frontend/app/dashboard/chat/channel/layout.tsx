@@ -8,8 +8,8 @@ import Input from "@/components/input/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 import { Search } from "lucide-react";
-import ChatGroup from "../(components)/ChatGroup";
 import NewChat from "../(components)/NewChat";
+import ChannelsSidebar from "../(components)/ChannelsSidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,17 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div>
                 <TabsContent value="channels">
                   <div className="flex flex-col gap-4">
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
+                    <ChannelsSidebar />
                   </div>
                 </TabsContent>
                 <TabsContent value="dms">Here Will be DMs.</TabsContent>
