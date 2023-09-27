@@ -1,6 +1,6 @@
 import Avatar from "@/components/Avatar";
 
-export default function MemberLabel() {
+export default function ChatGroup() {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
@@ -9,7 +9,9 @@ export default function MemberLabel() {
         </div>
         <div>
           <h4>Pong gang</h4>
-          <h5 className="text-gray-500 text-xs">@ssmith</h5>
+          <h5 className="text-gray-500 text-xs">
+            this is a message that sent you....
+          </h5>
         </div>
       </div>
       <div>

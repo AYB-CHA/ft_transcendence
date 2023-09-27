@@ -11,9 +11,7 @@ import {
   Link,
   PenIcon,
   Search,
-  Send,
   SendHorizonal,
-  Sword,
   Swords,
 } from "lucide-react";
 import NewChat from "./(components)/NewChat";
@@ -22,6 +20,7 @@ import Avatar from "@/components/Avatar";
 import MemberLabel from "./(components)/MemberLabel";
 import MyMessage from "./(components)/MyMessage";
 import OtherMessage from "./(components)/OtherMessage";
+import ChatGroup from "./(components)/ChatGroup";
 
 export default function Page() {
   return (
@@ -41,7 +40,19 @@ export default function Page() {
             <CardBody>
               <div>
                 <TabsContent value="channels">
-                  Here Will be channels.
+                  <div className="flex flex-col gap-4">
+                    <ChatGroup />
+                    <hr className="border-dark-semi-dim" />
+                    <ChatGroup />
+                    <hr className="border-dark-semi-dim" />
+                    <ChatGroup />
+                    <hr className="border-dark-semi-dim" />
+                    <ChatGroup />
+                    <hr className="border-dark-semi-dim" />
+                    <ChatGroup />
+                    <hr className="border-dark-semi-dim" />
+                    <ChatGroup />
+                  </div>
                 </TabsContent>
                 <TabsContent value="dms">Here Will be DMs.</TabsContent>
               </div>
@@ -78,8 +89,6 @@ export default function Page() {
               <OtherMessage />
               <MyMessage />
               <OtherMessage />
-              <OtherMessage />
-              <MyMessage />
               <OtherMessage />
               <MyMessage />
               <OtherMessage />
