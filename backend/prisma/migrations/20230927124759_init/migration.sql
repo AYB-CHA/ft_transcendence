@@ -27,6 +27,7 @@ CREATE TABLE "Channel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
+    "topic" TEXT NOT NULL,
     "type" "ChannelType" NOT NULL DEFAULT 'PUBLIC',
     "password" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -41,6 +41,7 @@ model Channel {
   id     String @id @default(uuid())
   name   String
   avatar String
+  topic  String
 
   type     ChannelType @default(PUBLIC)
   password String?

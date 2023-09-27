@@ -1,11 +1,11 @@
-import Button from "@/components/Button";
+import Image from "next/image";
+import Avatar from "@/components/Avatar";
+import MemberLabel from "../../(components)/MemberLabel";
+import MyMessage from "../../(components)/MyMessage";
+import OtherMessage from "../../(components)/OtherMessage";
 import Card from "@/components/card/Card";
-import CardBody from "@/components/card/CardBody";
-import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
-import Input from "@/components/input/Input";
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import CardFooter from "@/components/card/CardFooter";
 import {
   ImageIcon,
   Link,
@@ -14,57 +14,12 @@ import {
   SendHorizonal,
   Swords,
 } from "lucide-react";
-import NewChat from "./(components)/NewChat";
-import Image from "next/image";
-import Avatar from "@/components/Avatar";
-import MemberLabel from "./(components)/MemberLabel";
-import MyMessage from "./(components)/MyMessage";
-import OtherMessage from "./(components)/OtherMessage";
-import ChatGroup from "./(components)/ChatGroup";
+import Button from "@/components/Button";
+import Input from "@/components/input/Input";
 
 export default function Page() {
   return (
-    <div className="my-8 grow grid grid-cols-4 gap-4">
-      <Card className="flex flex-col">
-        <div className="grow">
-          <Tabs defaultValue="channels">
-            <CardHeader>
-              <Input placeholder="Search" icon={<Search size={18} />} />
-            </CardHeader>
-            <CardHeader>
-              <TabsList>
-                <TabsTrigger value="channels">Channels</TabsTrigger>
-                <TabsTrigger value="dms">DMs</TabsTrigger>
-              </TabsList>
-            </CardHeader>
-            <CardBody>
-              <div>
-                <TabsContent value="channels">
-                  <div className="flex flex-col gap-4">
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                    <hr className="border-dark-semi-dim" />
-                    <ChatGroup />
-                  </div>
-                </TabsContent>
-                <TabsContent value="dms">Here Will be DMs.</TabsContent>
-              </div>
-            </CardBody>
-          </Tabs>
-        </div>
-        <CardFooter>
-          <div className="w-full">
-            <NewChat />
-          </div>
-        </CardFooter>
-      </Card>
+    <>
       <Card className="col-span-2">
         <div className="flex flex-col h-full">
           <CardHeader>
@@ -167,6 +122,6 @@ export default function Page() {
           </div>
         </CardFooter>
       </Card>
-    </div>
+    </>
   );
 }

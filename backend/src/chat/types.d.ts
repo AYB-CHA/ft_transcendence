@@ -7,6 +7,7 @@ export enum ChannelType {
 export type newChannelType = {
   name: string;
   avatar: string;
+  topic: string;
   type: ChannelType;
   password: string | null;
 };

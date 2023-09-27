@@ -25,6 +25,10 @@ export default class NewChannelDto {
   @IsEnum(ChannelType)
   type: ChannelType;
 
+  @IsNotEmpty()
+  @MaxLength(100)
+  topic: string;
+
   @IsOptional()
   @IsNotEmpty()
   @MaxLength(50)

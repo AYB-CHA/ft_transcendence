@@ -5,14 +5,7 @@ import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import Input from "@/components/input/Input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Search } from "lucide-react";
 import UserLabel from "./UserLabel";
 import ChannelLabel from "./ChannelLabel";

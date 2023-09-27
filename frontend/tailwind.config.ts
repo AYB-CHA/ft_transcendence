@@ -13,7 +13,7 @@ const config: Config = {
         md: "728px",
         lg: "984px",
         xl: "1440px",
-        "2xl": "1696px",
+        "2xl": "1896px",
       },
     },
     extend: {
@@ -34,7 +34,7 @@ const config: Config = {
         },
         dark: {
           DEFAULT: "#0F1015",
-          dim: "#171B24",
+          dim: "#13141B",
           "semi-dim": "#1F2329",
           "semi-light": "#4B5563",
         },

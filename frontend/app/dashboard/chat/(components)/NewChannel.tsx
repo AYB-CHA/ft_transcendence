@@ -1,4 +1,5 @@
 "use client";
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
@@ -10,41 +11,62 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
 
-import {
-  AlignRight,
-  Eye,
-  Fingerprint,
-  KeyRoundIcon,
-  PenIcon,
-  SettingsIcon,
-} from "lucide-react";
+import axios from "@/lib/axios";
+import { camelCaseToNormal } from "@/lib/string";
+import { AxiosError } from "axios";
+
+import { AlignRight, Fingerprint, KeyRoundIcon, PenIcon } from "lucide-react";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 type ChannelVisibilityType = "public" | "private" | "protected";
 
 export default function NewChannel() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState<ChannelVisibilityType>("public");
 
+  const handelSumption = async () => {
+    let data: {
+      [key: string]: string;
+    } = {
+      name,
+      avatar: "avatar.png",
+      type: visibility,
+      topic: description,
+    };
+    if (visibility === "protected") data.password = password;
+    try {
+      let response = await axios.post("chat/channel", data);
+      router.push(`/dashboard/chat/channel/${response.data?.id}`);
+      setOpen(false);
+    } catch (error) {
+      if (error instanceof AxiosError)
+        setError(camelCaseToNormal(error.response?.data.message[0]));
+    }
+  };
+
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="mx-auto">Create New Channel</Button>
         </DialogTrigger>
         <DialogContent className="max-w-3xl">
           <CardHeader>New Channel</CardHeader>
           <CardBody>
+            <div>{error && <Alert>{error}</Alert>}</div>
             <div className="grid grid-cols-2 px-2 py-4 gap-8">
               <div>
                 <div className="mb-6">
@@ -80,6 +102,7 @@ export default function NewChannel() {
                     <Input
                       type="password"
                       placeholder="Password"
+                      onChange={(e) => setPassword(e.target.value)}
                       icon={<KeyRoundIcon size={17} />}
                     />
                   </div>
@@ -123,7 +146,7 @@ export default function NewChannel() {
             </div>
           </CardBody>
           <CardFooter>
-            <Button>Create Channel</Button>
+            <Button onClick={handelSumption}>Create Channel</Button>
           </CardFooter>
         </DialogContent>
       </Dialog>
