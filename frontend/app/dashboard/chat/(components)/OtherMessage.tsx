@@ -4,7 +4,7 @@ import React from "react";
 export default function MyMessage() {
   return (
     <div className="flex gap-2 text-right justify-end">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 items-end">
         <span className="text-gray-500 text-xs">@ssmith</span>
         <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tr-none">
           This is a small test message.
