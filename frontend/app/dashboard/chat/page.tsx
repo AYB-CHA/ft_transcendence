@@ -20,6 +20,8 @@ import NewChat from "./(components)/NewChat";
 import Image from "next/image";
 import Avatar from "@/components/Avatar";
 import MemberLabel from "./(components)/MemberLabel";
+import MyMessage from "./(components)/MyMessage";
+import OtherMessage from "./(components)/OtherMessage";
 
 export default function Page() {
   return (
@@ -70,7 +72,19 @@ export default function Page() {
               </div>
             </div>
           </CardHeader>
-          <div className="grow">man</div>
+          <div className="grow">
+            <div className="flex flex-col p-4 gap-4">
+              <MyMessage />
+              <OtherMessage />
+              <MyMessage />
+              <OtherMessage />
+              <OtherMessage />
+              <MyMessage />
+              <OtherMessage />
+              <MyMessage />
+              <OtherMessage />
+            </div>
+          </div>
           <CardFooter>
             <div className="flex w-full py-2 gap-4">
               <div className="flex gap-3 text-gray-500">
