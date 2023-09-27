@@ -1,4 +1,4 @@
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/DropDownAvatar";
 import React from "react";
 
 export default function MyMessage() {

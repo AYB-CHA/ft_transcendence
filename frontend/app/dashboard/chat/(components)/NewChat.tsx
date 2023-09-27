@@ -1,4 +1,4 @@
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/DropDownAvatar";
 import Button from "@/components/Button";
 import Card from "@/components/card/Card";
 import CardBody from "@/components/card/CardBody";

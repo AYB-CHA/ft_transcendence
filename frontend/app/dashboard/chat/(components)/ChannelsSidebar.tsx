@@ -2,9 +2,10 @@
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import ChatGroup from "./ChatGroup";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Spinner from "@/components/Spinner";
+import { useParams } from "next/navigation";
 
 export type ChannelType = {
   id: string;
@@ -19,10 +20,16 @@ async function getMyChannels(data: string) {
   return response.data;
 }
 export default function ChannelsSidebar() {
-  let { isLoading, data } = useSWR<ChannelType[]>(
+  let { id } = useParams();
+
+  let { isLoading, data, mutate } = useSWR<ChannelType[]>(
     "/chat/channel",
     getMyChannels
   );
+
+  useEffect(() => {
+    mutate();
+  }, [id, mutate]);
 
   if (isLoading)
     return (

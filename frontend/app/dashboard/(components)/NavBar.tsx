@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import NavTab from "./NavTab";
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/DropDownAvatar";
 import {
   LayoutPanelLeft,
   MessageCircle,
@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/DropDown";
+import DropDownAvatar from "@/components/DropDownAvatar";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -49,7 +50,7 @@ export default function NavBar() {
     <>
       <div className="flex justify-between items-center border-t border-gray-800 grow pr-4 bg-dark">
         <div className="flex pl-2 items-center">
-          <Avatar className="h-10 w-10" src={user?.avatar ?? null}>
+          <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
@@ -69,11 +70,9 @@ export default function NavBar() {
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>
-          </Avatar>
+          </DropDownAvatar>
           <div className="text-sm pl-2 mt-1.5">
-            <h3 className="font-semibold leading-3">
-              {user && "@" + user?.username}
-            </h3>
+            <h3 className="leading-3">{user && "@" + user?.username}</h3>
             <span className="text-primary text leading-3">
               {user && "lvl 7.4"}
             </span>
