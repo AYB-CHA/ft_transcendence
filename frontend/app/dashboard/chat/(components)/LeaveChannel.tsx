@@ -25,7 +25,6 @@ export default function LeaveChannel({
   status: boolean;
 }) {
   const router = useRouter();
-
   async function leaveCurrentChannel() {
     await axios.delete(`/chat/channel/leave/${id}`);
     router.push("/dashboard/chat/channel");

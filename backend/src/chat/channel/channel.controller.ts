@@ -27,6 +27,16 @@ export class ChannelController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('/:id')
+  async getChannelData(@Req() request: RequestType, @Param('id') id: string) {
+    console.log(id);
+    return await this.channelService.getChannelData(
+      id,
+      request.userPayload.sub,
+    );
+  }
+
+  @UseGuards(AuthGuard)
   @Post('/join/:id')
   joinChannel(@Req() request: RequestType, @Param('id') channelId: string) {
     return this.channelService.joinChannel(channelId, request.userPayload.sub);

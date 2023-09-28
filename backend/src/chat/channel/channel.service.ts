@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
@@ -11,6 +12,33 @@ import { ChannelType, ChannelUserRole } from '@prisma/client';
 @Injectable()
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
+  async getChannelData(id: string, myId: string) {
+    try {
+      const channel = await this.prisma.channel.findUniqueOrThrow({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          topic: true,
+          avatar: true,
+        },
+      });
+      let isAdmin = false;
+      if (
+        (await this.prisma.channelsOnUsers.count({
+          where: { channelId: channel.id, userId: myId, role: 'ADMINISTRATOR' },
+        })) > 0
+      )
+        isAdmin = true;
+      return {
+        ...channel,
+        isAdmin,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new NotFoundException();
+    }
+  }
   async upgradeUserGrade(
     channelId: string,
     adminId: string,

@@ -3,9 +3,7 @@ import useSWR from "swr";
 import axios from "@/lib/axios";
 import ChatGroup from "./ChatGroup";
 import React, { useEffect } from "react";
-import Link from "next/link";
 import Spinner from "@/components/Spinner";
-import { useParams } from "next/navigation";
 
 export type ChannelType = {
   id: string;
