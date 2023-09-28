@@ -1,4 +1,5 @@
 "use client";
+import EditAvatar from "@/app/(components)/EditAvatar";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
@@ -22,12 +23,14 @@ import { AxiosError } from "axios";
 
 import { AlignRight, Fingerprint, KeyRoundIcon, PenIcon } from "lucide-react";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { mutate } from "swr";
 
 type ChannelVisibilityType = "public" | "private" | "protected";
+
+let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
+avatarUrl.pathname = "public/avatars/";
 
 export default function NewChannel() {
   const router = useRouter();
@@ -37,13 +40,14 @@ export default function NewChannel() {
   const [password, setPassword] = useState("");
   const [description, setDescription] = useState("");
   const [visibility, setVisibility] = useState<ChannelVisibilityType>("public");
+  const [avatar, setAvatar] = useState("channel.jpg");
 
   const handelSumption = async () => {
     let data: {
       [key: string]: string;
     } = {
       name,
-      avatar: "avatar.png",
+      avatar: avatarUrl.toString() + avatar,
       type: visibility,
       topic: description,
     };
@@ -120,21 +124,10 @@ export default function NewChannel() {
               </div>
               <div className="flex justify-center items-center">
                 <div className="text-center flex flex-col items-center">
-                  <div className="relative cursor-pointer mb-4">
-                    <div className="border-2 border-primary h-32 w-32 rounded-full overflow-hidden ">
-                      <Image
-                        src={"https://github.com/shadcn.png"}
-                        className="h-full w-full"
-                        alt="Avatar"
-                        width={128}
-                        height={128}
-                        unoptimized
-                      />
-                      <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
-                        <PenIcon size={12} />
-                      </div>
-                    </div>
-                  </div>
+                  <EditAvatar
+                    src={avatarUrl.toString() + avatar}
+                    setSrc={setAvatar}
+                  />
                   <h3 className="font-medium text-base">
                     {name.length > 0 ? name : "Channel Name"}
                   </h3>
