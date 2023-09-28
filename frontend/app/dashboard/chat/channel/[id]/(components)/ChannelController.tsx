@@ -7,7 +7,6 @@ import CardFooter from "@/components/card/CardFooter";
 import { PenIcon, Search } from "lucide-react";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
-import MemberLabel from "./MemberLabel";
 import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
@@ -31,33 +30,46 @@ export default function ChannelController() {
       <div className="grow px-4">
         <div className="py-10">
           <div className="flex justify-center items-center">
-            {isLoading ? (
-              <div className="py-8">
-                <Spinner />
-              </div>
-            ) : (
-              <div className="text-center flex flex-col items-center">
-                <div className="relative cursor-pointer mb-6">
-                  <div className="border-2 border-primary h-32 w-32 rounded-full overflow-hidden ">
-                    <Image
-                      src={data?.avatar}
-                      className="h-full w-full"
-                      alt="Avatar"
-                      width={128}
-                      height={128}
-                      unoptimized
-                    />
-                    {data.isAdmin && (
-                      <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
-                        <PenIcon size={11} />
-                      </div>
-                    )}
-                  </div>
+            <div className="text-center flex flex-col items-center">
+              <div className="relative cursor-pointer mb-6">
+                <div
+                  className={`border-2 h-32 w-32 rounded-full overflow-hidden  ${
+                    !isLoading ? "border-primary" : "border-dark-dim"
+                  }`}
+                >
+                  {isLoading ? (
+                    <div className="h-full w-full bg-dark-semi-dim animate-pulse"></div>
+                  ) : (
+                    <>
+                      <Image
+                        src={data?.avatar}
+                        className="h-full w-full"
+                        alt="Avatar"
+                        width={128}
+                        height={128}
+                        unoptimized
+                      />
+                      {data.isAdmin && (
+                        <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
+                          <PenIcon size={11} />
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-                <h3 className="font-medium text-base mb-1">{data.name}</h3>
-                <p className="text-gray-500">{data.topic}</p>
               </div>
-            )}
+              {isLoading ? (
+                <>
+                  <div className="w-16 py-2.5 bg-dark-semi-dim animate-pulse my-auto mb-3"></div>
+                  <div className="w-36 py-1.5 bg-dark-semi-dim animate-pulse mx-auto"></div>
+                </>
+              ) : (
+                <>
+                  <h3 className="font-medium text-base mb-1">{data.name}</h3>
+                  <p className="text-gray-500">{data.topic}</p>
+                </>
+              )}
+            </div>
           </div>
         </div>
         <div>

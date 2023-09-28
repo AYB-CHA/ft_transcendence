@@ -8,7 +8,6 @@ import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
 import { ChannelType, ChannelUserRole } from '@prisma/client';
-import { response } from 'express';
 
 @Injectable()
 export class ChannelService {

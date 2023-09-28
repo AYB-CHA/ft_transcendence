@@ -4,6 +4,7 @@ import axios from "@/lib/axios";
 import ChatGroup from "./ChatGroup";
 import React, { useEffect } from "react";
 import Spinner from "@/components/Spinner";
+import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
 
 export type ChannelType = {
   id: string;
@@ -26,9 +27,13 @@ export default function ChannelsSidebar() {
 
   if (isLoading)
     return (
-      <div className="h-full flex justify-center py-24">
-        <Spinner />
-      </div>
+      <>
+        <MemberLabeLoading />
+        <MemberLabeLoading />
+        <MemberLabeLoading />
+        <MemberLabeLoading />
+        <MemberLabeLoading />
+      </>
     );
 
   if (data?.length === 0)
