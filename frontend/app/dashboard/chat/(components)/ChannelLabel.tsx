@@ -1,17 +1,22 @@
 import Avatar from "@/components/Avatar";
-import Button from "@/components/Button";
 import { Lock } from "lucide-react";
 import React from "react";
-import { ChannelType } from "./ChannelsSidebar";
+import JoinChannelButton from "./JoinChannelButton";
 
 export default function ChannelLabel({
+  id,
   avatar,
   name,
   type,
+  usersCount,
+  topic,
 }: {
+  id: string;
   name: string;
   avatar: string;
-  type: "PRIVATE" | "PUBLIC" | "PROTECTED";
+  type: "PUBLIC" | "PROTECTED";
+  usersCount: number;
+  topic: string;
 }) {
   return (
     <div className="flex justify-between items-center">
@@ -22,15 +27,19 @@ export default function ChannelLabel({
         <div>
           <h4>{name}</h4>
           <h5 className="text-gray-500 text-xs flex items-center gap-1">
-            <span>42 members</span>
+            <span>{usersCount} members</span>
             <span>{type === "PROTECTED" && <Lock size={12} />}</span>
           </h5>
         </div>
       </div>
       <div>
-        <Button className="w-32" variant="secondary">
-          Join Channel
-        </Button>
+        <JoinChannelButton
+          type={type}
+          avatar={avatar}
+          name={name}
+          topic={topic}
+          id={id}
+        />
       </div>
     </div>
   );

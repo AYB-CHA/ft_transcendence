@@ -54,6 +54,9 @@ export default function NewChat() {
                       avatar={channel.avatar}
                       name={channel.name}
                       type={channel.type}
+                      topic={channel.topic}
+                      usersCount={channel._count.users}
+                      id={channel.id}
                     />
                     {indx < channels.length - 1 && (
                       <hr className="border-dark-semi-dim" />

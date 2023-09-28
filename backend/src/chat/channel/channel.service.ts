@@ -22,7 +22,14 @@ export class ChannelService {
       },
       take: 6,
       orderBy: { createdAt: 'asc' },
-      select: { id: true, avatar: true, name: true, type: true },
+      select: {
+        id: true,
+        avatar: true,
+        name: true,
+        type: true,
+        topic: true,
+        _count: { select: { users: true } },
+      },
     });
   }
   async getChannelData(id: string, myId: string) {
@@ -188,7 +195,7 @@ export class ChannelService {
       });
       return;
     }
-    throw new BadRequestException(['the password is wrong']);
+    throw new UnauthorizedException(['the password is wrong']);
   }
 
   async joinChannel(channelId: string, userId: string) {
