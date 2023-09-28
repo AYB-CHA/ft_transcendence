@@ -1,3 +1,4 @@
+"use client";
 import Avatar from "@/components/Avatar";
 import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
@@ -6,7 +7,16 @@ import MyMessage from "./MyMessage";
 import OtherMessage from "./OtherMessage";
 
 import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
+import { useParams } from "next/navigation";
+import useSWR from "swr";
+import { getChannelData } from "./ChannelController";
 export default function ChatBox() {
+  let { id } = useParams();
+  let { data, isLoading, error } = useSWR(
+    `/chat/channel/${id}`,
+    getChannelData
+  );
+
   return (
     <Card className="col-span-2">
       <div className="flex flex-col h-full">
@@ -14,15 +24,35 @@ export default function ChatBox() {
           <div className="flex justify-between">
             <div className="flex gap-2">
               <div>
-                <Avatar src={"/avatar-1.png"} className="h-10 w-10" />
+                {isLoading ? (
+                  <div className="w-10 h-10 bg-dark-semi-dim rounded-full animate-pulse"></div>
+                ) : (
+                  <Avatar src={data.avatar} className="h-10 w-10" />
+                )}
               </div>
               <div>
-                <h4>Pong gang</h4>
-                <h5 className="text-gray-500 text-xs">33 members</h5>
+                <h4>
+                  {isLoading ? (
+                    <div className="bg-dark-semi-dim h-3 animate-pulse w-20 mt-1"></div>
+                  ) : (
+                    data.name
+                  )}
+                </h4>
+                <h5 className="text-gray-500 text-xs">
+                  {isLoading ? (
+                    <div className="bg-dark-semi-dim h-2 animate-pulse w-16 mt-2"></div>
+                  ) : (
+                    `${data._count.users} members`
+                  )}
+                </h5>
               </div>
             </div>
             <div>
-              <span className="text-gray-500">5:15 pm</span>
+              {isLoading ? (
+                <div className="bg-dark-semi-dim h-4 animate-pulse w-12 mt-2"></div>
+              ) : (
+                <span className="text-gray-500">5:15 pm</span>
+              )}
             </div>
           </div>
         </CardHeader>

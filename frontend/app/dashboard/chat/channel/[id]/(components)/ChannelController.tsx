@@ -12,6 +12,7 @@ import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
 import Spinner from "@/components/Spinner";
+import ChannelMembers from "./ChannelMembers";
 
 export default function ChannelController() {
   let { id } = useParams();
@@ -60,16 +61,7 @@ export default function ChannelController() {
           </div>
         </div>
         <div>
-          <span className="text-gray-500">Members:</span>
-          <div className="flex flex-col gap-4 mt-6">
-            <MemberLabel />
-            <hr className="border-dark-semi-dim" />
-            <MemberLabel />
-            <hr className="border-dark-semi-dim" />
-            <MemberLabel />
-            <hr className="border-dark-semi-dim" />
-            <MemberLabel />
-          </div>
+          <ChannelMembers />
         </div>
       </div>
       <CardFooter>
@@ -82,6 +74,6 @@ export default function ChannelController() {
   );
 }
 
-async function getChannelData(url: string) {
+export async function getChannelData(url: string) {
   return (await axios.get(url)).data;
 }

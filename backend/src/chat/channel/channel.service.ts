@@ -8,6 +8,7 @@ import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
 import { ChannelType, ChannelUserRole } from '@prisma/client';
+import { response } from 'express';
 
 @Injectable()
 export class ChannelService {
@@ -21,8 +22,10 @@ export class ChannelService {
           name: true,
           topic: true,
           avatar: true,
+          _count: { select: { users: true } },
         },
       });
+
       let isAdmin = false;
       if (
         (await this.prisma.channelsOnUsers.count({
@@ -39,6 +42,34 @@ export class ChannelService {
       throw new NotFoundException();
     }
   }
+  async getChannelUsers(id: string) {
+    const userData = await this.prisma.channel.findFirst({
+      where: { id },
+      select: {
+        users: {
+          select: {
+            role: true,
+            User: {
+              select: {
+                id: true,
+                username: true,
+                fullName: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userData) throw new NotFoundException();
+    const response: any[] = [];
+    userData.users.forEach((user) =>
+      response.push({ ...user.User, role: user.role }),
+    );
+    return response;
+  }
+
   async upgradeUserGrade(
     channelId: string,
     adminId: string,

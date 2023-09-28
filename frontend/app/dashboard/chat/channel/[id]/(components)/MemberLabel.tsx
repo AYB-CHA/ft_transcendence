@@ -1,15 +1,23 @@
 import Avatar from "@/components/DropDownAvatar";
 
-export default function MemberLabel() {
+export default function MemberLabel({
+  avatar,
+  username,
+  name,
+}: {
+  avatar: string;
+  username: string;
+  name: string;
+}) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
         <div>
-          <Avatar src={"/avatar-1.png"} className="h-10 w-10" />
+          <Avatar src={avatar} className="h-10 w-10" />
         </div>
         <div>
-          <h4>Pong gang</h4>
-          <h5 className="text-gray-500 text-xs">@ssmith</h5>
+          <h4>{name}</h4>
+          <h5 className="text-gray-500 text-xs">@{username}</h5>
         </div>
       </div>
       <div>

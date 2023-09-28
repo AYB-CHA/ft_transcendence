@@ -29,11 +29,16 @@ export class ChannelController {
   @UseGuards(AuthGuard)
   @Get('/:id')
   async getChannelData(@Req() request: RequestType, @Param('id') id: string) {
-    console.log(id);
     return await this.channelService.getChannelData(
       id,
       request.userPayload.sub,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/:id/members')
+  async getChannelUsers(@Param('id') id: string) {
+    return await this.channelService.getChannelUsers(id);
   }
 
   @UseGuards(AuthGuard)
@@ -43,13 +48,13 @@ export class ChannelController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete('/leave/:id')
+  @Delete('/:id/leave')
   leaveChannel(@Req() request: RequestType, @Param('id') channelId: string) {
     return this.channelService.leaveChannel(channelId, request.userPayload.sub);
   }
 
   @UseGuards(AuthGuard)
-  @Post('/protected/join/:id')
+  @Post('/protected/:id/join')
   joinProtectedChannel(
     @Req() request: RequestType,
     @Param('id') channelId: string,
