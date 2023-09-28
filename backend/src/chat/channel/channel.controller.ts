@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +25,18 @@ export class ChannelController {
   @Get()
   async getChannels(@Req() request: RequestType) {
     return await this.channelService.getUserChannels(request.userPayload.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('discover')
+  async discover(
+    @Req() request: RequestType,
+    @Query('search') searchParam: string = '',
+  ) {
+    return await this.channelService.discoverNewChannels(
+      request.userPayload.sub,
+      searchParam,
+    );
   }
 
   @UseGuards(AuthGuard)

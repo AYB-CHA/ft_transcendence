@@ -12,6 +12,19 @@ import { ChannelType, ChannelUserRole } from '@prisma/client';
 @Injectable()
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async discoverNewChannels(userId: string, query: string) {
+    return await this.prisma.channel.findMany({
+      where: {
+        users: { none: { userId } },
+        type: { not: 'PRIVATE' },
+        name: { contains: query },
+      },
+      take: 6,
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, avatar: true, name: true, type: true },
+    });
+  }
   async getChannelData(id: string, myId: string) {
     try {
       const channel = await this.prisma.channel.findUniqueOrThrow({

@@ -1,17 +1,35 @@
-import Avatar from "@/components/DropDownAvatar";
+"use client";
 import Button from "@/components/Button";
-import Card from "@/components/card/Card";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import Input from "@/components/input/Input";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Search } from "lucide-react";
-import UserLabel from "./UserLabel";
 import ChannelLabel from "./ChannelLabel";
 import NewChannel from "./NewChannel";
+import React, { useEffect, useState } from "react";
+import axios from "@/lib/axios";
 
 export default function NewChat() {
+  let [channels, setChannels] = useState([]);
+  // let [loading, setLoading] = useState(false);
+  let [query, setQuery] = useState("");
+
+  useEffect(() => {
+    // setLoading(true);
+    axios
+      .get("/chat/channel/discover" + `?search=${query}`)
+      .then((response) => {
+        setChannels(response.data);
+      })
+      .finally(() => {
+        // setLoading(false);
+      });
+  }, [query]);
+
+  console.log(channels);
+
   return (
     <div>
       <Dialog>
@@ -23,18 +41,25 @@ export default function NewChat() {
           <CardBody>
             <div className="py-6">
               <div className="mb-8">
-                <Input placeholder="Search" icon={<Search size={16} />} />
+                <Input
+                  placeholder="Search"
+                  icon={<Search size={16} />}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
               </div>
               <div className="flex flex-col gap-4">
-                <UserLabel />
-                <hr className="border-dark-semi-dim" />
-                <ChannelLabel />
-                <hr className="border-dark-semi-dim" />
-                <UserLabel />
-                <hr className="border-dark-semi-dim" />
-                <ChannelLabel />
-                <hr className="border-dark-semi-dim" />
-                <UserLabel />
+                {channels.map((channel: any, indx: number) => (
+                  <React.Fragment key={channel.id}>
+                    <ChannelLabel
+                      avatar={channel.avatar}
+                      name={channel.name}
+                      type={channel.type}
+                    />
+                    {indx < channels.length - 1 && (
+                      <hr className="border-dark-semi-dim" />
+                    )}
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </CardBody>
