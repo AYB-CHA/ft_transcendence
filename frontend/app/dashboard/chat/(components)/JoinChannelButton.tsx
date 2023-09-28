@@ -7,7 +7,7 @@ import Label from "@/components/input/Label";
 import Input from "@/components/input/Input";
 import Button from "@/components/Button";
 import Avatar from "@/components/Avatar";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
@@ -19,13 +19,16 @@ export default function JoinChannelButton({
   name,
   type,
   topic,
+  setParentDialog,
 }: {
   id: string;
   name: string;
   avatar: string;
   type: "PUBLIC" | "PROTECTED";
   topic: string;
+  setParentDialog: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [open, setOpen] = useState(false);
   let [password, setPassword] = useState("");
   let router = useRouter();
 
@@ -33,6 +36,8 @@ export default function JoinChannelButton({
     await axios.post(`/chat/channel/join/${id}`);
     mutate("/chat/channel");
     router.push(`/dashboard/chat/channel/${id}`);
+    setOpen(false);
+    setParentDialog(false);
   }
 
   async function joinProtectedChannel() {
@@ -40,6 +45,8 @@ export default function JoinChannelButton({
       await axios.post(`/chat/channel/protected/${id}/join`, { password });
       mutate("/chat/channel");
       router.push(`/dashboard/chat/channel/${id}`);
+      setOpen(false);
+      setParentDialog(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401)
         console.log("wrong password");
@@ -53,7 +60,7 @@ export default function JoinChannelButton({
       </Button>
     );
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         <Button className="w-32" variant="secondary">
           Join Channel
@@ -75,6 +82,7 @@ export default function JoinChannelButton({
               <Input
                 placeholder="password"
                 onChange={(e) => setPassword(e.target.value)}
+                type="password"
               />
             </div>
           </CardBody>

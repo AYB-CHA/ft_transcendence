@@ -24,7 +24,7 @@ import { AxiosError } from "axios";
 import { AlignRight, Fingerprint, KeyRoundIcon, PenIcon } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { mutate } from "swr";
 
 type ChannelVisibilityType = "public" | "private" | "protected";
@@ -32,7 +32,11 @@ type ChannelVisibilityType = "public" | "private" | "protected";
 let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
 avatarUrl.pathname = "public/avatars/";
 
-export default function NewChannel() {
+export default function NewChannel({
+  setParentDialog,
+}: {
+  setParentDialog: Dispatch<SetStateAction<boolean>>;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,12 +56,12 @@ export default function NewChannel() {
       topic: description,
     };
     if (visibility === "protected") data.password = password;
-    console.log(data.avatar);
 
     try {
       let response = await axios.post("chat/channel", data);
       router.push(`/dashboard/chat/channel/${response.data?.id}`);
       setOpen(false);
+      setParentDialog(false);
       mutate("/chat/channel");
     } catch (error) {
       if (error instanceof AxiosError)

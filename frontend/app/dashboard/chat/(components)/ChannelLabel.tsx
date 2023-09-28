@@ -1,6 +1,6 @@
 import Avatar from "@/components/Avatar";
 import { Lock } from "lucide-react";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import JoinChannelButton from "./JoinChannelButton";
 
 export default function ChannelLabel({
@@ -10,6 +10,7 @@ export default function ChannelLabel({
   type,
   usersCount,
   topic,
+  setParentDialog,
 }: {
   id: string;
   name: string;
@@ -17,6 +18,7 @@ export default function ChannelLabel({
   type: "PUBLIC" | "PROTECTED";
   usersCount: number;
   topic: string;
+  setParentDialog: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <div className="flex justify-between items-center">
@@ -39,6 +41,7 @@ export default function ChannelLabel({
           name={name}
           topic={topic}
           id={id}
+          setParentDialog={setParentDialog}
         />
       </div>
     </div>

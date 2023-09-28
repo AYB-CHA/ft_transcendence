@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 
 export default function NewChat() {
+  const [open, setOpen] = useState(false);
   let [channels, setChannels] = useState([]);
   // let [loading, setLoading] = useState(false);
   let [query, setQuery] = useState("");
@@ -28,11 +29,9 @@ export default function NewChat() {
       });
   }, [query]);
 
-  console.log(channels);
-
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="mx-auto">Enter a New Chat</Button>
         </DialogTrigger>
@@ -51,6 +50,7 @@ export default function NewChat() {
                 {channels.map((channel: any, indx: number) => (
                   <React.Fragment key={channel.id}>
                     <ChannelLabel
+                      setParentDialog={setOpen}
                       avatar={channel.avatar}
                       name={channel.name}
                       type={channel.type}
@@ -67,7 +67,7 @@ export default function NewChat() {
             </div>
           </CardBody>
           <CardFooter>
-            <NewChannel />
+            <NewChannel setParentDialog={setOpen} />
           </CardFooter>
         </DialogContent>
       </Dialog>
