@@ -14,20 +14,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/DropDown";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/Dialog";
 
 import { useState } from "react";
-import Card from "@/components/card/Card";
-import CardFooter from "@/components/card/CardFooter";
-import Button from "@/components/Button";
-import CardBody from "@/components/card/CardBody";
-import CardHeader from "@/components/card/CardHeader";
-import axios from "@/lib/axios";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LeaveChannel from "./LeaveChannel";
@@ -43,7 +32,7 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
     <div className="flex items-center">
       <div className="flex gap-2 grow">
         <div>
-          <Avatar src={"/avatar-1.png"} className="h-10 w-10">
+          <Avatar src={data.avatar} className="h-10 w-10">
             <DropdownMenuLabel>Channel</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

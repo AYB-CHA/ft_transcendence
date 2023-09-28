@@ -13,6 +13,7 @@ import CardBody from "@/components/card/CardBody";
 import CardHeader from "@/components/card/CardHeader";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 
 export default function DeleteChannel({
   status,
@@ -28,6 +29,7 @@ export default function DeleteChannel({
     await axios.delete(`/chat/channel/${id}`);
     router.push("/dashboard/chat/channel");
     setStatus(false);
+    mutate("/chat/channel");
   }
   return (
     <Dialog open={status} onOpenChange={setStatus}>

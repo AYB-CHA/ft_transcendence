@@ -18,7 +18,7 @@ export default class NewChannelDto {
   name: string;
 
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(100)
   avatar: string;
 
   @IsNotEmpty()

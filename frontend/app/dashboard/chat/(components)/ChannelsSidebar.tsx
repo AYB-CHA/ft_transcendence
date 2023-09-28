@@ -21,16 +21,10 @@ async function getMyChannels(data: string) {
   return response.data;
 }
 export default function ChannelsSidebar() {
-  let { id } = useParams();
-
   let { isLoading, data, mutate } = useSWR<ChannelType[]>(
     "/chat/channel",
     getMyChannels
   );
-
-  //   useEffect(() => {
-  //     mutate();
-  //   }, [id]);
 
   if (isLoading)
     return (

@@ -13,6 +13,7 @@ import CardBody from "@/components/card/CardBody";
 import CardHeader from "@/components/card/CardHeader";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 
 export default function LeaveChannel({
   status,
@@ -29,6 +30,7 @@ export default function LeaveChannel({
     await axios.delete(`/chat/channel/leave/${id}`);
     router.push("/dashboard/chat/channel");
     setStatus(false);
+    mutate("/chat/channel");
   }
 
   return (

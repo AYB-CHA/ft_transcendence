@@ -52,6 +52,8 @@ export default function NewChannel() {
       topic: description,
     };
     if (visibility === "protected") data.password = password;
+    console.log(data.avatar);
+
     try {
       let response = await axios.post("chat/channel", data);
       router.push(`/dashboard/chat/channel/${response.data?.id}`);
