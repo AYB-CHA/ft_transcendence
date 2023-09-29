@@ -1,10 +1,17 @@
 "use client";
+import { triggerValidationToast } from "@/app/lib/Toast";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
 import { useAuth } from "@/hooks/auth";
-import { Fingerprint, KeyRoundIcon, Mail, User } from "lucide-react";
+import {
+  Fingerprint,
+  KeyRoundIcon,
+  Mail,
+  SpellCheck2,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function RegisterBoard() {
@@ -17,7 +24,6 @@ export default function RegisterBoard() {
 
   return (
     <div>
-      {error && <Alert>{error}</Alert>}
       <div className="mb-6">
         <Label>Full Name</Label>
         <Input
@@ -56,7 +62,16 @@ export default function RegisterBoard() {
       <div className="mb-6">
         <Button
           className="w-full"
-          onClick={() => register({ fullName, username, password, email })}
+          onClick={() => {
+            register({ fullName, username, password, email });
+            if (error) {
+              triggerValidationToast(
+                <SpellCheck2 size={18} />,
+                "Validation",
+                error
+              );
+            }
+          }}
         >
           Register
         </Button>

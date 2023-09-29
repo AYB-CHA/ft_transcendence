@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import MemberLabeLoading from "./MemberLabeLoading";
-import { data } from "autoprefixer";
 
 export default function ChannelMembers() {
   let { id } = useParams();
