@@ -1,6 +1,6 @@
 import Avatar from "@/components/Avatar";
 
-export default function MyMessage() {
+export default function MyMessage({ message }: { message: string }) {
   return (
     <div className="flex gap-2">
       <div>
@@ -9,11 +9,11 @@ export default function MyMessage() {
       <div className="flex flex-col gap-2">
         <span className="text-gray-500 text-xs">@ssmith</span>
         <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none">
-          This is a small test message.
+          {message}
         </div>
-        <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none">
+        {/* <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none">
           This is a smaller
-        </div>
+        </div> */}
       </div>
     </div>
   );

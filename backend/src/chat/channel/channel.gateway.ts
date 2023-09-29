@@ -37,7 +37,7 @@ export class ChannelSocketGateway
     }
 
     this.clients.push({ id, socket: client, channelId });
-    console.log('connect: ', this.clients);
+    // console.log('connect: ', this.clients);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -47,7 +47,7 @@ export class ChannelSocketGateway
     this.clients = this.clients.filter((c) => {
       return c.id != id;
     });
-    console.log('disconnect: ', this.clients);
+    // console.log('disconnect: ', this.clients);
   }
 
   getClientId(client: Socket) {
@@ -60,9 +60,21 @@ export class ChannelSocketGateway
     return null;
   }
 
-  //   @SubscribeMessage('connect')
-  //   handleEvent(@MessageBody() data: string): string {
-  //     console.log(data);
-  //     return data;
-  //   }
+  @SubscribeMessage('newMessage')
+  handleEvent(
+    @MessageBody() data: { channelId: string; message: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const senderId = this.getClientId(client);
+    const messageId = Math.random().toString();
+    for (const client of this.clients) {
+      if (client.channelId == data.channelId) {
+        client.socket.emit('newMessage', {
+          message: data.message,
+          senderId,
+          id: messageId,
+        });
+      }
+    }
+  }
 }
