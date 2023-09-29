@@ -1,6 +1,7 @@
 import Avatar from "@/components/Avatar";
+import { MessageType } from "./ChatBox";
 
-export default function MyMessage({ message }: { message: string }) {
+export default function MyMessage({ messages }: { messages: MessageType[] }) {
   return (
     <div className="flex gap-2">
       <div>
@@ -8,12 +9,14 @@ export default function MyMessage({ message }: { message: string }) {
       </div>
       <div className="flex flex-col gap-2">
         <span className="text-gray-500 text-xs">@ssmith</span>
-        <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none">
-          {message}
-        </div>
-        {/* <div className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none">
-          This is a smaller
-        </div> */}
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none"
+          >
+            {message.text}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ export default function ChatBoxInput({
       className="flex w-full py-2.5 gap-4"
       onSubmit={(e) => {
         e.preventDefault();
+
+        if (!message.trim().length) return;
         handler(message);
         setMessage("");
       }}

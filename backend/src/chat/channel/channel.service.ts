@@ -19,7 +19,7 @@ export class ChannelService {
     return this.prisma.messages.findMany({
       where: { channelId },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: 'asc',
       },
       take: 20,
     });

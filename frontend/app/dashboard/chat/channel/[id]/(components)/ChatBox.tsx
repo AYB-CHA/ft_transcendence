@@ -19,16 +19,36 @@ import OtherMessage from "./OtherMessage";
 import axios from "@/lib/axios";
 import { AxiosError } from "axios";
 
-type messageType = {
+export type MessageType = {
   text: string;
   senderId: string;
   id: string;
 };
 
+function formatMessages(messages: MessageType[]) {
+  let messagesGroup: MessageType[][] = [];
+  let group: MessageType[] = [];
+
+  messages.forEach((message) => {
+    if (!group.length) {
+      group.push(message);
+    } else {
+      if (group[0].senderId == message.senderId) group.push(message);
+      else {
+        messagesGroup.push(group);
+        group = [];
+        group.push(message);
+      }
+    }
+  });
+  if (group.length != 0) messagesGroup.push(group);
+  return messagesGroup;
+}
+
 export default function ChatBox() {
   let { id } = useParams();
   let { user: me } = useAuth();
-  let [messages, setMessages] = useState<messageType[]>([]);
+  let [messages, setMessages] = useState<MessageType[]>([]);
   let { data, isLoading, error } = useSWR(
     `/chat/channel/${id}`,
     getChannelData
@@ -67,7 +87,7 @@ export default function ChatBox() {
         channelId: id,
       },
     });
-    socket.current.on("newMessage", (message: messageType) => {
+    socket.current.on("newMessage", (message: MessageType) => {
       setMessages((oldMessages) => [...oldMessages, message]);
     });
     return () => {
@@ -88,10 +108,20 @@ export default function ChatBox() {
         </CardHeader>
         <div className="grow">
           <div className="flex flex-col p-4 gap-4">
-            {messages.map((message) => {
-              if (message.senderId === me?.id)
-                return <MyMessage key={message.id} message={message.text} />;
-              return <OtherMessage key={message.id} message={message.text} />;
+            {formatMessages(messages).map((messagesGroup) => {
+              if (messagesGroup[0].senderId === me?.id)
+                return (
+                  <MyMessage
+                    key={messagesGroup[0].id}
+                    messages={messagesGroup}
+                  />
+                );
+              return (
+                <OtherMessage
+                  key={messagesGroup[0].id}
+                  messages={messagesGroup}
+                />
+              );
             })}
           </div>
         </div>
