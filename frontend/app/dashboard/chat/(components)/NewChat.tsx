@@ -5,7 +5,7 @@ import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import Input from "@/components/input/Input";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import { Search } from "lucide-react";
+import { Search, SearchSlash } from "lucide-react";
 import ChannelLabel from "./ChannelLabel";
 import NewChannel from "./NewChannel";
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -52,6 +52,18 @@ export default function NewChat() {
                 />
               </div>
               <div className="flex flex-col gap-4">
+                {!channels.length && (
+                  <div className="py-20 flex justify-center flex-col items-center">
+                    <SearchSlash
+                      size={50}
+                      strokeWidth={1}
+                      className="text-gray-500"
+                    />
+                    <div className="mt-4">
+                      <span className="text-gray-500">No Channels found.</span>
+                    </div>
+                  </div>
+                )}
                 {channels.map((channel: any, indx: number) => (
                   <React.Fragment key={channel.id}>
                     <ChannelLabel

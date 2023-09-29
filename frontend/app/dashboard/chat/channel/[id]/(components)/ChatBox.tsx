@@ -46,6 +46,8 @@ export default function ChatBox() {
       },
     });
     socket.current.on("newMessage", (message: messageType) => {
+      console.log(message);
+
       setMessages((oldMessages) => [...oldMessages, message]);
     });
     return () => {

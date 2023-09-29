@@ -9,7 +9,7 @@ export default function ChatBoxInput({
   const [message, setMessage] = useState("");
   return (
     <form
-      className="flex w-full py-3 gap-4"
+      className="flex w-full py-2.5 gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         handler(message);
