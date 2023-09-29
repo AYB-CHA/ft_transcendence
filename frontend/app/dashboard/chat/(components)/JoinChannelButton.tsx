@@ -53,44 +53,50 @@ export default function JoinChannelButton({
     }
   }
 
-  if (type === "PUBLIC")
-    return (
-      <Button className="w-32" variant="secondary" onClick={joinPublicChannel}>
-        Join Channel
-      </Button>
-    );
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <Button className="w-32" variant="secondary">
+    <>
+      {type === "PUBLIC" ? (
+        <Button
+          className="w-32"
+          variant="secondary"
+          onClick={joinPublicChannel}
+        >
           Join Channel
         </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <Card>
-          <CardHeader>Channel Password</CardHeader>
-          <CardBody>
-            <div className="flex flex-col gap-4 py-4 items-center">
-              <Avatar src={avatar} className="w-24 h-24 border-2" />
-              <div className="text-center">
-                <h3 className="font-medium text-base">{name}</h3>
-                <p className="text-gray-500">{topic}</p>
-              </div>
-            </div>
-            <div className="mb-4">
-              <Label>Channel Password</Label>
-              <Input
-                placeholder="password"
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-              />
-            </div>
-          </CardBody>
-          <CardFooter>
-            <Button onClick={joinProtectedChannel}>Enter Channel</Button>
-          </CardFooter>
-        </Card>
-      </DialogContent>
-    </Dialog>
+      ) : (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-32" variant="secondary">
+              Join Channel
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <Card>
+              <CardHeader>Channel Password</CardHeader>
+              <CardBody>
+                <div className="flex flex-col gap-4 py-4 items-center">
+                  <Avatar src={avatar} className="w-24 h-24 border-2" />
+                  <div className="text-center">
+                    <h3 className="font-medium text-base">{name}</h3>
+                    <p className="text-gray-500">{topic}</p>
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <Label>Channel Password</Label>
+                  <Input
+                    placeholder="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                  />
+                </div>
+              </CardBody>
+              <CardFooter>
+                <Button onClick={joinProtectedChannel}>Enter Channel</Button>
+              </CardFooter>
+            </Card>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }

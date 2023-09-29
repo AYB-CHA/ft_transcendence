@@ -27,7 +27,7 @@ export default function NewChat() {
       .finally(() => {
         // setLoading(false);
       });
-  }, [query]);
+  }, [query, open]);
 
   return (
     <div>
