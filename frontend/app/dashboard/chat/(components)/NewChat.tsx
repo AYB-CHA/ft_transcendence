@@ -8,8 +8,9 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Search } from "lucide-react";
 import ChannelLabel from "./ChannelLabel";
 import NewChannel from "./NewChannel";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "@/lib/axios";
+import { debounce } from "lodash";
 
 export default function NewChat() {
   const [open, setOpen] = useState(false);
@@ -29,6 +30,10 @@ export default function NewChat() {
       });
   }, [query, open]);
 
+  const debouncedSetQuery = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  }, 200);
+
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -43,7 +48,7 @@ export default function NewChat() {
                 <Input
                   placeholder="Search"
                   icon={<Search size={16} />}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={debouncedSetQuery}
                 />
               </div>
               <div className="flex flex-col gap-4">

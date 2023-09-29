@@ -30,7 +30,7 @@ export default function ChannelMembers() {
           </>
         ) : (
           <React.Fragment>
-            {members.map((member: any) => {
+            {members.map((member: any, index: number) => {
               return (
                 <React.Fragment key={member.id}>
                   <MemberLabel
@@ -38,18 +38,14 @@ export default function ChannelMembers() {
                     name={member.fullName}
                     avatar={member.avatar}
                   />
+                  {index < members.length - 1 && (
+                    <hr className="border-dark-semi-dim" />
+                  )}
                 </React.Fragment>
               );
             })}
           </React.Fragment>
         )}
-        {/* <MemberLabel />
-        <hr className="border-dark-semi-dim" />
-        <MemberLabel />
-        <hr className="border-dark-semi-dim" />
-        <MemberLabel />
-        <hr className="border-dark-semi-dim" />
-        <MemberLabel /> */}
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export default function ChatBox() {
     <Card className="col-span-2">
       <div className="flex flex-col h-full">
         <CardHeader>
-          <div className="flex justify-between">
+          <div className="flex justify-between py-px">
             <div className="flex gap-2">
               <div>
                 {isLoading ? (
@@ -68,7 +68,7 @@ export default function ChatBox() {
           </div>
         </div>
         <CardFooter>
-          <div className="flex w-full py-2 gap-4">
+          <div className="flex w-full py-3 gap-4">
             <div className="flex gap-3 text-gray-500">
               <ImageIcon size={20} strokeWidth={1} />
               <Link size={20} strokeWidth={1} />
