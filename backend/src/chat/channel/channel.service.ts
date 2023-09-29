@@ -300,4 +300,12 @@ export class ChannelService {
       return newChannel;
     });
   }
+
+  async isUserBelongsToChannel(userId: string, channelId: string) {
+    return (
+      (await this.prisma.channelsOnUsers.count({
+        where: { userId, channelId },
+      })) > 0
+    );
+  }
 }

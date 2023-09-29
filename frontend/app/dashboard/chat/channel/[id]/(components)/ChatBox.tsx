@@ -10,12 +10,33 @@ import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { getChannelData } from "./ChannelController";
+import { useEffect } from "react";
+
+import { io } from "socket.io-client";
+import Cookies from "js-cookie";
+
 export default function ChatBox() {
   let { id } = useParams();
   let { data, isLoading, error } = useSWR(
     `/chat/channel/${id}`,
     getChannelData
   );
+
+  useEffect(() => {
+    let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
+    url.protocol = "ws";
+    url.pathname = "/channel";
+
+    let socket = io(url.toString(), {
+      extraHeaders: { Authorization: `Bearer ${Cookies.get("access_token")}` },
+      query: {
+        channelId: id,
+      },
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [id]);
 
   return (
     <Card className="col-span-2">
