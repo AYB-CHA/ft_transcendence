@@ -29,7 +29,7 @@ export default function RootLayout({
         <ToastContainer
           position="bottom-right"
           hideProgressBar
-          autoClose={false}
+          // autoClose={false}
           theme="dark"
           draggable={false}
           closeButton={<X className="text-gray-500" size={15} />}

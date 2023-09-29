@@ -1,5 +1,6 @@
 "use client";
 import EditAvatar from "@/app/(components)/EditAvatar";
+import { triggerValidationToast } from "@/app/lib/Toast";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
@@ -21,10 +22,17 @@ import axios from "@/lib/axios";
 import { camelCaseToNormal } from "@/lib/string";
 import { AxiosError } from "axios";
 
-import { AlignRight, Fingerprint, KeyRoundIcon, PenIcon } from "lucide-react";
+import {
+  AlignRight,
+  Fingerprint,
+  KeyRoundIcon,
+  PenIcon,
+  SpellCheck2,
+} from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
+import { toast } from "react-toastify";
 import { mutate } from "swr";
 
 type ChannelVisibilityType = "public" | "private" | "protected";
@@ -63,9 +71,14 @@ export default function NewChannel({
       setOpen(false);
       setParentDialog(false);
       mutate("/chat/channel");
+      toast.dismiss();
     } catch (error) {
       if (error instanceof AxiosError)
-        setError(camelCaseToNormal(error.response?.data.message[0]));
+        triggerValidationToast(
+          <SpellCheck2 size={18} />,
+          "Validation",
+          error.response?.data.message[0]
+        );
     }
   };
 
@@ -78,7 +91,6 @@ export default function NewChannel({
         <DialogContent className="max-w-3xl">
           <CardHeader>New Channel</CardHeader>
           <CardBody>
-            <div>{error && <Alert>{error}</Alert>}</div>
             <div className="grid grid-cols-2 px-2 py-4 gap-8">
               <div>
                 <div className="mb-6">
