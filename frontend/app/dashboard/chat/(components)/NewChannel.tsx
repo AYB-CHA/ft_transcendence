@@ -77,7 +77,7 @@ export default function NewChannel({
         triggerValidationToast(
           <SpellCheck2 size={18} />,
           "Validation",
-          error.response?.data.message[0]
+          camelCaseToNormal(error.response?.data.message[0])
         );
     }
   };

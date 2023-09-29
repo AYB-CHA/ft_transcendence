@@ -12,6 +12,9 @@ import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
 import { AxiosError } from "axios";
+import { triggerValidationToast } from "@/app/lib/Toast";
+import { Lock, SpellCheck2 } from "lucide-react";
+import { camelCaseToNormal } from "@/lib/string";
 
 export default function JoinChannelButton({
   id,
@@ -49,7 +52,12 @@ export default function JoinChannelButton({
       setParentDialog(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401)
-        console.log("wrong password");
+        if (error instanceof AxiosError)
+          triggerValidationToast(
+            <Lock size={16} />,
+            "Password",
+            camelCaseToNormal(error.response?.data.message[0])
+          );
     }
   }
 
