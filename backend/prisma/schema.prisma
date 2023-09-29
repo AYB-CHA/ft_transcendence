@@ -29,6 +29,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   channels ChannelsOnUsers[]
+  Messages Messages[]
 }
 
 enum ChannelType {
@@ -49,7 +50,8 @@ model Channel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users ChannelsOnUsers[]
+  users    ChannelsOnUsers[]
+  Messages Messages[]
 }
 
 enum ChannelUserRole {
@@ -68,4 +70,14 @@ model ChannelsOnUsers {
   role ChannelUserRole @default(MEMBER)
 
   @@id([userId, channelId])
+}
+
+model Messages {
+  id        Int      @unique @default(autoincrement())
+  text      String
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
+  channelId String
+  Channel   Channel  @relation(fields: [channelId], references: [id])
+  createdAt DateTime @default(now())
 }

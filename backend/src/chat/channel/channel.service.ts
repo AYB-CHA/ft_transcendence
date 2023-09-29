@@ -13,6 +13,17 @@ import { ChannelType, ChannelUserRole } from '@prisma/client';
 export class ChannelService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getMessagesOnChannel(channelId: string, userId: string) {
+    if (!(await this.isUserBelongsToChannel(userId, channelId)))
+      throw new UnauthorizedException();
+    return this.prisma.messages.findMany({
+      where: { channelId },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 20,
+    });
+  }
   async discoverNewChannels(userId: string, query: string) {
     return await this.prisma.channel.findMany({
       where: {
@@ -307,5 +318,17 @@ export class ChannelService {
         where: { userId, channelId },
       })) > 0
     );
+  }
+  async createMessage(userId: string, channelId: string, message: string) {
+    return await this.prisma.messages.create({
+      data: {
+        userId,
+        channelId,
+        text: message,
+      },
+      select: {
+        id: true,
+      },
+    });
   }
 }

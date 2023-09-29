@@ -61,16 +61,27 @@ export class ChannelSocketGateway
   }
 
   @SubscribeMessage('newMessage')
-  handleEvent(
-    @MessageBody() data: { channelId: string; message: string },
+  async handleEvent(
+    @MessageBody() data: { channelId: string; text: string },
     @ConnectedSocket() client: Socket,
   ) {
     const senderId = this.getClientId(client);
-    const messageId = Math.random().toString();
+    if (!this.channelService.isUserBelongsToChannel(senderId, data.channelId)) {
+      client.disconnect();
+      return;
+    }
+
+    const messageId = (
+      await this.channelService.createMessage(
+        senderId,
+        data.channelId,
+        data.text,
+      )
+    ).id;
     for (const client of this.clients) {
       if (client.channelId == data.channelId) {
         client.socket.emit('newMessage', {
-          message: data.message,
+          text: data.text,
           senderId,
           id: messageId,
         });

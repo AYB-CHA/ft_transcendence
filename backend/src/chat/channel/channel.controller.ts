@@ -136,4 +136,12 @@ export class ChannelController {
       body.grade,
     );
   }
+  @UseGuards(AuthGuard)
+  @Get('/messages/:id')
+  getMessages(@Param('id') channelId: string, @Req() request: RequestType) {
+    return this.channelService.getMessagesOnChannel(
+      channelId,
+      request.userPayload.sub,
+    );
+  }
 }

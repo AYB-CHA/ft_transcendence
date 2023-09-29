@@ -16,9 +16,11 @@ import ChatBoxInput from "./ChatBoxInput";
 import ChatBoxHeader from "./ChatBoxHeader";
 import { useAuth } from "@/hooks/auth";
 import OtherMessage from "./OtherMessage";
+import axios from "@/lib/axios";
+import { AxiosError } from "axios";
 
 type messageType = {
-  message: string;
+  text: string;
   senderId: string;
   id: string;
 };
@@ -34,7 +36,27 @@ export default function ChatBox() {
 
   let socket = useRef<Socket | null>(null);
 
+  async function loadMessages(controller: AbortController) {
+    try {
+      let response = await axios.get(`/chat/channel/messages/${id}`, {
+        signal: controller.signal,
+      });
+
+      response.data?.forEach((message: any) => {
+        setMessages((oldMessages) => [
+          ...oldMessages,
+          { text: message.text, id: message.id, senderId: message.userId },
+        ]);
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) console.log(error.response);
+    }
+  }
+
   useEffect(() => {
+    const controller = new AbortController();
+    loadMessages(controller);
+
     let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/channel";
@@ -46,17 +68,16 @@ export default function ChatBox() {
       },
     });
     socket.current.on("newMessage", (message: messageType) => {
-      console.log(message);
-
       setMessages((oldMessages) => [...oldMessages, message]);
     });
     return () => {
       socket.current?.disconnect();
+      controller.abort();
     };
   }, [id]);
 
-  function sendMessage(message: string) {
-    socket.current?.emit("newMessage", { channelId: id, message });
+  function sendMessage(text: string) {
+    socket.current?.emit("newMessage", { channelId: id, text });
   }
 
   return (
@@ -69,10 +90,8 @@ export default function ChatBox() {
           <div className="flex flex-col p-4 gap-4">
             {messages.map((message) => {
               if (message.senderId === me?.id)
-                return <MyMessage key={message.id} message={message.message} />;
-              return (
-                <OtherMessage key={message.id} message={message.message} />
-              );
+                return <MyMessage key={message.id} message={message.text} />;
+              return <OtherMessage key={message.id} message={message.text} />;
             })}
           </div>
         </div>
