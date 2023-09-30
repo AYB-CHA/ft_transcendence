@@ -13,8 +13,9 @@ import { useRouter } from "next/navigation";
 import { mutate } from "swr";
 import { AxiosError } from "axios";
 import { triggerValidationToast } from "@/app/lib/Toast";
-import { Lock, SpellCheck2 } from "lucide-react";
+import { Lock } from "lucide-react";
 import { camelCaseToNormal } from "@/lib/string";
+import { ChannelVisibilityType } from "../channel/[id]/(components)/ChannelController";
 
 export default function JoinChannelButton({
   id,
@@ -27,7 +28,7 @@ export default function JoinChannelButton({
   id: string;
   name: string;
   avatar: string;
-  type: "PUBLIC" | "PROTECTED";
+  type: ChannelVisibilityType;
   topic: string;
   setParentDialog: Dispatch<SetStateAction<boolean>>;
 }) {

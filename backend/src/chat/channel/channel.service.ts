@@ -25,7 +25,7 @@ export class ChannelService {
     });
   }
   async discoverNewChannels(userId: string, query: string) {
-    return await this.prisma.channel.findMany({
+    const channels = await this.prisma.channel.findMany({
       where: {
         users: { none: { userId } },
         type: { not: 'PRIVATE' },
@@ -41,6 +41,16 @@ export class ChannelService {
         topic: true,
         _count: { select: { users: true } },
       },
+    });
+    return channels.map((channel) => {
+      return {
+        id: channel.id,
+        name: channel.name,
+        avatar: channel.avatar,
+        type: channel.type,
+        topic: channel.topic,
+        members: channel._count.users,
+      };
     });
   }
   async getChannelData(id: string, myId: string) {
@@ -102,6 +112,7 @@ export class ChannelService {
     userData.users.forEach((user) =>
       response.push({ ...user.User, role: user.role }),
     );
+    console.log(response);
     return response;
   }
 

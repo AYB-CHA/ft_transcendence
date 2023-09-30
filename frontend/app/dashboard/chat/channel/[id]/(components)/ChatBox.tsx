@@ -56,27 +56,25 @@ export default function ChatBox() {
 
   let socket = useRef<Socket | null>(null);
 
-  async function loadMessages(controller: AbortController) {
-    try {
-      let response = await axios.get(`/chat/channel/messages/${id}`, {
-        signal: controller.signal,
-      });
-
-      response.data?.forEach((message: any) => {
-        setMessages((oldMessages) => [
-          ...oldMessages,
-          { text: message.text, id: message.id, senderId: message.userId },
-        ]);
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) console.log(error.response);
-    }
-  }
-
   useEffect(() => {
     const controller = new AbortController();
-    loadMessages(controller);
+    async function loadMessages() {
+      try {
+        let response = await axios.get(`/chat/channel/messages/${id}`, {
+          signal: controller.signal,
+        });
 
+        response.data?.forEach((message: any) => {
+          setMessages((oldMessages) => [
+            ...oldMessages,
+            { text: message.text, id: message.id, senderId: message.userId },
+          ]);
+        });
+      } catch (error) {
+        if (error instanceof AxiosError) console.log(error.response);
+      }
+    }
+    loadMessages();
     let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/channel";

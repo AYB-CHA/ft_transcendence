@@ -11,17 +11,27 @@ import NewChannel from "./NewChannel";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { debounce } from "lodash";
+import { ChannelVisibilityType } from "../channel/[id]/(components)/ChannelController";
+
+type SearchChannelType = {
+  id: string;
+  name: string;
+  avatar: string;
+  type: ChannelVisibilityType;
+  topic: string;
+  members: number;
+};
 
 export default function NewChat() {
   const [open, setOpen] = useState(false);
-  let [channels, setChannels] = useState([]);
+  let [channels, setChannels] = useState<SearchChannelType[]>([]);
   // let [loading, setLoading] = useState(false);
   let [query, setQuery] = useState("");
 
   useEffect(() => {
     // setLoading(true);
     axios
-      .get("/chat/channel/discover" + `?search=${query}`)
+      .get<SearchChannelType[]>("/chat/channel/discover" + `?search=${query}`)
       .then((response) => {
         setChannels(response.data);
       })
@@ -64,7 +74,7 @@ export default function NewChat() {
                     </div>
                   </div>
                 )}
-                {channels.map((channel: any, indx: number) => (
+                {channels.map((channel, indx: number) => (
                   <React.Fragment key={channel.id}>
                     <ChannelLabel
                       setParentDialog={setOpen}
@@ -72,7 +82,7 @@ export default function NewChat() {
                       name={channel.name}
                       type={channel.type}
                       topic={channel.topic}
-                      usersCount={channel._count.users}
+                      usersCount={channel.members}
                       id={channel.id}
                     />
                     {indx < channels.length - 1 && (

@@ -2,6 +2,7 @@ import Avatar from "@/components/Avatar";
 import { Lock } from "lucide-react";
 import React, { Dispatch, SetStateAction } from "react";
 import JoinChannelButton from "./JoinChannelButton";
+import { ChannelVisibilityType } from "../channel/[id]/(components)/ChannelController";
 
 export default function ChannelLabel({
   id,
@@ -15,7 +16,7 @@ export default function ChannelLabel({
   id: string;
   name: string;
   avatar: string;
-  type: "PUBLIC" | "PROTECTED";
+  type: ChannelVisibilityType;
   usersCount: number;
   topic: string;
   setParentDialog: Dispatch<SetStateAction<boolean>>;
