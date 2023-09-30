@@ -76,8 +76,8 @@ model Messages {
   id        Int      @unique @default(autoincrement())
   text      String
   userId    String
-  User      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   channelId String
-  Channel   Channel  @relation(fields: [channelId], references: [id])
+  Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
