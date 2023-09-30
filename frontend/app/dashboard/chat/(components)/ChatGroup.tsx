@@ -1,5 +1,4 @@
 import Avatar from "@/components/DropDownAvatar";
-import { ChannelType } from "./ChannelsSidebar";
 import {
   LinkIcon,
   LockIcon,
@@ -21,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LeaveChannel from "./LeaveChannel";
 import DeleteChannel from "./DeleteChannel";
+import { ChannelType } from "../channel/[id]/(components)/ChannelController";
 
 export default function ChatGroup({ data }: { data: ChannelType }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -47,7 +47,7 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              disabled={!data?.isAdmin}
+              disabled={data.myRole !== "ADMINISTRATOR"}
               onClick={() => setDeleteConfirm(true)}
             >
               <Trash className="mr-2 h-4 w-4" />

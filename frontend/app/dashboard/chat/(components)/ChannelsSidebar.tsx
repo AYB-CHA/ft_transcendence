@@ -3,27 +3,20 @@ import useSWR from "swr";
 import axios from "@/lib/axios";
 import ChatGroup from "./ChatGroup";
 import React, { useEffect } from "react";
-import Spinner from "@/components/Spinner";
 import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
-
-export type ChannelType = {
-  id: string;
-  avatar: string;
-  name: string;
-  topic: string;
-  isAdmin?: boolean;
-  type: "PRIVATE" | "PUBLIC" | "PROTECTED";
-};
+import { ChannelType } from "../channel/[id]/(components)/ChannelController";
 
 async function getMyChannels(data: string) {
   let response = await axios.get(data);
   return response.data;
 }
 export default function ChannelsSidebar() {
-  let { isLoading, data, mutate } = useSWR<ChannelType[]>(
+  let { isLoading, data } = useSWR<ChannelType[]>(
     "/chat/channel",
     getMyChannels
   );
+
+  console.log(data);
 
   if (isLoading)
     return (

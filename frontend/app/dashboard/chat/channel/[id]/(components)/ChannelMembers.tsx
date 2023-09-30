@@ -5,8 +5,13 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import MemberLabeLoading from "./MemberLabeLoading";
+import { ChannelType } from "./ChannelController";
 
-export default function ChannelMembers() {
+export default function ChannelMembers({
+  currentChannel = undefined,
+}: {
+  currentChannel?: ChannelType;
+}) {
   let { id } = useParams();
 
   let { data: members, isLoading } = useSWR(

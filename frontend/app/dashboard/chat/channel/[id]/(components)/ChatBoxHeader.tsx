@@ -1,10 +1,11 @@
 import Avatar from "@/components/Avatar";
+import { ChannelType } from "./ChannelController";
 
 export default function ChatBoxHeader({
   data,
   isLoading,
 }: {
-  data: any;
+  data: ChannelType;
   isLoading: boolean;
 }) {
   return (
@@ -29,7 +30,7 @@ export default function ChatBoxHeader({
             {isLoading ? (
               <div className="bg-dark-semi-dim h-2 animate-pulse w-16 mt-2"></div>
             ) : (
-              `${data._count.users} members`
+              `${data.members} members`
             )}
           </h5>
         </div>

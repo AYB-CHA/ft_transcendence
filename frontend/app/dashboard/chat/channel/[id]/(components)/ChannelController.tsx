@@ -13,9 +13,22 @@ import axios from "@/lib/axios";
 import Spinner from "@/components/Spinner";
 import ChannelMembers from "./ChannelMembers";
 
+export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
+export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
+
+export type ChannelType = {
+  id: string;
+  name: string;
+  topic: string;
+  avatar: string;
+  members: number;
+  type: ChannelVisibilityType;
+  myRole: UserRoleOnChannel;
+};
+
 export default function ChannelController() {
   let { id } = useParams();
-  let { data, isLoading, error } = useSWR(
+  let { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData
   );
@@ -42,14 +55,14 @@ export default function ChannelController() {
                   ) : (
                     <>
                       <Image
-                        src={data?.avatar}
+                        src={data?.avatar ?? ""}
                         className="h-full w-full"
                         alt="Avatar"
                         width={128}
                         height={128}
                         unoptimized
                       />
-                      {data.isAdmin && (
+                      {data?.myRole === "ADMINISTRATOR" && (
                         <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
                           <PenIcon size={11} />
                         </div>
@@ -65,15 +78,15 @@ export default function ChannelController() {
                 </>
               ) : (
                 <>
-                  <h3 className="font-medium text-base mb-1">{data.name}</h3>
-                  <p className="text-gray-500">{data.topic}</p>
+                  <h3 className="font-medium text-base mb-1">{data?.name}</h3>
+                  <p className="text-gray-500">{data?.topic}</p>
                 </>
               )}
             </div>
           </div>
         </div>
         <div>
-          <ChannelMembers />
+          <ChannelMembers currentChannel={data} />
         </div>
       </div>
       <CardFooter>
