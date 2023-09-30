@@ -25,6 +25,12 @@ export type MessageType = {
   id: string;
 };
 
+async function getOldMessages(url: string) {
+  return await (
+    await axios.get<MessageType[]>(url)
+  ).data;
+}
+
 function formatMessages(messages: MessageType[]) {
   let messagesGroup: MessageType[][] = [];
   let group: MessageType[] = [];
@@ -54,27 +60,17 @@ export default function ChatBox() {
     getChannelData
   );
 
+  let { data: oldMessages, isLoading: isOldMessagesLoading } = useSWR<
+    MessageType[]
+  >(`/chat/channel/messages/${id}`, getOldMessages);
+
+  useEffect(() => {
+    if (oldMessages) setMessages(oldMessages);
+  }, [oldMessages]);
+
   let socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-    async function loadMessages() {
-      try {
-        let response = await axios.get(`/chat/channel/messages/${id}`, {
-          signal: controller.signal,
-        });
-
-        response.data?.forEach((message: any) => {
-          setMessages((oldMessages) => [
-            ...oldMessages,
-            { text: message.text, id: message.id, senderId: message.userId },
-          ]);
-        });
-      } catch (error) {
-        if (error instanceof AxiosError) console.log(error.response);
-      }
-    }
-    loadMessages();
     let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/channel";
@@ -90,7 +86,6 @@ export default function ChatBox() {
     });
     return () => {
       socket.current?.disconnect();
-      controller.abort();
     };
   }, [id]);
 

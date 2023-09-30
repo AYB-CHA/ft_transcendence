@@ -16,12 +16,20 @@ export class ChannelService {
   async getMessagesOnChannel(channelId: string, userId: string) {
     if (!(await this.isUserBelongsToChannel(userId, channelId)))
       throw new UnauthorizedException();
-    return this.prisma.messages.findMany({
-      where: { channelId },
-      orderBy: {
-        createdAt: 'asc',
-      },
-      take: 20,
+    return (
+      await this.prisma.messages.findMany({
+        where: { channelId },
+        orderBy: {
+          createdAt: 'asc',
+        },
+        take: 20,
+      })
+    ).map((message) => {
+      return {
+        id: message.id,
+        senderId: message.userId,
+        text: message.text,
+      };
     });
   }
   async discoverNewChannels(userId: string, query: string) {
