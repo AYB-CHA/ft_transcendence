@@ -5,20 +5,21 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import MemberLabeLoading from "./MemberLabeLoading";
-import { ChannelType } from "./ChannelController";
+import { ChannelType, UserRoleOnChannel } from "./ChannelController";
+import { UserType, useAuth } from "@/hooks/auth";
 
 type ChannelMemberType = {
   id: string;
   username: string;
   fullName: string;
   avatar: string;
-  role: string;
+  role: UserRoleOnChannel;
 };
 
 export default function ChannelMembers({
-  currentChannel = undefined,
+  currentChannel,
 }: {
-  currentChannel?: ChannelType;
+  currentChannel: ChannelType;
 }) {
   let { id } = useParams();
 
@@ -28,6 +29,7 @@ export default function ChannelMembers({
       return (await axios.get(uri)).data;
     }
   );
+  const { user: me } = useAuth();
 
   return (
     <div>
@@ -49,6 +51,8 @@ export default function ChannelMembers({
                     username={member.username}
                     name={member.fullName}
                     avatar={member.avatar}
+                    role={member.role}
+                    itsMe={me?.id === member.id}
                   />
                   {index < (members?.length ?? 0) - 1 && (
                     <hr className="border-dark-semi-dim" />

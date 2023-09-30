@@ -12,6 +12,7 @@ import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
 import Spinner from "@/components/Spinner";
 import ChannelMembers from "./ChannelMembers";
+import { useAuth } from "@/hooks/auth";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
@@ -32,6 +33,8 @@ export default function ChannelController() {
     `/chat/channel/${id}`,
     getChannelData
   );
+
+  const { user } = useAuth();
 
   if (error) throw notFound();
 
@@ -85,9 +88,7 @@ export default function ChannelController() {
             </div>
           </div>
         </div>
-        <div>
-          <ChannelMembers currentChannel={data} />
-        </div>
+        <div>{data && <ChannelMembers currentChannel={data} />}</div>
       </div>
       <CardFooter>
         <div className="w-full grid grid-cols-2 gap-4">
