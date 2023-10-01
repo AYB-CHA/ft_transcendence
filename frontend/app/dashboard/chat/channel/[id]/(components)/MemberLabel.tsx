@@ -10,6 +10,7 @@ import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "./ChannelMembers";
 import MakeAdmin from "./MembersAvatarDropDown/MakeAdmin";
 import { KeyedMutator } from "swr";
+import MakeModerator from "./MembersAvatarDropDown/MakeModerator";
 
 export default function MemberLabel({
   channel,
@@ -35,10 +36,12 @@ export default function MemberLabel({
               member={member}
               mutator={mutator}
             />
-            <DropdownMenuItem>
-              <Star className="mr-2 h-4 w-4" />
-              <span>Make Moderator</span>
-            </DropdownMenuItem>
+            <MakeModerator
+              channel={channel}
+              me={me}
+              member={member}
+              mutator={mutator}
+            />
             <DropdownMenuItem>
               <UserMinus className="mr-2 h-4 w-4" />
               <span>Block</span>
