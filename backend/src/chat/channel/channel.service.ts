@@ -177,7 +177,7 @@ export class ChannelService {
     } catch (error) {
       console.error(error);
     }
-    throw new UnauthorizedException(["you can't kick user"]);
+    throw new UnauthorizedException(["you can't kick the user"]);
   }
   async deleteChannelByOwner(channelId: string, userId: string) {
     try {

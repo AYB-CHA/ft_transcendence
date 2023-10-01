@@ -11,6 +11,7 @@ import { ChannelMemberType } from "./ChannelMembers";
 import MakeAdmin from "./MembersAvatarDropDown/MakeAdmin";
 import { KeyedMutator } from "swr";
 import MakeModerator from "./MembersAvatarDropDown/MakeModerator";
+import KickOut from "./MembersAvatarDropDown/KickOut";
 
 export default function MemberLabel({
   channel,
@@ -47,10 +48,12 @@ export default function MemberLabel({
               <span>Block</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Trash2 className="mr-2 h-4 w-4" />
-              <span>Kick Out</span>
-            </DropdownMenuItem>
+            <KickOut
+              channel={channel}
+              me={me}
+              member={member}
+              mutator={mutator}
+            />
             <DropdownMenuItem>
               <Ban className="mr-2 h-4 w-4" />
               <span>Ban</span>
