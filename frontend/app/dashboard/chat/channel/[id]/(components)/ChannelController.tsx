@@ -10,7 +10,6 @@ import Input from "@/components/input/Input";
 import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
-import Spinner from "@/components/Spinner";
 import ChannelMembers from "./ChannelMembers";
 import { useAuth } from "@/hooks/auth";
 
@@ -29,12 +28,10 @@ export type ChannelType = {
 
 export default function ChannelController() {
   let { id } = useParams();
-  let { data, isLoading, error } = useSWR<ChannelType>(
+  let { data, isLoading, error, mutate } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData
   );
-
-  const { user } = useAuth();
 
   if (error) throw notFound();
 
@@ -88,7 +85,7 @@ export default function ChannelController() {
             </div>
           </div>
         </div>
-        <div>{data && <ChannelMembers currentChannel={data} />}</div>
+        <div>{<ChannelMembers currentChannel={data} />}</div>
       </div>
       <CardFooter>
         <div className="w-full grid grid-cols-2 gap-4">

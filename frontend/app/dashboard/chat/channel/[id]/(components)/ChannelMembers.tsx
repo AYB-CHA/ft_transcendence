@@ -8,7 +8,7 @@ import MemberLabeLoading from "./MemberLabeLoading";
 import { ChannelType, UserRoleOnChannel } from "./ChannelController";
 import { UserType, useAuth } from "@/hooks/auth";
 
-type ChannelMemberType = {
+export type ChannelMemberType = {
   id: string;
   username: string;
   fullName: string;
@@ -19,11 +19,15 @@ type ChannelMemberType = {
 export default function ChannelMembers({
   currentChannel,
 }: {
-  currentChannel: ChannelType;
+  currentChannel?: ChannelType;
 }) {
   let { id } = useParams();
 
-  let { data: members, isLoading } = useSWR<ChannelMemberType[]>(
+  let {
+    data: members,
+    isLoading,
+    mutate,
+  } = useSWR<ChannelMemberType[]>(
     `/chat/channel/${id}/members`,
     async (uri: string) => {
       return (await axios.get(uri)).data;
@@ -44,22 +48,23 @@ export default function ChannelMembers({
           </>
         ) : (
           <React.Fragment>
-            {members?.map((member, index: number) => {
-              return (
-                <React.Fragment key={member.id}>
-                  <MemberLabel
-                    username={member.username}
-                    name={member.fullName}
-                    avatar={member.avatar}
-                    role={member.role}
-                    itsMe={me?.id === member.id}
-                  />
-                  {index < (members?.length ?? 0) - 1 && (
-                    <hr className="border-dark-semi-dim" />
-                  )}
-                </React.Fragment>
-              );
-            })}
+            {me &&
+              currentChannel &&
+              members?.map((member, index: number) => {
+                return (
+                  <React.Fragment key={member.id}>
+                    <MemberLabel
+                      mutator={mutate}
+                      me={me}
+                      channel={currentChannel}
+                      member={member}
+                    />
+                    {index < (members?.length ?? 0) - 1 && (
+                      <hr className="border-dark-semi-dim" />
+                    )}
+                  </React.Fragment>
+                );
+              })}
           </React.Fragment>
         )}
       </div>
