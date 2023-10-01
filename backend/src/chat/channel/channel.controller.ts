@@ -114,6 +114,21 @@ export class ChannelController {
   }
 
   @UseGuards(AuthGuard)
+  @Post('/ban/:id')
+  async banUser(
+    @Req() request: RequestType,
+    @Body('userId') userId: string | null,
+    @Param('id') channelId: string,
+  ) {
+    if (!userId) throw new BadRequestException(['userId is required']);
+    return this.channelService.banUserFromChannel(
+      channelId,
+      userId,
+      request.userPayload.sub,
+    );
+  }
+
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   deleteChannel(@Param('id') id: string, @Req() request: RequestType) {
     return this.channelService.deleteChannelByOwner(

@@ -1,23 +1,21 @@
-"use client";
-import Avatar from "@/components/Avatar";
 import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
 import CardFooter from "@/components/card/CardFooter";
 import MyMessage from "./MyMessage";
 
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import useSWR from "swr";
-import { getChannelData } from "./ChannelController";
+import { ChannelType, getChannelData } from "./ChannelController";
 import { useEffect, useRef, useState } from "react";
 
 import { io, Socket } from "socket.io-client";
-import Cookies from "js-cookie";
 import ChatBoxInput from "./ChatBoxInput";
 import ChatBoxHeader from "./ChatBoxHeader";
 import { useAuth } from "@/hooks/auth";
 import OtherMessage from "./OtherMessage";
 import axios from "@/lib/axios";
-import { AxiosError } from "axios";
+import { MehIcon } from "lucide-react";
+import { useChatSocket } from "../page";
 
 export type MessageType = {
   text: string;
@@ -26,9 +24,7 @@ export type MessageType = {
 };
 
 async function getOldMessages(url: string) {
-  return await (
-    await axios.get<MessageType[]>(url)
-  ).data;
+  return (await axios.get<MessageType[]>(url)).data;
 }
 
 function formatMessages(messages: MessageType[]) {
@@ -55,42 +51,35 @@ export default function ChatBox() {
   let { id } = useParams();
   let { user: me } = useAuth();
   let [messages, setMessages] = useState<MessageType[]>([]);
-  let { data, isLoading, error } = useSWR(
+
+  let socket = useChatSocket();
+
+  console.log(socket);
+
+  let { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData
   );
 
-  let { data: oldMessages, isLoading: isOldMessagesLoading } = useSWR<
-    MessageType[]
-  >(`/chat/channel/messages/${id}`, getOldMessages);
+  if (error) throw notFound();
+
+  let { data: oldMessages } = useSWR<MessageType[]>(
+    `/chat/channel/messages/${id}`,
+    getOldMessages
+  );
 
   useEffect(() => {
     if (oldMessages) setMessages(oldMessages);
   }, [oldMessages]);
 
-  let socket = useRef<Socket | null>(null);
-
   useEffect(() => {
-    let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
-    url.protocol = "ws";
-    url.pathname = "/channel";
-
-    socket.current = io(url.toString(), {
-      extraHeaders: { Authorization: `Bearer ${Cookies.get("access_token")}` },
-      query: {
-        channelId: id,
-      },
-    });
-    socket.current.on("newMessage", (message: MessageType) => {
+    socket?.on("newMessage", (message: MessageType) => {
       setMessages((oldMessages) => [...oldMessages, message]);
     });
-    return () => {
-      socket.current?.disconnect();
-    };
-  }, [id]);
+  }, [id, socket]);
 
   function sendMessage(text: string) {
-    socket.current?.emit("newMessage", { channelId: id, text });
+    socket?.emit("newMessage", { channelId: id, text });
   }
 
   return (
@@ -99,28 +88,37 @@ export default function ChatBox() {
         <CardHeader>
           <ChatBoxHeader data={data} isLoading={isLoading} />
         </CardHeader>
-        <div className="grow">
-          <div className="flex flex-col p-4 gap-4">
-            {formatMessages(messages).map((messagesGroup) => {
-              if (messagesGroup[0].senderId === me?.id)
-                return (
-                  <MyMessage
-                    key={messagesGroup[0].id}
-                    messages={messagesGroup}
-                  />
-                );
-              return (
-                <OtherMessage
-                  key={messagesGroup[0].id}
-                  messages={messagesGroup}
-                />
-              );
-            })}
+        {data?.amIBaned ? (
+          <div className="flex h-full justify-center items-center flex-col gap-4">
+            <MehIcon className="text-gray-600" size={50} strokeWidth={1} />
+            <span>You are baned from this channel.</span>
           </div>
-        </div>
-        <CardFooter>
-          <ChatBoxInput handler={sendMessage} />
-        </CardFooter>
+        ) : (
+          <>
+            <div className="grow">
+              <div className="flex flex-col p-4 gap-4">
+                {formatMessages(messages).map((messagesGroup) => {
+                  if (messagesGroup[0].senderId === me?.id)
+                    return (
+                      <MyMessage
+                        key={messagesGroup[0].id}
+                        messages={messagesGroup}
+                      />
+                    );
+                  return (
+                    <OtherMessage
+                      key={messagesGroup[0].id}
+                      messages={messagesGroup}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <CardFooter>
+              <ChatBoxInput handler={sendMessage} />
+            </CardFooter>
+          </>
+        )}
       </div>
     </Card>
   );

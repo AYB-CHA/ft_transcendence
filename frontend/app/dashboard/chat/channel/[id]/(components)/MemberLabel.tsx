@@ -4,7 +4,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/DropDown";
-import { Ban, Sparkles, Star, Trash2, UserMinus } from "lucide-react";
+import { BanIcon, Sparkles, Star, Trash2, UserMinus } from "lucide-react";
 import { ChannelType, UserRoleOnChannel } from "./ChannelController";
 import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "./ChannelMembers";
@@ -12,6 +12,7 @@ import MakeAdmin from "./MembersAvatarDropDown/MakeAdmin";
 import { KeyedMutator } from "swr";
 import MakeModerator from "./MembersAvatarDropDown/MakeModerator";
 import KickOut from "./MembersAvatarDropDown/KickOut";
+import Ban from "./MembersAvatarDropDown/Ban";
 
 export default function MemberLabel({
   channel,
@@ -54,10 +55,7 @@ export default function MemberLabel({
               member={member}
               mutator={mutator}
             />
-            <DropdownMenuItem>
-              <Ban className="mr-2 h-4 w-4" />
-              <span>Ban</span>
-            </DropdownMenuItem>
+            <Ban channel={channel} me={me} member={member} mutator={mutator} />
           </Avatar>
         </div>
         <div>

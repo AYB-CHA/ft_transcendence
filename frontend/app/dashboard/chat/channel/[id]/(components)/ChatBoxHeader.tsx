@@ -5,7 +5,7 @@ export default function ChatBoxHeader({
   data,
   isLoading,
 }: {
-  data: ChannelType;
+  data?: ChannelType;
   isLoading: boolean;
 }) {
   return (
@@ -15,7 +15,7 @@ export default function ChatBoxHeader({
           {isLoading ? (
             <div className="w-10 h-10 bg-dark-semi-dim rounded-full animate-pulse"></div>
           ) : (
-            <Avatar src={data.avatar} className="h-10 w-10" />
+            <Avatar src={data?.avatar} className="h-10 w-10" />
           )}
         </div>
         <div>
@@ -23,14 +23,14 @@ export default function ChatBoxHeader({
             {isLoading ? (
               <div className="bg-dark-semi-dim h-3 animate-pulse w-20 mt-1"></div>
             ) : (
-              data.name
+              data?.name
             )}
           </h4>
           <h5 className="text-gray-500 text-xs">
             {isLoading ? (
               <div className="bg-dark-semi-dim h-2 animate-pulse w-16 mt-2"></div>
             ) : (
-              `${data.members} members`
+              `${data?.members} members`
             )}
           </h5>
         </div>

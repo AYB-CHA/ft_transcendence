@@ -61,13 +61,14 @@ enum ChannelUserRole {
 }
 
 model ChannelsOnUsers {
-  Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  Channel   Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId String
-  User      User     @relation(fields: [userId], references: [id])
+  User      User            @relation(fields: [userId], references: [id])
   userId    String
-  createdAt DateTime @default(now())
+  banedAt   DateTime?
+  role      ChannelUserRole @default(MEMBER)
 
-  role ChannelUserRole @default(MEMBER)
+  createdAt DateTime @default(now())
 
   @@id([userId, channelId])
 }

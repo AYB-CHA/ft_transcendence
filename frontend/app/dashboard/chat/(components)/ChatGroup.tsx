@@ -81,6 +81,7 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
       </div>
 
       <LeaveChannel
+        isBaned={data.amIBaned}
         id={data.id}
         status={leaveConfirm}
         setStatus={setLeaveConfirm}

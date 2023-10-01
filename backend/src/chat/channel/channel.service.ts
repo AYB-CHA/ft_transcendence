@@ -76,7 +76,7 @@ export class ChannelService {
             where: {
               userId: myId,
             },
-            select: { role: true },
+            select: { role: true, banedAt: true },
           },
         },
       });
@@ -89,17 +89,21 @@ export class ChannelService {
         type: channel.type,
         members: channel._count.users,
         myRole: channel.users[0].role,
+        amIBaned: channel.users[0].banedAt != null,
       };
     } catch (error) {
-      console.log(error);
       throw new NotFoundException();
     }
   }
+
   async getChannelUsers(id: string) {
     const userData = await this.prisma.channel.findFirst({
       where: { id },
       select: {
         users: {
+          where: {
+            banedAt: null,
+          },
           select: {
             role: true,
             User: {
@@ -172,6 +176,28 @@ export class ChannelService {
               ? { in: ['MEMBER', 'MODERATOR'] }
               : 'MEMBER',
         },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new UnauthorizedException(["you can't kick the user"]);
+  }
+  async banUserFromChannel(channelId: string, userId: string, adminId: string) {
+    try {
+      const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
+        where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
+        select: { role: true },
+      });
+      await this.prisma.channelsOnUsers.update({
+        where: {
+          userId_channelId: { channelId, userId },
+          role:
+            role === 'ADMINISTRATOR'
+              ? { in: ['MEMBER', 'MODERATOR'] }
+              : 'MEMBER',
+        },
+        data: { banedAt: new Date() },
       });
       return;
     } catch (error) {
@@ -262,6 +288,7 @@ export class ChannelService {
             channelId,
             userId,
           },
+          banedAt: null,
         },
       });
       return;

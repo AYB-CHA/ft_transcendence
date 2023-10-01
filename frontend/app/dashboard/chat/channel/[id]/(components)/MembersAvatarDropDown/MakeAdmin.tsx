@@ -16,8 +16,6 @@ export default function MakeAdmin({
   member: ChannelMemberType;
   mutator: KeyedMutator<ChannelMemberType[]>;
 }) {
-  console.log(channel, me, member);
-
   let isDisabled =
     me.id === member.id ||
     channel.myRole !== "ADMINISTRATOR" ||

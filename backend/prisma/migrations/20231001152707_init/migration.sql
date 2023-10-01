@@ -40,8 +40,9 @@ CREATE TABLE "Channel" (
 CREATE TABLE "ChannelsOnUsers" (
     "channelId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "banedAt" TIMESTAMP(3),
     "role" "ChannelUserRole" NOT NULL DEFAULT 'MEMBER',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ChannelsOnUsers_pkey" PRIMARY KEY ("userId","channelId")
 );

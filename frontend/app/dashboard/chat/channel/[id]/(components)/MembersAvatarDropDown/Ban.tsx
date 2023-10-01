@@ -1,11 +1,11 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { Sparkles, Star, Trash2 } from "lucide-react";
 import { ChannelType } from "../ChannelController";
 import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
-export default function KickOut({
+import { BanIcon } from "lucide-react";
+export default function Ban({
   channel,
   me,
   member,
@@ -23,7 +23,7 @@ export default function KickOut({
     isDisabled = false;
   async function clickHandler() {
     try {
-      await axios.post(`/chat/channel/kick/${channel.id}`, {
+      await axios.post(`/chat/channel/ban/${channel.id}`, {
         userId: member.id,
       });
       mutator();
@@ -32,8 +32,8 @@ export default function KickOut({
 
   return (
     <DropdownMenuItem disabled={isDisabled} onClick={clickHandler}>
-      <Trash2 className="mr-2 h-4 w-4" />
-      <span>Kick</span>
+      <BanIcon className="mr-2 h-4 w-4" />
+      <span>Ban</span>
     </DropdownMenuItem>
   );
 }
