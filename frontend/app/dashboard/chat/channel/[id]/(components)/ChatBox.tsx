@@ -54,8 +54,6 @@ export default function ChatBox() {
 
   let socket = useChatSocket();
 
-  console.log(socket);
-
   let { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData

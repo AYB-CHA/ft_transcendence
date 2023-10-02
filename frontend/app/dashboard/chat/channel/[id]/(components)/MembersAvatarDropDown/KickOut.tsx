@@ -8,11 +8,9 @@ import { KeyedMutator } from "swr";
 import { useChatSocket } from "../../page";
 export default function KickOut({
   channel,
-  me,
   member,
 }: {
   channel: ChannelType;
-  me: UserType;
   member: ChannelMemberType;
 }) {
   let chatSocket = useChatSocket();

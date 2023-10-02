@@ -16,7 +16,6 @@ import {
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LeaveChannel from "./LeaveChannel";
 import DeleteChannel from "./DeleteChannel";
@@ -25,8 +24,6 @@ import { ChannelType } from "../channel/[id]/(components)/ChannelController";
 export default function ChatGroup({ data }: { data: ChannelType }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [leaveConfirm, setLeaveConfirm] = useState(false);
-
-  const router = useRouter();
 
   return (
     <div className="flex items-center">
@@ -39,7 +36,10 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
               <LinkIcon className="mr-2 h-4 w-4" />
               <span>Invite People</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setLeaveConfirm(true)}>
+            <DropdownMenuItem
+              disabled={data.amIBaned}
+              onClick={() => setLeaveConfirm(true)}
+            >
               <div className="flex">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Leave Channel</span>
