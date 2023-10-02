@@ -1,6 +1,6 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { Sparkles, Star } from "lucide-react";
-import { ChannelType } from "../ChannelController";
+import { Sparkles, Star, User2 } from "lucide-react";
+import { ChannelType, UserRoleOnChannel } from "../ChannelController";
 import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
@@ -16,21 +16,41 @@ export default function MakeModerator({
   member: ChannelMemberType;
 }) {
   let chatSocket = useChatSocket();
-  let isDisabled =
-    me.id === member.id ||
-    channel.myRole !== "ADMINISTRATOR" ||
-    member.role !== "MEMBER";
 
-  async function clickHandler() {
+  let isDisabled = true;
+
+  if (channel.myRole === "ADMINISTRATOR" && member.role === "MEMBER") {
+    isDisabled = false;
+  }
+
+  async function clickHandler(grade: UserRoleOnChannel) {
     chatSocket?.emit("upgrade", {
       channelId: channel.id,
       userId: member.id,
-      grade: "MODERATOR",
+      grade: grade,
     });
   }
 
+  if (channel.myRole === "ADMINISTRATOR" && member.role === "MODERATOR") {
+    return (
+      <DropdownMenuItem
+        onClick={() => {
+          clickHandler("MEMBER");
+        }}
+      >
+        <User2 className="mr-2 h-4 w-4" />
+        <span>Make Member</span>
+      </DropdownMenuItem>
+    );
+  }
+
   return (
-    <DropdownMenuItem disabled={isDisabled} onClick={clickHandler}>
+    <DropdownMenuItem
+      disabled={isDisabled}
+      onClick={() => {
+        clickHandler("MODERATOR");
+      }}
+    >
       <Star className="mr-2 h-4 w-4" />
       <span>Make Moderator</span>
     </DropdownMenuItem>
