@@ -345,7 +345,7 @@ export class ChannelService {
           where: {
             userId,
           },
-          select: { role: true },
+          select: { role: true, banedAt: true },
         },
       },
     });
@@ -358,6 +358,7 @@ export class ChannelService {
         type: channel.type,
         members: channel._count.users,
         myRole: channel.users[0].role,
+        amIBaned: channel.users[0].banedAt !== null,
       };
     });
   }

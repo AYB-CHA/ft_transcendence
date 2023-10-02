@@ -16,8 +16,6 @@ export default function ChannelsSidebar() {
     getMyChannels
   );
 
-  console.log(data);
-
   if (isLoading)
     return (
       <>
