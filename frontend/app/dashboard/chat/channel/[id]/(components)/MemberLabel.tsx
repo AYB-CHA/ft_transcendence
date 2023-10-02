@@ -32,30 +32,15 @@ export default function MemberLabel({
           <Avatar src={member.avatar} className="h-10 w-10">
             <DropdownMenuLabel>User</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <MakeAdmin
-              channel={channel}
-              me={me}
-              member={member}
-              mutator={mutator}
-            />
-            <MakeModerator
-              channel={channel}
-              me={me}
-              member={member}
-              mutator={mutator}
-            />
+            <MakeAdmin channel={channel} me={me} member={member} />
+            <MakeModerator channel={channel} me={me} member={member} />
             <DropdownMenuItem>
               <UserMinus className="mr-2 h-4 w-4" />
               <span>Block</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <KickOut
-              channel={channel}
-              me={me}
-              member={member}
-              mutator={mutator}
-            />
-            <Ban channel={channel} me={me} member={member} mutator={mutator} />
+            <KickOut channel={channel} me={me} member={member} />
+            <Ban channel={channel} member={member} />
           </Avatar>
         </div>
         <div>

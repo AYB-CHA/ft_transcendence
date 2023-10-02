@@ -5,30 +5,28 @@ import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
+import { useChatSocket } from "../../page";
 export default function MakeModerator({
   channel,
   me,
   member,
-  mutator,
 }: {
   channel: ChannelType;
   me: UserType;
   member: ChannelMemberType;
-  mutator: KeyedMutator<ChannelMemberType[]>;
 }) {
+  let chatSocket = useChatSocket();
   let isDisabled =
     me.id === member.id ||
     channel.myRole !== "ADMINISTRATOR" ||
     member.role !== "MEMBER";
 
   async function clickHandler() {
-    try {
-      await axios.put(`/chat/channel/upgrade/${channel.id}`, {
-        grade: "MODERATOR",
-        userId: member.id,
-      });
-      mutator();
-    } catch (error) {}
+    chatSocket?.emit("upgrade", {
+      channelId: channel.id,
+      userId: member.id,
+      grade: "MODERATOR",
+    });
   }
 
   return (

@@ -11,8 +11,6 @@ import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
 import ChannelMembers from "./ChannelMembers";
-import { Socket } from "socket.io-client";
-import { useChatSocket } from "../page";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";

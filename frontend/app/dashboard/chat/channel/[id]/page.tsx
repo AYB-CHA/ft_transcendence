@@ -4,18 +4,22 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import ChannelController from "./(components)/ChannelController";
 import ChatBox from "./(components)/ChatBox";
 import { Socket, io } from "socket.io-client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-
+import { mutate } from "swr";
 let ChatSocketContext = createContext<Socket | null>(null);
 
 export function useChatSocket() {
   return useContext(ChatSocketContext);
 }
 
+export function clearSWRCache() {
+  mutate(/* match all keys */ () => true);
+}
 export default function Page() {
   let [socket, setSocket] = useState<Socket | null>(null);
   let { id } = useParams();
+  let { refresh } = useRouter();
 
   useEffect(() => {
     let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
@@ -30,12 +34,16 @@ export default function Page() {
 
     setSocket(socket);
 
-    socket.on("", () => {});
+    socket.on("criticalChange", () => {
+      console.log("I am clearing the cache");
+      clearSWRCache();
+      refresh();
+    });
 
     return () => {
       socket.disconnect();
     };
-  }, [id]);
+  }, [id, refresh]);
 
   return (
     <>

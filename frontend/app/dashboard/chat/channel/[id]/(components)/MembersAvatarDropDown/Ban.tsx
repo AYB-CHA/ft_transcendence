@@ -5,29 +5,23 @@ import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
 import { BanIcon } from "lucide-react";
+import { useChatSocket } from "../../page";
 export default function Ban({
   channel,
-  me,
   member,
-  mutator,
 }: {
   channel: ChannelType;
-  me: UserType;
   member: ChannelMemberType;
-  mutator: KeyedMutator<ChannelMemberType[]>;
 }) {
+  let chatSocket = useChatSocket();
+
   let isDisabled = true;
   if (channel.myRole === "ADMINISTRATOR" && member.role !== "ADMINISTRATOR")
     isDisabled = false;
   else if (channel.myRole === "MODERATOR" && member.role === "MEMBER")
     isDisabled = false;
   async function clickHandler() {
-    try {
-      await axios.post(`/chat/channel/ban/${channel.id}`, {
-        userId: member.id,
-      });
-      mutator();
-    } catch (error) {}
+    chatSocket?.emit("banUser", { channelId: channel.id, userId: member.id });
   }
 
   return (

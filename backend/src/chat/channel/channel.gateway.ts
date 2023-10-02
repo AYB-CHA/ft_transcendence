@@ -11,6 +11,7 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { ChannelService } from './channel.service';
+import { ChannelUserRole } from '@prisma/client';
 
 @WebSocketGateway({ namespace: 'channel', cors: true })
 export class ChannelSocketGateway
@@ -61,7 +62,7 @@ export class ChannelSocketGateway
   }
 
   @SubscribeMessage('newMessage')
-  async handleEvent(
+  async handleNewMessgaeEvent(
     @MessageBody() data: { channelId: string; text: string },
     @ConnectedSocket() client: Socket,
   ) {
@@ -86,6 +87,59 @@ export class ChannelSocketGateway
           id: messageId,
         });
       }
+    }
+  }
+  @SubscribeMessage('upgrade')
+  async handleUpgradeEvent(
+    @MessageBody()
+    data: { channelId: string; userId: string; grade: ChannelUserRole },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const adminId = this.getClientId(client);
+
+    this.channelService.upgradeUserGrade(
+      data.channelId,
+      adminId,
+      data.userId,
+      data.grade,
+    );
+
+    this.sendCriticalEvent(data.channelId);
+  }
+
+  @SubscribeMessage('kickUser')
+  async handleKickEvent(
+    @MessageBody() data: { channelId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const adminId = this.getClientId(client);
+
+    this.channelService.kickUserFromChannel(
+      data.channelId,
+      data.userId,
+      adminId,
+    );
+    this.sendCriticalEvent(data.channelId);
+  }
+
+  @SubscribeMessage('banUser')
+  async handleBanEvent(
+    @MessageBody() data: { channelId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const adminId = this.getClientId(client);
+
+    this.channelService.banUserFromChannel(
+      data.channelId,
+      data.userId,
+      adminId,
+    );
+    this.sendCriticalEvent(data.channelId);
+  }
+
+  sendCriticalEvent(channelId: string) {
+    for (const client of this.clients) {
+      if (client.channelId === channelId) client.socket.emit('criticalChange');
     }
   }
 }
