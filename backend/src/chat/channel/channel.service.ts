@@ -76,7 +76,7 @@ export class ChannelService {
             where: {
               userId: myId,
             },
-            select: { role: true, banedAt: true },
+            select: { role: true, banedAt: true, mutedAt: true },
           },
         },
       });
@@ -90,6 +90,7 @@ export class ChannelService {
         members: channel._count.users,
         myRole: channel.users[0].role,
         amIBaned: channel.users[0].banedAt != null,
+        amIMuted: channel.users[0].mutedAt != null,
       };
     } catch (error) {
       throw new NotFoundException();
@@ -105,6 +106,7 @@ export class ChannelService {
             banedAt: null,
           },
           select: {
+            mutedAt: true,
             role: true,
             User: {
               select: {
@@ -122,7 +124,11 @@ export class ChannelService {
     if (!userData) throw new NotFoundException();
     const response: any[] = [];
     userData.users.forEach((user) =>
-      response.push({ ...user.User, role: user.role }),
+      response.push({
+        ...user.User,
+        role: user.role,
+        isMuted: user.mutedAt !== null,
+      }),
     );
     console.log(response);
     return response;
@@ -203,7 +209,60 @@ export class ChannelService {
     } catch (error) {
       console.error(error);
     }
-    throw new Error("you can't kick the user");
+    throw new Error("you can't ban the user");
+  }
+
+  async muteUserFromOnChannel(
+    channelId: string,
+    userId: string,
+    adminId: string,
+  ) {
+    try {
+      const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
+        where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
+        select: { role: true },
+      });
+      await this.prisma.channelsOnUsers.update({
+        where: {
+          userId_channelId: { channelId, userId },
+          role:
+            role === 'ADMINISTRATOR'
+              ? { in: ['MEMBER', 'MODERATOR'] }
+              : 'MEMBER',
+        },
+        data: { mutedAt: new Date() },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new Error("you can't mute the user");
+  }
+  async unmuteUserFromOnChannel(
+    channelId: string,
+    userId: string,
+    adminId: string,
+  ) {
+    try {
+      const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
+        where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
+        select: { role: true },
+      });
+      await this.prisma.channelsOnUsers.update({
+        where: {
+          userId_channelId: { channelId, userId },
+          role:
+            role === 'ADMINISTRATOR'
+              ? { in: ['MEMBER', 'MODERATOR'] }
+              : 'MEMBER',
+        },
+        data: { mutedAt: null },
+      });
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+    throw new Error("you can't mute the user");
   }
   async deleteChannelByOwner(channelId: string, userId: string) {
     try {
@@ -345,10 +404,11 @@ export class ChannelService {
           where: {
             userId,
           },
-          select: { role: true, banedAt: true },
+          select: { role: true, banedAt: true, mutedAt: true },
         },
       },
     });
+
     return (await channels).map((channel) => {
       return {
         id: channel.id,
@@ -359,6 +419,7 @@ export class ChannelService {
         members: channel._count.users,
         myRole: channel.users[0].role,
         amIBaned: channel.users[0].banedAt !== null,
+        amIMuted: channel.users[0].mutedAt !== null,
       };
     });
   }
@@ -366,10 +427,19 @@ export class ChannelService {
   async isUserBelongsToChannel(userId: string, channelId: string) {
     return (
       (await this.prisma.channelsOnUsers.count({
-        where: { userId, channelId },
+        where: { userId, channelId, banedAt: null },
       })) > 0
     );
   }
+
+  async isUserMuted(userId: string, channelId: string) {
+    return (
+      (await this.prisma.channelsOnUsers.count({
+        where: { userId, channelId, mutedAt: null },
+      })) > 0
+    );
+  }
+
   async createMessage(userId: string, channelId: string, message: string) {
     return await this.prisma.messages.create({
       data: {

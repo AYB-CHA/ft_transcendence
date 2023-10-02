@@ -62,13 +62,18 @@ export class ChannelSocketGateway
   }
 
   @SubscribeMessage('newMessage')
-  async handleNewMessgaeEvent(
+  async handleNewMessageEvent(
     @MessageBody() data: { channelId: string; text: string },
     @ConnectedSocket() client: Socket,
   ) {
     const senderId = this.getClientId(client);
+
     if (!this.channelService.isUserBelongsToChannel(senderId, data.channelId)) {
       client.disconnect();
+      return;
+    }
+
+    if (!this.channelService.isUserMuted(senderId, data.channelId)) {
       return;
     }
 
@@ -137,9 +142,45 @@ export class ChannelSocketGateway
     this.sendCriticalEvent(data.channelId);
   }
 
-  sendCriticalEvent(channelId: string) {
+  @SubscribeMessage('muteUser')
+  async handleMuteEvent(
+    @MessageBody() data: { channelId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const adminId = this.getClientId(client);
+
+    this.channelService.muteUserFromOnChannel(
+      data.channelId,
+      data.userId,
+      adminId,
+    );
+
+    this.sendCriticalEvent(data.channelId, [data.userId, adminId]);
+  }
+
+  @SubscribeMessage('unmuteUser')
+  async handleUnmuteEvent(
+    @MessageBody() data: { channelId: string; userId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const adminId = this.getClientId(client);
+
+    this.channelService.unmuteUserFromOnChannel(
+      data.channelId,
+      data.userId,
+      adminId,
+    );
+
+    this.sendCriticalEvent(data.channelId, [data.userId, adminId]);
+  }
+
+  sendCriticalEvent(channelId: string, userIds?: string[]) {
     for (const client of this.clients) {
-      if (client.channelId === channelId) client.socket.emit('criticalChange');
+      if (
+        client.channelId === channelId &&
+        (userIds ? userIds.includes(client.id) : true)
+      )
+        client.socket.emit('criticalChange');
     }
   }
 }
