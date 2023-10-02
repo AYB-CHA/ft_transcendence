@@ -18,12 +18,10 @@ export default function MemberLabel({
   channel,
   me,
   member,
-  mutator,
 }: {
   channel: ChannelType;
   me: UserType;
   member: ChannelMemberType;
-  mutator: KeyedMutator<ChannelMemberType[]>;
 }) {
   return (
     <div className="flex justify-between items-center">

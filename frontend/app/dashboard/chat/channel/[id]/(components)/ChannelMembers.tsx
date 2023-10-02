@@ -23,11 +23,7 @@ export default function ChannelMembers({
 }) {
   let { id } = useParams();
 
-  let {
-    data: members,
-    isLoading,
-    mutate,
-  } = useSWR<ChannelMemberType[]>(
+  let { data: members, isLoading } = useSWR<ChannelMemberType[]>(
     `/chat/channel/${id}/members`,
     async (uri: string) => {
       return (await axios.get(uri)).data;
@@ -54,7 +50,6 @@ export default function ChannelMembers({
                 return (
                   <React.Fragment key={member.id}>
                     <MemberLabel
-                      mutator={mutate}
                       me={me}
                       channel={currentChannel}
                       member={member}
