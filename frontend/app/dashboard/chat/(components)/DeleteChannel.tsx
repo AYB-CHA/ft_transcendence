@@ -27,7 +27,7 @@ export default function DeleteChannel({
   let router = useRouter();
   async function deleteCurrentChannel() {
     await axios.delete(`/chat/channel/${id}`);
-    router.push("/dashboard/chat/channel");
+    router.push("/dashboard/chat");
     setStatus(false);
     mutate("/chat/channel");
   }

@@ -393,6 +393,7 @@ export class ChannelService {
   async getUserChannels(userId: string) {
     const channels = this.prisma.channel.findMany({
       where: { users: { some: { User: { id: userId } } } },
+      orderBy: { updatedAt: 'asc' },
       select: {
         id: true,
         name: true,

@@ -47,7 +47,6 @@ export default function NewChannel({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [description, setDescription] = useState("");

@@ -43,10 +43,6 @@ export class UserController {
       fullName: body.fullName,
       username: body.username,
     });
-    delete user['createdAt'];
-    delete user['updatedAt'];
-    delete user['password'];
-    delete user['authProvider'];
     return user;
   }
 

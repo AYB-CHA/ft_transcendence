@@ -19,17 +19,15 @@ export default function LeaveChannel({
   status,
   setStatus,
   id,
-  isBaned,
 }: {
-  id: string;
+  id?: string;
   setStatus: React.Dispatch<React.SetStateAction<boolean>>;
   status: boolean;
-  isBaned: boolean;
 }) {
   const router = useRouter();
   async function leaveCurrentChannel() {
     await axios.delete(`/chat/channel/${id}/leave`);
-    router.push("/dashboard/chat/channel");
+    router.push("/dashboard/chat");
     setStatus(false);
     mutate("/chat/channel");
   }

@@ -11,6 +11,8 @@ import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
 import ChannelMembers from "./ChannelMembers";
+import LeaveChannel from "../../../(components)/LeaveChannel";
+import { useState } from "react";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
@@ -28,6 +30,8 @@ export type ChannelType = {
 
 export default function ChannelController() {
   let { id } = useParams();
+  const [leaveConfirm, setLeaveConfirm] = useState(false);
+
   let { data, isLoading, error, mutate } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData
@@ -89,9 +93,20 @@ export default function ChannelController() {
       </div>
       <CardFooter>
         <div className="w-full grid grid-cols-2 gap-4">
-          <Button variant="danger">Leave Channel</Button>
+          <Button
+            disabled={data?.amIBaned}
+            variant="danger"
+            onClick={() => setLeaveConfirm(true)}
+          >
+            Leave Channel
+          </Button>
           <Button>Invite People</Button>
         </div>
+        <LeaveChannel
+          id={data?.id}
+          status={leaveConfirm}
+          setStatus={setLeaveConfirm}
+        />
       </CardFooter>
     </Card>
   );

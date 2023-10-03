@@ -1,32 +1,35 @@
 "use client";
 
-import React, { LegacyRef, PropsWithChildren } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  LegacyRef,
+  PropsWithChildren,
+  forwardRef,
+} from "react";
 
-type ButtonPropsType = PropsWithChildren & {
-  onClick?: () => void;
-  variant?: "primary" | "secondary" | "dark" | "danger";
-  className?: string;
-};
+type ButtonPropsType = ButtonHTMLAttributes<HTMLButtonElement> &
+  PropsWithChildren & {
+    variant?: "primary" | "secondary" | "dark" | "danger";
+    className?: string;
+  };
 
-export default React.forwardRef<HTMLButtonElement, ButtonPropsType>(
-  function Button(
-    { children, onClick = undefined, variant = "primary", className },
-    ref
-  ) {
-    const variants = {
-      primary: "bg-primary hover:bg-primary-400",
-      secondary: "bg-gray-100 hover:bg-gray-100/80",
-      danger: "bg-red-500 hover:bg-gray-red-600 text-gray-100",
-      dark: "bg-black border border-[#4B5563] text-gray-200",
-    };
-    return (
-      <button
-        ref={ref}
-        onClick={onClick}
-        className={`duration-500 text-black px-4 py-3 flex justify-center ${variants[variant]} ${className}`}
-      >
-        {children}
-      </button>
-    );
-  }
-);
+export default forwardRef<HTMLButtonElement, ButtonPropsType>(function Button(
+  { children, variant = "primary", className, ...props },
+  ref
+) {
+  const variants = {
+    primary: "bg-primary hover:bg-primary-400",
+    secondary: "bg-gray-100 hover:bg-gray-100/80",
+    danger: "bg-red-500 hover:bg-gray-red-600 text-gray-100",
+    dark: "bg-black border border-[#4B5563] text-gray-200",
+  };
+  return (
+    <button
+      ref={ref}
+      className={`duration-500 text-black px-4 py-3 flex justify-center disabled:bg-opacity-70 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+});
