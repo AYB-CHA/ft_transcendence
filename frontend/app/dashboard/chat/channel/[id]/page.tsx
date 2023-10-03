@@ -7,6 +7,7 @@ import { Socket, io } from "socket.io-client";
 import { useParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { mutate } from "swr";
+
 let ChatSocketContext = createContext<Socket | null>(null);
 
 export function useChannelChatSocket() {
@@ -35,9 +36,7 @@ export default function Page() {
     setSocket(socket);
 
     socket.on("criticalChange", () => {
-      console.log("I am clearing the cache");
       clearSWRCache();
-      refresh();
     });
 
     return () => {

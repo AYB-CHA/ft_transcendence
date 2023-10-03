@@ -99,6 +99,8 @@ export default function ChatBox() {
                   if (messagesGroup[0].senderId === me?.id)
                     return (
                       <MyMessage
+                        avatar={me.avatar}
+                        username={me.username}
                         key={messagesGroup[0].id}
                         messages={messagesGroup}
                       />
