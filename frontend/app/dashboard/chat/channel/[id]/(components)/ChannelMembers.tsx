@@ -6,7 +6,7 @@ import useSWR from "swr";
 import axios from "@/lib/axios";
 import MemberLabeLoading from "./MemberLabeLoading";
 import { ChannelType, UserRoleOnChannel } from "./ChannelController";
-import { UserType, useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth";
 
 export type ChannelMemberType = {
   id: string;

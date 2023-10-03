@@ -5,7 +5,7 @@ import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
-import { useChatSocket } from "../../page";
+import { useChannelChatSocket } from "../../page";
 export default function MakeModerator({
   channel,
   member,
@@ -13,7 +13,7 @@ export default function MakeModerator({
   channel: ChannelType;
   member: ChannelMemberType;
 }) {
-  let chatSocket = useChatSocket();
+  let chatSocket = useChannelChatSocket();
 
   let isDisabled = true;
 

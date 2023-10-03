@@ -1,4 +1,3 @@
-import Button from "@/components/Button";
 import Card from "@/components/card/Card";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
@@ -8,8 +7,8 @@ import Input from "@/components/input/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 import { Search } from "lucide-react";
-import NewChat from "../(components)/NewChat";
-import ChannelsSidebar from "../(components)/ChannelsSidebar";
+import NewChat from "./(components)/NewChat";
+import ChannelsSidebar from "./(components)/ChannelsSidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

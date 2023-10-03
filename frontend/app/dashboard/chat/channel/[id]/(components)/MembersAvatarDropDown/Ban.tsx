@@ -5,7 +5,7 @@ import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
 import { BanIcon } from "lucide-react";
-import { useChatSocket } from "../../page";
+import { useChannelChatSocket } from "../../page";
 export default function Ban({
   channel,
   member,
@@ -13,7 +13,7 @@ export default function Ban({
   channel: ChannelType;
   member: ChannelMemberType;
 }) {
-  let chatSocket = useChatSocket();
+  let chatSocket = useChannelChatSocket();
 
   let isDisabled = true;
   if (channel.myRole === "ADMINISTRATOR" && member.role !== "ADMINISTRATOR")

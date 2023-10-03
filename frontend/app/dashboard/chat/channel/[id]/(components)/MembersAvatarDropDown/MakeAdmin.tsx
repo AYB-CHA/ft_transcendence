@@ -5,7 +5,7 @@ import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
 import axios from "@/lib/axios";
 import { KeyedMutator } from "swr";
-import { useChatSocket } from "../../page";
+import { useChannelChatSocket } from "../../page";
 export default function MakeAdmin({
   channel,
   me,
@@ -15,7 +15,7 @@ export default function MakeAdmin({
   me: UserType;
   member: ChannelMemberType;
 }) {
-  const chatSocket = useChatSocket();
+  const chatSocket = useChannelChatSocket();
   let isDisabled =
     me.id === member.id ||
     channel.myRole !== "ADMINISTRATOR" ||

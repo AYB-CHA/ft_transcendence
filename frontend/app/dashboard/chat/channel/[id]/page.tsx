@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 import { mutate } from "swr";
 let ChatSocketContext = createContext<Socket | null>(null);
 
-export function useChatSocket() {
+export function useChannelChatSocket() {
   return useContext(ChatSocketContext);
 }
 

@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/auth";
 import OtherMessage from "./OtherMessage";
 import axios from "@/lib/axios";
 import { MehIcon } from "lucide-react";
-import { useChatSocket } from "../page";
+import { useChannelChatSocket } from "../page";
 
 export type MessageType = {
   text: string;
@@ -52,7 +52,7 @@ export default function ChatBox() {
   let { user: me } = useAuth();
   let [messages, setMessages] = useState<MessageType[]>([]);
 
-  let socket = useChatSocket();
+  let socket = useChannelChatSocket();
 
   let { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
