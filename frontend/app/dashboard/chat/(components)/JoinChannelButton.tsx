@@ -38,6 +38,7 @@ export default function JoinChannelButton({
 
   async function joinPublicChannel() {
     await axios.post(`/chat/channel/join/${id}`);
+    mutate(`/chat/channel/${id}`);
     mutate("/chat/channel");
     router.push(`/dashboard/chat/channel/${id}`);
     setOpen(false);
@@ -47,6 +48,7 @@ export default function JoinChannelButton({
   async function joinProtectedChannel() {
     try {
       await axios.post(`/chat/channel/protected/${id}/join`, { password });
+      mutate(`/chat/channel/${id}`);
       mutate("/chat/channel");
       router.push(`/dashboard/chat/channel/${id}`);
       setOpen(false);
