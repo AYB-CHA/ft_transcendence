@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserService } from './user.service';
 import { RequestType } from 'src/types';
@@ -12,12 +20,13 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('/me')
   async me(@Req() request: RequestType) {
-    const user = await this.userService.findUser(request.userPayload.sub);
-    delete user['createdAt'];
-    delete user['updatedAt'];
-    delete user['password'];
-    delete user['authProvider'];
-    return user;
+    return await this.userService.findUser(request.userPayload.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/:id')
+  async user(@Param('id') id: string) {
+    return await this.userService.findUser(id);
   }
 
   @UseGuards(AuthGuard)
