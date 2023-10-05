@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Search } from "lucide-react";
 import NewChat from "./(components)/NewChat";
 import ChannelsSidebar from "./(components)/ChannelsSidebar";
+import ThreadSideBar from "./(components)/ThreadSideBar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -32,7 +33,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <ChannelsSidebar />
                   </div>
                 </TabsContent>
-                <TabsContent value="dms">Here Will be DMs.</TabsContent>
+                <TabsContent value="dms">
+                  <ThreadSideBar />
+                </TabsContent>
               </div>
             </CardBody>
           </Tabs>

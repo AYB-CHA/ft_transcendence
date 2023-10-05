@@ -31,4 +31,9 @@ export class DirectMessageController {
   getOldMessages(@Request() req: RequestType, @Param('id') id: string) {
     return this.dmService.getOldMessages(req.userPayload.sub, id);
   }
+  @Get('/threads')
+  @UseGuards(AuthGuard)
+  getUserThreads(@Request() req: RequestType) {
+    return this.dmService.getUserThreads(req.userPayload.sub);
+  }
 }
