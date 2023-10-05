@@ -67,7 +67,7 @@ export class UserService {
   }
 
   async updatePassword(userPasswords: UpdateUserPasswordType, id: string) {
-    const user = await this.findUser(id);
+    const user = await this.findUser(id, true);
     if (compareSync(userPasswords.oldPassword, user.password)) {
       await this.prisma.user.update({
         where: { id },
@@ -78,7 +78,7 @@ export class UserService {
     throw new BadRequestException(["old password doesn't match you password"]);
   }
 
-  async findUser(id: string) {
+  async findUser(id: string, includePassword: boolean = false) {
     return await this.prisma.user.findFirstOrThrow({
       where: {
         id,
@@ -89,6 +89,7 @@ export class UserService {
         email: true,
         fullName: true,
         username: true,
+        password: includePassword,
       },
     });
   }
