@@ -62,7 +62,7 @@ export default function ChatBox() {
         <CardHeader>
           <ChatBoxHeader isLoading />
         </CardHeader>
-        <div className="grow">
+        <div className="grow h-0 overflow-auto">
           <div className="flex flex-col p-4 gap-4">
             {formatMessages(messages).map((messagesGroup) => {
               if (messagesGroup[0].senderId === me?.id)
