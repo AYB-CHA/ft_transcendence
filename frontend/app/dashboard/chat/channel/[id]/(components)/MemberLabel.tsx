@@ -32,7 +32,7 @@ export default function MemberLabel({
             <DropdownMenuSeparator />
             <MakeAdmin channel={channel} me={me} member={member} />
             <MakeModerator channel={channel} member={member} />
-            <SendDM />
+            <SendDM userId={member.id} />
             <DropdownMenuItem>
               <UserMinus className="mr-2 h-4 w-4" />
               <span>Block</span>

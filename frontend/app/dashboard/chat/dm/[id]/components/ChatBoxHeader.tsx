@@ -1,11 +1,10 @@
 import Avatar from "@/components/Avatar";
-import { ChannelType } from "./ChannelController";
 
 export default function ChatBoxHeader({
   data,
   isLoading,
 }: {
-  data?: ChannelType;
+  data?: any;
   isLoading: boolean;
 }) {
   return (

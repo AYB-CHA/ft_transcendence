@@ -54,7 +54,28 @@ CREATE TABLE "Messages" (
     "text" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "channelId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Messages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DMThread" (
+    "id" TEXT NOT NULL,
+    "initiatorId" TEXT NOT NULL,
+    "participantId" TEXT NOT NULL,
+
+    CONSTRAINT "DMThread_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DMMessage" (
+    "id" SERIAL NOT NULL,
+    "text" TEXT NOT NULL,
+    "senderId" TEXT NOT NULL,
+    "threadId" TEXT NOT NULL,
+
+    CONSTRAINT "DMMessage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -65,6 +86,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Messages_id_key" ON "Messages"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DMThread_initiatorId_participantId_key" ON "DMThread"("initiatorId", "participantId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DMMessage_id_key" ON "DMMessage"("id");
 
 -- AddForeignKey
 ALTER TABLE "ChannelsOnUsers" ADD CONSTRAINT "ChannelsOnUsers_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -77,3 +104,15 @@ ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userI
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DMThread" ADD CONSTRAINT "DMThread_initiatorId_fkey" FOREIGN KEY ("initiatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DMThread" ADD CONSTRAINT "DMThread_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DMMessage" ADD CONSTRAINT "DMMessage_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DMMessage" ADD CONSTRAINT "DMMessage_threadId_fkey" FOREIGN KEY ("threadId") REFERENCES "DMThread"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

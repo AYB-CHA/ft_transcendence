@@ -22,8 +22,6 @@ export default function OtherMessage({
     }
   );
 
-  console.log(data);
-
   return (
     <div className="flex gap-2 text-right justify-end">
       <div className="flex flex-col gap-2 items-end">

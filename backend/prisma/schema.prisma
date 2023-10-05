@@ -28,8 +28,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels ChannelsOnUsers[]
-  Messages Messages[]
+  channels           ChannelsOnUsers[]
+  Messages           Messages[]
+  sentDMMessages     DMMessage[]
+  initaitedDMThreads DMThread[]        @relation(name: "initiator_relation")
+  secondIdDMThreads  DMThread[]        @relation(name: "participant_relation")
 }
 
 enum ChannelType {
@@ -75,11 +78,34 @@ model ChannelsOnUsers {
 }
 
 model Messages {
-  id        Int      @unique @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   text      String
   userId    String
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   channelId String
   Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model DMThread {
+  id            String @id @default(uuid())
+  initiatorId   String
+  participantId String
+
+  initiator   User        @relation(fields: [initiatorId], references: [id], name: "initiator_relation")
+  participant User        @relation(fields: [participantId], references: [id], name: "participant_relation")
+  messages    DMMessage[]
+
+  @@unique([initiatorId, participantId])
+}
+
+model DMMessage {
+  id       Int      @id @unique @default(autoincrement())
+  text     String
+  senderId String
+  sender   User     @relation(fields: [senderId], references: [id])
+  threadId String
+  thread   DMThread @relation(fields: [threadId], references: [id])
+
   createdAt DateTime @default(now())
 }

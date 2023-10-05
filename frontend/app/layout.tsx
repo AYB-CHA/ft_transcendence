@@ -4,6 +4,7 @@ import { Titillium_Web } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import { X } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
+import DMSocketProvider from "./(components)/DMSocket";
 
 const font = Titillium_Web({
   weight: ["200", "300", "400", "600", "700", "900"],

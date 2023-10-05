@@ -27,7 +27,7 @@ async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;
 }
 
-function formatMessages(messages: MessageType[]) {
+export function formatMessages(messages: MessageType[]) {
   let messagesGroup: MessageType[][] = [];
   let group: MessageType[] = [];
 
@@ -56,15 +56,25 @@ export default function ChatBox() {
 
   let { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
-    getChannelData
+    getChannelData,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   if (error) throw notFound();
 
   let { data: oldMessages } = useSWR<MessageType[]>(
     `/chat/channel/messages/${id}`,
-    getOldMessages
+    getOldMessages,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+
+  if (error) throw notFound();
 
   useEffect(() => {
     if (oldMessages) setMessages(oldMessages);
