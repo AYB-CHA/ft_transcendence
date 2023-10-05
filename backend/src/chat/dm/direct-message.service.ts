@@ -14,7 +14,7 @@ export class DirectMessageService {
     });
   }
   async getUserThreads(userId: string) {
-    let data = await this.prisma.dMThread.findMany({
+    const data = await this.prisma.dMThread.findMany({
       where: { OR: [{ initiatorId: userId }, { participantId: userId }] },
       select: {
         id: true,
