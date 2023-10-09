@@ -13,6 +13,7 @@ import MakeModerator from "./MembersAvatarDropDown/MakeModerator";
 import KickOut from "./MembersAvatarDropDown/KickOut";
 import Ban from "./MembersAvatarDropDown/Ban";
 import SendDM from "./MembersAvatarDropDown/SendDM";
+import OnlineStatus from "@/app/dashboard/(components)/OnlineStatus";
 
 export default function MemberLabel({
   channel,
@@ -53,7 +54,7 @@ export default function MemberLabel({
             {member.role.toLowerCase()}
           </span>
         </div>
-        <div className="rounded-full h-2 w-2 bg-primary-500 border border-white ml-auto"></div>
+        <OnlineStatus status={true} />
       </div>
     </div>
   );

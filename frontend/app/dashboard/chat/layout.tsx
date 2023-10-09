@@ -1,3 +1,4 @@
+"use client";
 import Card from "@/components/card/Card";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
@@ -10,13 +11,28 @@ import { Search } from "lucide-react";
 import NewChat from "./(components)/NewChat";
 import ChannelsSidebar from "./(components)/ChannelsSidebar";
 import ThreadSideBar from "./(components)/ThreadSideBar";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  let path = usePathname();
+
+  const [activeTab, setActiveTab] = useState<"channels" | "dms">(
+    path.startsWith("/dashboard/chat/dm") ? "dms" : "channels"
+  );
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as "channels" | "dms");
+  };
+
   return (
     <div className="my-8 grow grid grid-cols-4 gap-4">
       <Card className="flex flex-col">
         <div className="grow">
-          <Tabs defaultValue="channels">
+          <Tabs
+            value={activeTab}
+            onValueChange={handleTabChange}
+            defaultValue=""
+          >
             <CardHeader>
               <Input placeholder="Search" icon={<Search size={18} />} />
             </CardHeader>
@@ -34,7 +50,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </div>
                 </TabsContent>
                 <TabsContent value="dms">
-                  <ThreadSideBar />
+                  <div className="flex flex-col gap-4">
+                    <ThreadSideBar />
+                  </div>
                 </TabsContent>
               </div>
             </CardBody>
