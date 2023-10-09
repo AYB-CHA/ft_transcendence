@@ -7,8 +7,8 @@ export default function NavTab({ children, href, active = false }: Props) {
   return (
     <Link className="h-full" href={href}>
       <div
-        className={` border-y-[2.5px] border-transparent  hover:text-gray-300 h-full px-3 flex justify-center items-center cursor-pointer transition-colors relative group ${
-          active ? "border-b-primary text-gray-300" : "text-gray-500"
+        className={`border-x-[2.5px] border-transparent hover:text-gray-300 h-full flex justify-center items-center cursor-pointer transition-colors relative group px-4 py-2 ${
+          active ? "border-l-primary text-gray-300" : "text-gray-500"
         }`}
       >
         <div>{children}</div>
