@@ -36,4 +36,9 @@ export class DirectMessageController {
   getUserThreads(@Request() req: RequestType) {
     return this.dmService.getUserThreads(req.userPayload.sub);
   }
+  @Get('/thread/other/:id')
+  @UseGuards(AuthGuard)
+  getThreadOtherUser(@Request() req: RequestType, @Param('id') id: string) {
+    return this.dmService.getThreadOtherUser(req.userPayload.sub, id);
+  }
 }

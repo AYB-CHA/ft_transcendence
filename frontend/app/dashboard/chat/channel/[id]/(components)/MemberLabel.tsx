@@ -14,6 +14,7 @@ import KickOut from "./MembersAvatarDropDown/KickOut";
 import Ban from "./MembersAvatarDropDown/Ban";
 import SendDM from "./MembersAvatarDropDown/SendDM";
 import OnlineStatus from "@/app/dashboard/(components)/OnlineStatus";
+import Block from "./MembersAvatarDropDown/Block";
 
 export default function MemberLabel({
   channel,
@@ -34,10 +35,7 @@ export default function MemberLabel({
             <MakeAdmin channel={channel} me={me} member={member} />
             <MakeModerator channel={channel} member={member} />
             <SendDM userId={member.id} />
-            <DropdownMenuItem>
-              <UserMinus className="mr-2 h-4 w-4" />
-              <span>Block</span>
-            </DropdownMenuItem>
+            <Block />
             <DropdownMenuSeparator />
             <KickOut channel={channel} member={member} />
             <Ban channel={channel} member={member} />

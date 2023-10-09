@@ -4,6 +4,12 @@ import { MessageType } from "./ChatBox";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import { UserType } from "@/hooks/auth";
+import SendDM from "./MembersAvatarDropDown/SendDM";
+import {
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/DropDown";
+import Block from "./MembersAvatarDropDown/Block";
 
 export default function OtherMessage({
   messages,
@@ -37,7 +43,16 @@ export default function OtherMessage({
           );
         })}
       </div>
-      <div>{data && <Avatar src={data?.avatar} className="h-10 w-10" />}</div>
+      <div>
+        {data && (
+          <Avatar src={data?.avatar} className="h-10 w-10">
+            <DropdownMenuLabel>User</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <Block />
+            <SendDM userId={data.id} />
+          </Avatar>
+        )}
+      </div>
     </div>
   );
 }

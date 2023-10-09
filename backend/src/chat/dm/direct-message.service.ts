@@ -13,6 +13,18 @@ export class DirectMessageService {
       },
     });
   }
+  async getThreadOtherUser(my_id: string, dm_id: string) {
+    const thread = await this.prisma.dMThread.findFirst({
+      where: { id: dm_id },
+    });
+    let userId = thread.initiatorId;
+    if (userId === my_id) userId = thread.participantId;
+    return await this.prisma.user.findFirst({
+      where: { id: userId },
+      select: { id: true, avatar: true, username: true, fullName: true },
+    });
+  }
+
   async getUserThreads(userId: string) {
     const data = await this.prisma.dMThread.findMany({
       where: { OR: [{ initiatorId: userId }, { participantId: userId }] },

@@ -1,10 +1,11 @@
 import Avatar from "@/components/Avatar";
+import { OtherUserType } from "./ChatBox";
 
 export default function ChatBoxHeader({
   data,
   isLoading,
 }: {
-  data?: any;
+  data?: OtherUserType;
   isLoading: boolean;
 }) {
   return (
@@ -22,14 +23,14 @@ export default function ChatBoxHeader({
             {isLoading ? (
               <div className="bg-dark-semi-dim h-3 animate-pulse w-20 mt-1"></div>
             ) : (
-              data?.name
+              data?.fullName
             )}
           </h4>
           <h5 className="text-gray-500 text-xs">
             {isLoading ? (
               <div className="bg-dark-semi-dim h-2 animate-pulse w-16 mt-2"></div>
             ) : (
-              `${data?.members} members`
+              `@${data?.username}`
             )}
           </h5>
         </div>

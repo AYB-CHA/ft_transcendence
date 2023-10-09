@@ -18,12 +18,20 @@ import { useAuth } from "@/hooks/auth";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 
+export type OtherUserType = {
+  id: string;
+  avatar: string;
+  username: string;
+  fullName: string;
+};
+
 async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;
 }
 
 export default function ChatBox() {
   let { user: me } = useAuth();
+  let { id: chatThreadId } = useParams();
   let socket = useDMSocket();
   let { id } = useParams();
   let [messages, setMessages] = useState<MessageType[]>([]);
@@ -36,6 +44,14 @@ export default function ChatBox() {
       revalidateOnReconnect: false,
     }
   );
+  let { data: otherUser, isLoading } = useSWR(
+    `/chat/dm/thread/other/${chatThreadId}`,
+    async (url: string) => {
+      return (await axios.get<OtherUserType>(url)).data;
+    }
+  );
+
+  console.log(otherUser);
 
   if (error) throw notFound();
 
@@ -60,7 +76,7 @@ export default function ChatBox() {
     <Card className="col-span-3">
       <div className="flex flex-col h-full">
         <CardHeader>
-          <ChatBoxHeader isLoading />
+          <ChatBoxHeader isLoading={isLoading} data={otherUser} />
         </CardHeader>
         <div className="grow h-0 overflow-auto">
           <div className="flex flex-col p-4 gap-4">
