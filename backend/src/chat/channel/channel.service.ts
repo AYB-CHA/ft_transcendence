@@ -130,7 +130,7 @@ export class ChannelService {
         isMuted: user.mutedAt !== null,
       }),
     );
-    console.log(response);
+    // console.log(response);
     return response;
   }
 

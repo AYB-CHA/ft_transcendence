@@ -89,7 +89,7 @@ export class DirectMessageService {
       });
       return { id: thread.id };
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     return {
       id: (

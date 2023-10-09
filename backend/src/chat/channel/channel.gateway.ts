@@ -43,7 +43,7 @@ export class ChannelSocketGateway
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     const id = this.getClientId(client);
-    console.log(id);
+    // console.log(id);
 
     this.clients = this.clients.filter((c) => {
       return c.id != id;

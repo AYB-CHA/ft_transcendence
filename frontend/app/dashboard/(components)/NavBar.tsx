@@ -33,10 +33,6 @@ export default function NavBar() {
       icon: <LayoutPanelLeft strokeWidth={1} />,
     },
     {
-      href: "/dashboard/settings",
-      icon: <Settings strokeWidth={1} />,
-    },
-    {
       href: "/dashboard/chat",
       icon: <MessageCircle strokeWidth={1} />,
     },
@@ -44,12 +40,17 @@ export default function NavBar() {
       href: "/dashboard/leaderboard",
       icon: <Trophy strokeWidth={1} />,
     },
+    {
+      href: "/dashboard/settings",
+      icon: <Settings strokeWidth={1} />,
+    },
   ];
 
   return (
     <div>
       <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between">
         <div className="flex flex-col gap-6">
+          {/* <div className="flex justify-center"></div> */}
           {navLinks.map((link, i) => (
             <NavTab href={link.href} active={pathname == link.href} key={i}>
               {link.icon}

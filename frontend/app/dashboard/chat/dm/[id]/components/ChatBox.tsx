@@ -51,8 +51,6 @@ export default function ChatBox() {
     }
   );
 
-  console.log(otherUser);
-
   if (error) throw notFound();
 
   useEffect(() => {

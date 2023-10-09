@@ -20,6 +20,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<"channels" | "dms">(
     path.startsWith("/dashboard/chat/dm") ? "dms" : "channels"
   );
+
+  useEffect(() => {
+    setActiveTab(path.startsWith("/dashboard/chat/dm") ? "dms" : "channels");
+  }, [path]);
+
   const handleTabChange = (value: string) => {
     setActiveTab(value as "channels" | "dms");
   };
