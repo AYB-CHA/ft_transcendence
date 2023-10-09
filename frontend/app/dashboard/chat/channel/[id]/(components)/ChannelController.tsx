@@ -92,7 +92,14 @@ export default function ChannelController() {
         <div>{<ChannelMembers currentChannel={data} />}</div>
       </div>
       <CardFooter>
-        <div className="w-full grid grid-cols-2 gap-4">
+        <div className="py-[7px]">
+          <p className="text-xs text-dark-semi-light">
+            Please remember to treat channel members with respect. Disruptive
+            behavior may result in being removed from the channel or even
+            channel deletion.
+          </p>
+        </div>
+        {/* <div className="w-full grid grid-cols-2 gap-4">
           <Button
             disabled={data?.amIBaned}
             variant="danger"
@@ -106,7 +113,7 @@ export default function ChannelController() {
           id={data?.id}
           status={leaveConfirm}
           setStatus={setLeaveConfirm}
-        />
+        /> */}
       </CardFooter>
     </Card>
   );

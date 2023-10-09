@@ -19,18 +19,18 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#E3E29C",
+          DEFAULT: "#C2C4C0",
           50: "#FFFFFF",
           100: "#FFFFFF",
-          200: "#FEFEFB",
-          300: "#F5F5DC",
-          400: "#ECEBBC",
-          500: "#E3E29C",
-          600: "#D7D570",
-          700: "#CAC845",
-          800: "#A7A62F",
-          900: "#7C7A23",
-          950: "#66651D",
+          200: "#FFFFFF",
+          300: "#EBEBEA",
+          400: "#D6D8D5",
+          500: "#C2C4C0",
+          600: "#A6A9A3",
+          700: "#8A8E86",
+          800: "#6E716A",
+          900: "#52544F",
+          950: "#444642",
         },
         dark: {
           DEFAULT: "#0F1015",
