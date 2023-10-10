@@ -2,6 +2,9 @@
 CREATE TYPE "AuthProvider" AS ENUM ('FT', 'GITHUB');
 
 -- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ONLINE', 'IN_GAME', 'OFFLINE');
+
+-- CreateEnum
 CREATE TYPE "ChannelType" AS ENUM ('PUBLIC', 'PRIVATE', 'PROTECTED');
 
 -- CreateEnum
@@ -16,6 +19,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "avatar" TEXT NOT NULL,
     "authProvider" "AuthProvider",
+    "status" "UserStatus" NOT NULL DEFAULT 'OFFLINE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -74,6 +78,7 @@ CREATE TABLE "DMMessage" (
     "text" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
     "threadId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "DMMessage_pkey" PRIMARY KEY ("id")
 );

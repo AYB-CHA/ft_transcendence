@@ -23,9 +23,15 @@ export default function DMSocketProvider({ children }: PropsWithChildren) {
     url.protocol = "ws";
     url.pathname = "/dm";
     let createdSocket = io(url.toString(), {
-      extraHeaders: { Authorization: `Bearer ${Cookies.get("access_token")}` },
+      extraHeaders: {
+        Authorization: `Bearer ${Cookies.get("access_token")}`,
+      },
       query: {},
       reconnection: false,
+    });
+
+    createdSocket?.on("connect", () => {
+      console.log("connected");
     });
 
     createdSocket?.on("newMessage", (data) => {

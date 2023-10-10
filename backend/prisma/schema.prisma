@@ -15,6 +15,13 @@ enum AuthProvider {
   GITHUB
 }
 
+
+enum UserStatus {
+  ONLINE
+  IN_GAME
+  OFFLINE
+}
+
 model User {
   id       String  @id @default(uuid())
   username String  @unique
@@ -24,6 +31,8 @@ model User {
   avatar   String
 
   authProvider AuthProvider?
+
+  status UserStatus @default(OFFLINE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

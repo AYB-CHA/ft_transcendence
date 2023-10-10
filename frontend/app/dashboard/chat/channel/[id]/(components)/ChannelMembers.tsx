@@ -8,12 +8,15 @@ import MemberLabeLoading from "./MemberLabeLoading";
 import { ChannelType, UserRoleOnChannel } from "./ChannelController";
 import { useAuth } from "@/hooks/auth";
 
+export type UserStatusType = "OFFLINE" | "ONLINE" | "IN_GAME";
+
 export type ChannelMemberType = {
   id: string;
   username: string;
   fullName: string;
   avatar: string;
   role: UserRoleOnChannel;
+  status: UserStatusType;
 };
 
 export default function ChannelMembers({

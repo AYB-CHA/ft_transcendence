@@ -114,6 +114,7 @@ export class ChannelService {
                 username: true,
                 fullName: true,
                 avatar: true,
+                status: true,
               },
             },
           },

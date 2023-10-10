@@ -25,6 +25,8 @@ export default function MemberLabel({
   me: UserType;
   member: ChannelMemberType;
 }) {
+  console.log(member);
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
@@ -52,7 +54,7 @@ export default function MemberLabel({
             {member.role.toLowerCase()}
           </span>
         </div>
-        <OnlineStatus status={true} />
+        <OnlineStatus status={member.status != "OFFLINE"} />
       </div>
     </div>
   );

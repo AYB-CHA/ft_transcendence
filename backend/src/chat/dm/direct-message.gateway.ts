@@ -30,6 +30,7 @@ export class DirectMessageGateway
     const id = this.getClientId(client);
     console.log('CONNECTION >>>>>>>>>>>>');
     this.clients.push({ id, socket: client });
+    this.dmService.makeOnline(id);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
@@ -38,6 +39,7 @@ export class DirectMessageGateway
     this.clients = this.clients.filter((c) => {
       return c.id != id;
     });
+    this.dmService.makeOffline(id);
   }
 
   @SubscribeMessage('newMessage')

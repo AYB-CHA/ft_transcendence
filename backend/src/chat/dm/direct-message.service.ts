@@ -3,6 +3,24 @@ import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class DirectMessageService {
+  async makeOnline(id: string) {
+    await this.prisma.user.update({
+      where: { id },
+      data: { status: 'ONLINE' },
+      select: { id: true },
+    });
+    console.log('ONLINE');
+  }
+
+  async makeOffline(id: string) {
+    await this.prisma.user.update({
+      where: { id },
+      data: { status: 'OFFLINE' },
+      select: { id: true },
+    });
+    console.log('OFFLINE');
+  }
+
   constructor(private readonly prisma: PrismaService) {}
   async sendDm(threadId: string, senderId: string, text: string) {
     return this.prisma.dMMessage.create({
@@ -27,7 +45,9 @@ export class DirectMessageService {
 
   async getUserThreads(userId: string) {
     const data = await this.prisma.dMThread.findMany({
-      where: { OR: [{ initiatorId: userId }, { participantId: userId }] },
+      where: {
+        OR: [{ initiatorId: userId }, { participantId: userId }],
+      },
       select: {
         id: true,
         messages: {

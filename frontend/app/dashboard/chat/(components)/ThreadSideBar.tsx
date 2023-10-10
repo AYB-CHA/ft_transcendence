@@ -34,6 +34,12 @@ export default function ThreadSideBar() {
         <MemberLabeLoading />
       </>
     );
+  if (data?.length === 0)
+    return (
+      <div className="py-24 text-xs text-gray-500 text-center">
+        send a dm to start talking.
+      </div>
+    );
   return (
     <>
       {data &&
