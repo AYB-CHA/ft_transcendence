@@ -27,6 +27,14 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "UserBlock" (
+    "blocker_id" TEXT NOT NULL,
+    "blocked_id" TEXT NOT NULL,
+
+    CONSTRAINT "UserBlock_pkey" PRIMARY KEY ("blocked_id","blocker_id")
+);
+
+-- CreateTable
 CREATE TABLE "Channel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -97,6 +105,12 @@ CREATE UNIQUE INDEX "DMThread_initiatorId_participantId_key" ON "DMThread"("init
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DMMessage_id_key" ON "DMMessage"("id");
+
+-- AddForeignKey
+ALTER TABLE "UserBlock" ADD CONSTRAINT "UserBlock_blocker_id_fkey" FOREIGN KEY ("blocker_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserBlock" ADD CONSTRAINT "UserBlock_blocked_id_fkey" FOREIGN KEY ("blocked_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChannelsOnUsers" ADD CONSTRAINT "ChannelsOnUsers_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;

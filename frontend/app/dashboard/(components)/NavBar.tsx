@@ -1,13 +1,10 @@
 "use client";
 import { usePathname } from "next/navigation";
 import NavTab from "./NavTab";
-import Avatar from "@/components/DropDownAvatar";
 import {
-  LayoutPanelLeft,
   MessageCircle,
   Trophy,
   Settings,
-  Swords,
   User,
   SettingsIcon,
   LogOut,
@@ -32,6 +29,10 @@ export default function NavBar() {
     {
       href: "/dashboard/chat",
       icon: <MessageCircle strokeWidth={1} />,
+    },
+    {
+      href: "/dashboard/friends",
+      icon: <Users strokeWidth={1} />,
     },
     {
       href: "/dashboard/leaderboard",

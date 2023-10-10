@@ -12,6 +12,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChannelService } from './channel.service';
 import { ChannelUserRole } from '@prisma/client';
+import { UserService } from 'src/user/user.service';
 
 @WebSocketGateway({ namespace: 'channel', cors: true })
 export class ChannelSocketGateway
@@ -24,6 +25,7 @@ export class ChannelSocketGateway
   constructor(
     private readonly jwtService: JwtService,
     private readonly channelService: ChannelService,
+    private readonly userService: UserService,
   ) {}
 
   handleConnection(@ConnectedSocket() client: Socket) {
@@ -85,7 +87,10 @@ export class ChannelSocketGateway
       )
     ).id;
     for (const client of this.clients) {
-      if (client.channelId == data.channelId) {
+      if (
+        client.channelId === data.channelId &&
+        !(await this.userService.usersHasBlockReletion(senderId, client.id))
+      ) {
         client.socket.emit('newMessage', {
           text: data.text,
           senderId,

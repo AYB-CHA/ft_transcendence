@@ -25,8 +25,6 @@ export default function MemberLabel({
   me: UserType;
   member: ChannelMemberType;
 }) {
-  console.log(member);
-
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
@@ -37,7 +35,7 @@ export default function MemberLabel({
             <MakeAdmin channel={channel} me={me} member={member} />
             <MakeModerator channel={channel} member={member} />
             <SendDM userId={member.id} />
-            <Block />
+            <Block userId={member.id} myId={me.id} />
             <DropdownMenuSeparator />
             <KickOut channel={channel} member={member} />
             <Ban channel={channel} member={member} />

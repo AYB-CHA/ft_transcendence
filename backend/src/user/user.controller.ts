@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Post,
   Put,
   Req,
   UseGuards,
@@ -27,6 +28,11 @@ export class UserController {
   @Get('/:id')
   async user(@Param('id') id: string) {
     return await this.userService.findUser(id);
+  }
+  @UseGuards(AuthGuard)
+  @Post('block/:id')
+  async blockUser(@Req() request: RequestType, @Param('id') id: string) {
+    return await this.userService.blockUser(request.userPayload.sub, id);
   }
 
   @UseGuards(AuthGuard)

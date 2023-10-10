@@ -48,8 +48,11 @@ export class ChannelController {
 
   @UseGuards(AuthGuard)
   @Get('/:id/members')
-  async getChannelUsers(@Param('id') id: string) {
-    return await this.channelService.getChannelUsers(id);
+  async getChannelUsers(@Req() request: RequestType, @Param('id') id: string) {
+    return await this.channelService.getChannelUsers(
+      request.userPayload.sub,
+      id,
+    );
   }
 
   @UseGuards(AuthGuard)

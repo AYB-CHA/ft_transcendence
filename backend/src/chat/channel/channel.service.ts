@@ -18,7 +18,13 @@ export class ChannelService {
       throw new UnauthorizedException();
     return (
       await this.prisma.messages.findMany({
-        where: { channelId },
+        where: {
+          channelId,
+          AND: [
+            { User: { wasBlocked: { none: { blocker_id: userId } } } },
+            { User: { blocked: { none: { blocked_id: userId } } } },
+          ],
+        },
         orderBy: {
           createdAt: 'asc',
         },
@@ -97,13 +103,17 @@ export class ChannelService {
     }
   }
 
-  async getChannelUsers(id: string) {
+  async getChannelUsers(myId: string, id: string) {
     const userData = await this.prisma.channel.findFirst({
       where: { id },
       select: {
         users: {
           where: {
             banedAt: null,
+            AND: [
+              { User: { wasBlocked: { none: { blocker_id: myId } } } },
+              { User: { blocked: { none: { blocked_id: myId } } } },
+            ],
           },
           select: {
             mutedAt: true,

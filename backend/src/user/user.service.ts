@@ -13,6 +13,29 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {}
+
+  async blockUser(my_id: string, id: string) {
+    try {
+      if (my_id === id) throw new Error();
+      await this.prisma.userBlock.create({
+        data: { blocked_id: id, blocker_id: my_id },
+      });
+      return '';
+    } catch (error) {}
+    throw new BadRequestException(["you can't block user."]);
+  }
+  async usersHasBlockReletion(userTwoId: string, userOneId: string) {
+    return (
+      (await this.prisma.userBlock.count({
+        where: {
+          OR: [
+            { AND: [{ blocked_id: userOneId }, { blocker_id: userTwoId }] },
+            { AND: [{ blocked_id: userTwoId }, { blocker_id: userOneId }] },
+          ],
+        },
+      })) > 0
+    );
+  }
   // the third param is provided if you want to exclude a user from the check (useful in the updates).
   async validateUniquenessOfEmailAndUsername(
     username: string,

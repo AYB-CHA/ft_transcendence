@@ -15,7 +15,6 @@ enum AuthProvider {
   GITHUB
 }
 
-
 enum UserStatus {
   ONLINE
   IN_GAME
@@ -41,7 +40,18 @@ model User {
   Messages           Messages[]
   sentDMMessages     DMMessage[]
   initaitedDMThreads DMThread[]        @relation(name: "initiator_relation")
-  secondIdDMThreads  DMThread[]        @relation(name: "participant_relation")
+  secondDMThreads    DMThread[]        @relation(name: "participant_relation")
+  blocked            UserBlock[]       @relation(name: "blocker_relation")
+  wasBlocked         UserBlock[]       @relation(name: "blocked_relation")
+}
+
+model UserBlock {
+  blocker_id String
+  blocked_id String
+  Blocker    User   @relation(fields: [blocker_id], references: [id], name: "blocker_relation")
+  Blocked    User   @relation(fields: [blocked_id], references: [id], name: "blocked_relation")
+
+  @@id([blocked_id, blocker_id])
 }
 
 enum ChannelType {

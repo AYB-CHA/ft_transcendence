@@ -48,7 +48,7 @@ export default function OtherMessage({
           <Avatar src={data?.avatar} className="h-10 w-10">
             <DropdownMenuLabel>User</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Block />
+            <Block userId={data?.id} />
             <SendDM userId={data.id} />
           </Avatar>
         )}
