@@ -4,7 +4,7 @@ import { Titillium_Web } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import { X } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
-import DMSocketProvider from "./(components)/DMSocket";
+import NextTopLoader from "nextjs-toploader";
 
 const font = Titillium_Web({
   weight: ["200", "300", "400", "600", "700", "900"],
@@ -26,6 +26,7 @@ export default function RootLayout({
       <body
         className={`bg-dark ${font.className} text-gray-400 text-sm tracking-wide`}
       >
+        <NextTopLoader showSpinner={false} height={2} color="#C2C4C0" />
         {children}
         <ToastContainer
           position="bottom-right"

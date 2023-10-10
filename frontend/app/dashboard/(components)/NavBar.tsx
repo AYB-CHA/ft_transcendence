@@ -12,6 +12,7 @@ import {
   SettingsIcon,
   LogOut,
   Users,
+  Activity,
 } from "lucide-react";
 
 import { useAuth } from "@/hooks/auth";
@@ -28,10 +29,6 @@ export default function NavBar() {
   let { user, logOut } = useAuth();
 
   let navLinks: { href: string; icon: React.ReactNode }[] = [
-    {
-      href: "/dashboard",
-      icon: <LayoutPanelLeft strokeWidth={1} />,
-    },
     {
       href: "/dashboard/chat",
       icon: <MessageCircle strokeWidth={1} />,
@@ -50,9 +47,15 @@ export default function NavBar() {
     <div>
       <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between">
         <div className="flex flex-col gap-6">
-          {/* <div className="flex justify-center"></div> */}
+          <NavTab href="/dashboard" active={pathname === "/dashboard"}>
+            <Activity strokeWidth={1} />
+          </NavTab>
           {navLinks.map((link, i) => (
-            <NavTab href={link.href} active={pathname == link.href} key={i}>
+            <NavTab
+              href={link.href}
+              active={pathname.startsWith(link.href)}
+              key={i}
+            >
               {link.icon}
             </NavTab>
           ))}
