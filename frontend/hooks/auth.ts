@@ -18,7 +18,11 @@ export function useAuth() {
   const [error, setError] = useState<string | null>(null);
   const { push } = useRouter();
 
-  const { data: user, mutate } = useSWR("/user/me", async (param) => {
+  const {
+    data: user,
+    mutate,
+    isLoading,
+  } = useSWR("/user/me", async (param) => {
     const response = await axios.get<UserType>(param);
     return response.data;
   });
@@ -55,5 +59,5 @@ export function useAuth() {
     push("/");
   };
 
-  return { user, error, register, login, logOut };
+  return { user, error, register, login, logOut, isLoading };
 }
