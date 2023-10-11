@@ -110,10 +110,6 @@ export class ChannelService {
         users: {
           where: {
             banedAt: null,
-            AND: [
-              { User: { wasBlocked: { none: { blocker_id: myId } } } },
-              { User: { blocked: { none: { blocked_id: myId } } } },
-            ],
           },
           select: {
             mutedAt: true,

@@ -4,10 +4,10 @@ import LoginBoard from "./(components)/LoginBoard";
 
 export default function page() {
   return (
-    <div>
+    <>
       <LoginBoard />
       <div className="h-px bg-dark-semi-light relative mb-6">
-        <span className="bg-dark absolute left-1/2 text-xs top-1/2 -translate-y-1/2 -translate-x-1/2 px-1">
+        <span className="bg-dark-dim absolute left-1/2 text-xs top-1/2 -translate-y-1/2 -translate-x-1/2 px-1">
           OR
         </span>
       </div>
@@ -20,6 +20,6 @@ export default function page() {
           <span className="text-primary font-medium">sign up</span>
         </Link>
       </div>
-    </div>
+    </>
   );
 }

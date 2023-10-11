@@ -26,7 +26,7 @@ export default forwardRef<HTMLButtonElement, ButtonPropsType>(function Button(
   return (
     <button
       ref={ref}
-      className={`duration-500 text-black px-4 py-3 flex justify-center disabled:bg-opacity-70 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+      className={`duration-500 text-black px-4 py-3 flex justify-center disabled:bg-opacity-70 disabled:cursor-not-allowed  ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

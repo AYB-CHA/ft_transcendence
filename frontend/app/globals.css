@@ -4,5 +4,5 @@
 
 /* ugly but nothing todo about it */
 .Toastify__toast.Toastify__toast-theme--dark {
- @apply rounded-none border-[1.5px] border-primary !important;
+  @apply rounded-none border-[1.5px] border-primary !important;
 }
