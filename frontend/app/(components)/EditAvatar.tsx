@@ -1,3 +1,4 @@
+"use client";
 import Spinner from "@/components/Spinner";
 import axios from "@/lib/axios";
 import { PenIcon } from "lucide-react";
@@ -32,6 +33,7 @@ export default function EditAvatar({
   return (
     <div
       className="relative cursor-pointer mb-4"
+      style={{ width: 128 }}
       onClick={() => {
         inputRef.current?.click();
       }}
