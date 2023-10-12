@@ -10,28 +10,73 @@ import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
 import { useAuth } from "@/hooks/auth";
 import {
+  Check,
   Fingerprint,
   Info,
   KeyRoundIcon,
   Mail,
   Repeat,
-  Repeat1,
+  SpellCheck2,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
+import { avatarsBaseUrl } from "../chat/(components)/NewChannel";
+import axios from "@/lib/axios";
+import { triggerSuccessToast, triggerValidationToast } from "@/app/lib/Toast";
+import { AxiosError } from "axios";
+import { camelCaseToNormal } from "@/lib/string";
 
 export default function Page() {
   const [avatar, setAvatar] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  // const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmationPassword, setConfirmationPassword] = useState("");
 
   const { user, isLoading } = useAuth();
 
+  useEffect(() => {
+    setAvatar(user?.avatar ?? "");
+    setUsername(user?.username ?? "");
+    setEmail(user?.email ?? "");
+    setFullName(user?.fullName ?? "");
+  }, [user]);
+
+  let handelSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await axios.put("/user/update", { avatar, fullName, username, email });
+      triggerSuccessToast(
+        <Check size={18} />,
+        "Success",
+        "Profile updated successfully"
+      );
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        triggerValidationToast(
+          <SpellCheck2 size={18} />,
+          "Validation",
+          camelCaseToNormal(error.response?.data.message[0])
+        );
+      }
+    }
+  };
+
+  function setAvatarFullUrl(avatarName: string) {
+    setAvatar(avatarsBaseUrl() + avatarName);
+  }
+
   return (
     <div className="h-full flex justify-center items-center">
-      <div className="max-w-2xl w-full">
+      <form className="max-w-2xl w-full" onSubmit={handelSubmit}>
         <Card>
           <CardHeader>Profile Settings</CardHeader>
           <CardBody className="py-8">
@@ -43,7 +88,12 @@ export default function Page() {
             {user && (
               <>
                 <div className="flex justify-center mb-8">
-                  <EditAvatar src={user.avatar} setSrc={setAvatar} />
+                  <EditAvatar
+                    src={avatar.length ? avatar : user.avatar}
+                    setSrc={
+                      setAvatarFullUrl as Dispatch<SetStateAction<string>>
+                    }
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
@@ -51,7 +101,7 @@ export default function Page() {
                     <Input
                       placeholder="Full Name"
                       icon={<User size={17} />}
-                      value={user?.fullName}
+                      value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
                   </div>
@@ -60,7 +110,7 @@ export default function Page() {
                     <Input
                       placeholder="Username"
                       icon={<Fingerprint size={17} />}
-                      value={user?.username}
+                      value={username}
                       onChange={(e) => setUsername(e.target.value)}
                     />
                   </div>
@@ -69,7 +119,7 @@ export default function Page() {
                     <Input
                       placeholder="Email"
                       icon={<Mail size={17} />}
-                      value={user?.email}
+                      value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       type="email"
                     />
@@ -103,10 +153,12 @@ export default function Page() {
           </CardBody>
           <CardFooter>
             <Button>Enable 2F authentication</Button>
-            <Button variant="secondary">Save changes</Button>
+            <Button type="submit" variant="secondary">
+              Save changes
+            </Button>
           </CardFooter>
         </Card>
-      </div>
+      </form>
     </div>
   );
 }

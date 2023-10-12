@@ -6,12 +6,17 @@ import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
 import { useAuth } from "@/hooks/auth";
 import { Fingerprint, KeyRoundIcon, SpellCheck2, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginBoard() {
   const [usernameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const { error, login } = useAuth();
+
+  useEffect(() => {
+    if (error)
+      triggerValidationToast(<SpellCheck2 size={18} />, "Validation", error);
+  }, [error]);
 
   return (
     <div>
@@ -37,13 +42,6 @@ export default function LoginBoard() {
           className="w-full"
           onClick={() => {
             login(usernameOrEmail, password);
-            if (error) {
-              triggerValidationToast(
-                <SpellCheck2 size={18} />,
-                "Validation",
-                error
-              );
-            }
           }}
         >
           Login

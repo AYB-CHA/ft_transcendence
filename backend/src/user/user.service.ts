@@ -59,6 +59,11 @@ export class UserService {
   }
 
   async updateUser(id: string, userData: UpdateUserType) {
+    this.validateUniquenessOfEmailAndUsername(
+      userData.username,
+      userData.email,
+      id,
+    );
     return await this.prisma.user.update({
       where: { id },
       data: userData,

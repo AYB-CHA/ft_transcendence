@@ -5,7 +5,6 @@ import {
   IsString,
   IsStrongPassword,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
 export default class RegisterDto {

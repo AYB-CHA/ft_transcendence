@@ -37,8 +37,11 @@ import { mutate } from "swr";
 
 type ChannelVisibilityType = "public" | "private" | "protected";
 
-let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
-avatarUrl.pathname = "public/avatars/";
+export function avatarsBaseUrl() {
+  let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
+  avatarUrl.pathname = "public/avatars/";
+  return avatarUrl.toString();
+}
 
 export default function NewChannel({
   setParentDialog,
@@ -58,7 +61,7 @@ export default function NewChannel({
       [key: string]: string;
     } = {
       name,
-      avatar: avatarUrl.toString() + avatar,
+      avatar: avatarsBaseUrl() + avatar,
       type: visibility,
       topic: description,
     };
@@ -142,7 +145,7 @@ export default function NewChannel({
               <div className="flex justify-center items-center">
                 <div className="text-center flex flex-col items-center">
                   <EditAvatar
-                    src={avatarUrl.toString() + avatar}
+                    src={avatarsBaseUrl() + avatar}
                     setSrc={setAvatar}
                   />
                   <h3 className="font-medium text-base">

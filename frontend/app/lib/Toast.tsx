@@ -17,3 +17,19 @@ export function triggerValidationToast(
     </div>
   );
 }
+export function triggerSuccessToast(
+  icon: ReactNode,
+  title: string,
+  message: string
+) {
+  toast.dismiss();
+  toast(
+    <div>
+      <div className="mb-2 flex gap-2 items-center">
+        <div className="text-green-500">{icon}</div>
+        <h3>{title}</h3>
+      </div>
+      <div className="text-gray-500">{message}</div>
+    </div>
+  );
+}

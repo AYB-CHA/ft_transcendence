@@ -32,14 +32,14 @@ export default function RegisterBoard() {
           onChange={(e) => setFullName(e.target.value)}
         />
       </div>
-      {/* <div className="mb-6">
+      <div className="mb-6">
         <Label>Username</Label>
         <Input
           placeholder="username"
           icon={<Fingerprint size={17} />}
           onChange={(e) => setUsername(e.target.value)}
         />
-      </div> */}
+      </div>
       <div className="mb-6">
         <Label>Email</Label>
         <Input

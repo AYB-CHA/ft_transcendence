@@ -35,10 +35,11 @@ export function useAuth() {
       });
       Cookies.set("access_token", response.data.jwtToken);
       mutate();
-      push("/dashboard");
+      push("/dashboard/settings");
     } catch (error) {
-      if (error instanceof AxiosError)
+      if (error instanceof AxiosError) {
         setError(camelCaseToNormal(error.response?.data.message[0]));
+      }
     }
   };
 
@@ -47,7 +48,7 @@ export function useAuth() {
       let response = await axios.post("auth/register", data);
       Cookies.set("access_token", response.data.jwtToken);
       mutate();
-      push("/dashboard");
+      push("/dashboard/settings");
     } catch (error) {
       if (error instanceof AxiosError)
         setError(camelCaseToNormal(error.response?.data.message[0]));
