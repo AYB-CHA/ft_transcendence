@@ -14,6 +14,20 @@ export class UserService {
     private readonly config: ConfigService,
   ) {}
 
+  async enable2FA(userId: string, secret: string) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { optSecret: secret },
+    });
+  }
+
+  async disable2FA(userId: string) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { optSecret: null },
+    });
+  }
+
   async blockUser(my_id: string, id: string) {
     try {
       if (my_id === id) throw new Error();

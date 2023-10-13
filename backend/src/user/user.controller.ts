@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   Param,
   Post,
   Put,
@@ -13,6 +15,8 @@ import { UserService } from './user.service';
 import { RequestType } from 'src/types';
 import UpdateUserDto from './dtos/update-user.dto';
 import UpdateUserPasswordDto from './dtos/update-user-password.dto';
+import * as se from 'speakeasy';
+import * as QRCode from 'qrcode';
 
 @Controller('/user')
 export class UserController {
@@ -67,5 +71,27 @@ export class UserController {
       },
       request.userPayload.sub,
     );
+  }
+  @UseGuards(AuthGuard)
+  @Put('/update/enable2FA')
+  async enable2FA(@Req() request: RequestType) {
+    if ((await this.userService.findUser(request.userPayload.sub)).otpEnabled)
+      throw new BadRequestException();
+    const secret = se.generateSecret({ otpauth_url: true, name: 'PingPong' });
+
+    console.log(secret);
+
+    try {
+      const data = await QRCode.toDataURL(secret.otpauth_url, {});
+      await this.userService.enable2FA(request.userPayload.sub, secret.hex);
+      return { image: data };
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+  @UseGuards(AuthGuard)
+  @Put('/update/disable2FA')
+  async disable2FA(@Req() request: RequestType) {
+    await this.userService.disable2FA(request.userPayload.sub);
   }
 }

@@ -84,5 +84,5 @@ export function useAuth({
     push("/");
   };
 
-  return { user, error, register, login, logOut, isLoading };
+  return { user, error, register, login, logOut, isLoading, mutate };
 }
