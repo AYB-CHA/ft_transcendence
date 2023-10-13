@@ -31,6 +31,8 @@ model User {
 
   authProvider AuthProvider?
 
+  optSecret String?
+
   status UserStatus @default(OFFLINE)
 
   createdAt DateTime @default(now())

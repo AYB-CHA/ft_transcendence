@@ -17,6 +17,8 @@ export type UpdateUserType = {
   email: string;
   fullName: string;
   avatar: string;
+  password?: string;
+  passwordConfirmation?: string;
 };
 
 export type UpdateUserPasswordType = {

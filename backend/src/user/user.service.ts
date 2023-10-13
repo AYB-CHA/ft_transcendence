@@ -64,9 +64,27 @@ export class UserService {
       userData.email,
       id,
     );
+    if (userData.password && (await this.findUser(id)).passwordless) {
+      throw new BadRequestException(["you can't change your password"]);
+    }
+
+    if (
+      userData.password &&
+      userData.password !== userData.passwordConfirmation
+    )
+      throw new BadRequestException(['password confirmation does not match']);
+    const password = userData.password
+      ? hashSync(userData?.password, 10)
+      : null;
     return await this.prisma.user.update({
       where: { id },
-      data: userData,
+      data: {
+        avatar: userData.avatar,
+        username: userData.username,
+        email: userData.email,
+        fullName: userData.fullName,
+        password,
+      },
     });
   }
 
@@ -107,7 +125,7 @@ export class UserService {
   }
 
   async findUser(id: string, includePassword: boolean = false) {
-    return await this.prisma.user.findFirstOrThrow({
+    const data = await this.prisma.user.findFirstOrThrow({
       where: {
         id,
       },
@@ -118,8 +136,21 @@ export class UserService {
         fullName: true,
         username: true,
         password: includePassword,
+        optSecret: true,
+        authProvider: true,
       },
     });
+
+    return {
+      id: data.id,
+      avatar: data.avatar,
+      email: data.email,
+      fullName: data.fullName,
+      username: data.username,
+      password: data.password ?? undefined,
+      passwordless: data.authProvider != null,
+      otpEnabled: data.optSecret != null,
+    };
   }
 
   async findUserByEmailOrUsername(usernameOrEmail: string) {

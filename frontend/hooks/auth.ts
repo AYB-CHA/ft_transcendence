@@ -1,7 +1,7 @@
 import { camelCaseToNormal } from "@/lib/string";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "@/lib/axios";
 import useSWR from "swr";
@@ -12,9 +12,18 @@ export type UserType = {
   email: string;
   fullName: string;
   username: string;
+  otpEnabled: Boolean;
+  passwordless: Boolean;
+};
+type AuthProps = {
+  middleware?: "guest" | "auth";
+  redirectIfAuth?: string;
 };
 
-export function useAuth() {
+export function useAuth({
+  middleware,
+  redirectIfAuth = "/dashboard",
+}: AuthProps | undefined = {}) {
   const [error, setError] = useState<string | null>(null);
   const { push } = useRouter();
 
@@ -22,10 +31,25 @@ export function useAuth() {
     data: user,
     mutate,
     isLoading,
-  } = useSWR("/user/me", async (param) => {
-    const response = await axios.get<UserType>(param);
-    return response.data;
-  });
+    error: serverError,
+  } = useSWR(
+    "/user/me",
+    async (param) => {
+      const response = await axios.get<UserType>(param, {
+        headers: {
+          Authorization: "Bearer " + Cookies.get("access_token"),
+        },
+      });
+      return response.data;
+    },
+    {
+      onErrorRetry: () => {},
+    }
+  );
+
+  useEffect(() => {
+    if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
+  }, [middleware, user, push, redirectIfAuth]);
 
   const login = async (usernameOrEmail: string, password: string) => {
     try {
@@ -34,8 +58,8 @@ export function useAuth() {
         password,
       });
       Cookies.set("access_token", response.data.jwtToken);
+      push("/dashboard/");
       mutate();
-      push("/dashboard/settings");
     } catch (error) {
       if (error instanceof AxiosError) {
         setError(camelCaseToNormal(error.response?.data.message[0]));
@@ -47,8 +71,8 @@ export function useAuth() {
     try {
       let response = await axios.post("auth/register", data);
       Cookies.set("access_token", response.data.jwtToken);
-      mutate();
       push("/dashboard/settings");
+      mutate();
     } catch (error) {
       if (error instanceof AxiosError)
         setError(camelCaseToNormal(error.response?.data.message[0]));

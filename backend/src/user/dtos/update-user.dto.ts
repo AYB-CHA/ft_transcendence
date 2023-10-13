@@ -2,7 +2,9 @@ import {
   IsAlphanumeric,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
+  IsStrongPassword,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -31,4 +33,16 @@ export default class UpdateUserDto {
   @IsString()
   @IsNotEmpty()
   avatar: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsStrongPassword()
+  @IsOptional()
+  password?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsStrongPassword()
+  @IsOptional()
+  passwordConfirmation?: string;
 }

@@ -20,7 +20,7 @@ export default function RegisterBoard() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
-  const { error, register } = useAuth();
+  const { error, register } = useAuth({ middleware: "guest" });
 
   return (
     <div>

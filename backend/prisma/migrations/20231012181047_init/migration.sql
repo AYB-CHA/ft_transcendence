@@ -19,6 +19,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "avatar" TEXT NOT NULL,
     "authProvider" "AuthProvider",
+    "optSecret" TEXT,
     "status" "UserStatus" NOT NULL DEFAULT 'OFFLINE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

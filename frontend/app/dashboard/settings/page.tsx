@@ -31,6 +31,8 @@ import axios from "@/lib/axios";
 import { triggerSuccessToast, triggerValidationToast } from "@/app/lib/Toast";
 import { AxiosError } from "axios";
 import { camelCaseToNormal } from "@/lib/string";
+import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 
 export default function Page() {
   const [avatar, setAvatar] = useState("");
@@ -38,9 +40,13 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmationPassword, setConfirmationPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const { user, isLoading } = useAuth();
+
+  console.log(user);
+
+  const router = useRouter();
 
   useEffect(() => {
     setAvatar(user?.avatar ?? "");
@@ -53,12 +59,23 @@ export default function Page() {
     e.preventDefault();
 
     try {
-      await axios.put("/user/update", { avatar, fullName, username, email });
+      await axios.put("/user/update", {
+        avatar,
+        fullName,
+        username,
+        email,
+        password: password.length ? password : undefined,
+        passwordConfirmation: password.length
+          ? passwordConfirmation
+          : undefined,
+      });
       triggerSuccessToast(
         <Check size={18} />,
         "Success",
         "Profile updated successfully"
       );
+      mutate("/user/me");
+      router.push("/dashboard");
     } catch (error) {
       if (error instanceof AxiosError) {
         triggerValidationToast(
@@ -124,35 +141,43 @@ export default function Page() {
                       type="email"
                     />
                   </div>
-                  <div className="col-span-2 text-xs text-dark-semi-light flex gap-2">
-                    <Info size={17} strokeWidth={1} />
-                    If you wish to keep your password unchanged, you can leave
-                    the password field empty.
-                  </div>
-                  <div>
-                    <Label>Password</Label>
-                    <Input
-                      placeholder="Password"
-                      icon={<KeyRoundIcon size={17} type="password" />}
-                      type="password"
-                      // onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>Password confirmation</Label>
-                    <Input
-                      placeholder="Password confirmation"
-                      icon={<Repeat size={17} type="password" />}
-                      type="password"
-                      // onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
+                  {!user.passwordless && (
+                    <>
+                      <div className="col-span-2 text-xs text-dark-semi-light flex gap-2">
+                        <Info size={17} strokeWidth={1} />
+                        If you wish to keep your password unchanged, you can
+                        leave the password field empty.
+                      </div>
+                      <div>
+                        <Label>Password</Label>
+                        <Input
+                          placeholder="Password"
+                          icon={<KeyRoundIcon size={17} type="password" />}
+                          type="password"
+                          onChange={(e) => setPassword(e.target.value)}
+                          value={password}
+                        />
+                      </div>
+                      <div>
+                        <Label>Password confirmation</Label>
+                        <Input
+                          placeholder="Password confirmation"
+                          icon={<Repeat size={17} type="password" />}
+                          type="password"
+                          onChange={(e) =>
+                            setPasswordConfirmation(e.target.value)
+                          }
+                          value={passwordConfirmation}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
           </CardBody>
           <CardFooter>
-            <Button>Enable 2F authentication</Button>
+            <Button type="button">Enable 2F authentication</Button>
             <Button type="submit" variant="secondary">
               Save changes
             </Button>
