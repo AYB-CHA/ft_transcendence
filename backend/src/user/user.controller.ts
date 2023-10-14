@@ -33,6 +33,7 @@ export class UserController {
   async user(@Param('id') id: string) {
     return await this.userService.findUser(id);
   }
+
   @UseGuards(AuthGuard)
   @Post('block/:id')
   async blockUser(@Req() request: RequestType, @Param('id') id: string) {

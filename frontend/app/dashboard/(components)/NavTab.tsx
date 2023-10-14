@@ -12,11 +12,11 @@ export default function NavTab({ children, href, active = false }: Props) {
         }`}
       >
         <div>{children}</div>
-        <div
+        {/* <div
           className={` group-hover:bg-primary/60 h-5 w-5 absolute blur-md transition-colors ${
             active ? "bg-primary/60" : "bg-transparent"
           }`}
-        ></div>
+        /> */}
       </div>
     </Link>
   );

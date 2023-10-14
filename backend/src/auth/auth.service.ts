@@ -40,10 +40,12 @@ export class AuthService {
     authProvider: 'FT' | 'GITHUB',
   ) {
     let userId: string;
+    let totp = undefined;
 
     try {
-      userId = (await this.userService.findUserByUsername(userData.username))
-        .id;
+      const user = await this.userService.findUserByUsername(userData.username);
+      userId = user.id;
+      totp = user.optSecret !== null;
     } catch {
       userId = await this.userService.createUser({ ...userData, authProvider });
     }
@@ -52,16 +54,20 @@ export class AuthService {
     redirectUrl.pathname = '/auth/provider';
     redirectUrl.searchParams.append(
       'access_token',
-      (await this.generateJwtResponse(userId)).jwtToken,
+      (await this.generateJwtResponse(userId, totp)).jwtToken,
     );
     return {
       url: redirectUrl.toString(),
     };
   }
 
-  async generateJwtResponse(sub: string) {
+  async generateJwtResponse(
+    sub: string,
+    TOTPUnverified: string | undefined = undefined,
+  ) {
     const jwtToken = await this.jwtService.signAsync({
       sub,
+      TOTPUnverified,
     });
     return {
       jwtToken,

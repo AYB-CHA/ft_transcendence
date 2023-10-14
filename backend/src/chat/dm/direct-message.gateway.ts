@@ -28,6 +28,10 @@ export class DirectMessageGateway
 
   handleConnection(@ConnectedSocket() client: Socket) {
     const id = this.getClientId(client);
+    if (!id) {
+      client.disconnect();
+      return;
+    }
     console.log('CONNECTION >>>>>>>>>>>>');
     this.clients.push({ id, socket: client });
     this.dmService.makeOnline(id);

@@ -1,6 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -20,8 +22,22 @@ export class AuthGuard implements CanActivate {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token);
+      if (payload.TOTPUnverified === true) {
+        // throw new UnauthorizedException('TOTP needs verification', {
+        //   cause: '123',
+        //   description: '321',
+        // });
+        throw new HttpException(
+          {
+            error: 'TOTP_UNVERIFIED',
+            message: 'TOTP needs verification',
+          },
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
       request['userPayload'] = payload;
-    } catch {
+    } catch (e) {
+      if (e instanceof HttpException) throw e;
       throw new UnauthorizedException();
     }
     return true;

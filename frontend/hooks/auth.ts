@@ -1,5 +1,5 @@
 import { camelCaseToNormal } from "@/lib/string";
-import { AxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -47,9 +47,20 @@ export function useAuth({
     }
   );
 
+  const logOut = () => {
+    Cookies.remove("access_token");
+    push("/");
+  };
+
   useEffect(() => {
+    if (
+      isAxiosError(serverError) &&
+      serverError.response?.data.error === "TOTP_UNVERIFIED"
+    )
+      return push("/auth/2fa");
     if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
-  }, [middleware, user, push, redirectIfAuth]);
+    if (middleware === "auth" && !user && serverError) logOut();
+  }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const login = async (usernameOrEmail: string, password: string) => {
     try {
@@ -58,7 +69,7 @@ export function useAuth({
         password,
       });
       Cookies.set("access_token", response.data.jwtToken);
-      push("/dashboard/");
+      push("/dashboard");
       mutate();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -77,11 +88,6 @@ export function useAuth({
       if (error instanceof AxiosError)
         setError(camelCaseToNormal(error.response?.data.message[0]));
     }
-  };
-
-  const logOut = () => {
-    Cookies.remove("access_token");
-    push("/");
   };
 
   return { user, error, register, login, logOut, isLoading, mutate };

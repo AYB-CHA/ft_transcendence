@@ -23,7 +23,7 @@ import DropDownAvatar from "@/components/DropDownAvatar";
 
 export default function NavBar() {
   const pathname = usePathname();
-  let { user, logOut } = useAuth();
+  let { user, logOut, isLoading } = useAuth({ middleware: "auth" });
 
   let navLinks: { href: string; icon: React.ReactNode }[] = [
     {
@@ -63,27 +63,31 @@ export default function NavBar() {
         </div>
         <div>
           <div className="flex items-center">
-            <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
-              <DropdownMenuLabel>Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Users className="mr-2 h-4 w-4" />
-                <span>Friends</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <SettingsIcon className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logOut}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Logout</span>
-              </DropdownMenuItem>
-            </DropDownAvatar>
+            {isLoading ? (
+              <div className="h-10 w-10 rounded-full animate-pulse bg-dark-semi-dim"></div>
+            ) : (
+              <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Friends</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <SettingsIcon className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropDownAvatar>
+            )}
             {/* <div className="text-sm pl-2 mt-1.5">
               <h3 className="leading-3">{user && "@" + user?.username}</h3>
               <span className="text-primary text leading-3">

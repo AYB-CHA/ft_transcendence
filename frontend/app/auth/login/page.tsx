@@ -15,7 +15,7 @@ export default function page() {
         <ProvidersButtons />
       </div>
       <div className="text-center">
-        <span className="text-gray-500">Don’t have an account? </span>
+        <span className="text-gray-500">Don’t have an account?</span>
         <Link href={"/auth/register"}>
           <span className="text-primary font-medium">sign up</span>
         </Link>

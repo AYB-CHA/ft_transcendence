@@ -34,7 +34,6 @@ export default function RootLayout({
           // autoClose={false}
           theme="dark"
           draggable={false}
-          closeButton={<X className="text-gray-500" size={15} />}
         />
       </body>
     </html>

@@ -1,48 +1,21 @@
 "use client";
-import EditAvatar from "@/app/(components)/EditAvatar";
 import Button from "@/components/Button";
-import Spinner from "@/components/Spinner";
 import Card from "@/components/card/Card";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
-import Input from "@/components/input/Input";
-import Label from "@/components/input/Label";
 import { useAuth } from "@/hooks/auth";
-import {
-  Check,
-  Fingerprint,
-  Info,
-  KeyRoundIcon,
-  Mail,
-  Repeat,
-  SpellCheck2,
-  User,
-} from "lucide-react";
-
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
-import { avatarsBaseUrl } from "../chat/(components)/NewChannel";
-import axios from "@/lib/axios";
-import { triggerSuccessToast, triggerValidationToast } from "@/app/lib/Toast";
-import { AxiosError } from "axios";
-import { camelCaseToNormal } from "@/lib/string";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Inputs from "./(components)/Inputs";
 import Image from "next/image";
 
 export default function Page() {
-  const { user, isLoading, mutate } = useAuth();
+  const { user, isLoading, mutate } = useAuth({ middleware: "auth" });
   const [qrcode, setQrcode] = useState<string | null>(null);
 
   return (
     <div className="h-full flex justify-center items-center">
-      <div className="max-w-2xl w-full">
+      <div className="max-w-xl w-full">
         <Card>
           <CardHeader>Profile Settings</CardHeader>
           {qrcode === null ? (
