@@ -6,8 +6,11 @@ export const GET = (request: NextRequest) => {
   const cookieStore = cookies();
 
   let redirectUrl = new URL(process.env["FRONTEND_BASEURL"] ?? "");
-  redirectUrl.pathname += "/dashboard";
-
   cookieStore.set("access_token", token);
+
+  if (request.nextUrl.searchParams.get("2fa"))
+    redirectUrl.pathname += "/auth/2fa";
+  else redirectUrl.pathname += "/dashboard";
+
   return NextResponse.redirect(redirectUrl);
 };

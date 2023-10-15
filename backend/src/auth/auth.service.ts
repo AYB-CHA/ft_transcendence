@@ -41,6 +41,8 @@ export class AuthService {
   ) {
     let userId: string;
     let totp = undefined;
+    const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
+    redirectUrl.pathname = '/auth/provider';
 
     try {
       const user = await this.userService.findUserByUsername(userData.username);
@@ -50,12 +52,12 @@ export class AuthService {
       userId = await this.userService.createUser({ ...userData, authProvider });
     }
 
-    const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
-    redirectUrl.pathname = '/auth/provider';
     redirectUrl.searchParams.append(
       'access_token',
       (await this.generateJwtResponse(userId, totp)).jwtToken,
     );
+    if (totp) redirectUrl.searchParams.append('2fa', 'true');
+    console.log(redirectUrl.toString());
     return {
       url: redirectUrl.toString(),
     };

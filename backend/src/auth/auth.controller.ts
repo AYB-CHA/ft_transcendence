@@ -3,12 +3,14 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Post,
   Query,
   Redirect,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as se from 'speakeasy';
 
 import RegisterDto from './dtos/register.dto';
 import { AuthService } from './auth.service';
@@ -16,6 +18,9 @@ import LoginDto from './dtos/login.dto';
 import { FtStrategy } from './OAuth/ft.strategy';
 import { RegisterUserType } from 'src/types';
 import { GithubStrategy } from './OAuth/github.strategy';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Controller('/auth')
 export class AuthController {
@@ -23,6 +28,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly ftStrategy: FtStrategy,
     private readonly githubStrategy: GithubStrategy,
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Post('register')
@@ -52,6 +59,38 @@ export class AuthController {
     return {
       redirectUrl: url,
     };
+  }
+
+  @Post('verify/2fa')
+  async verify2FA(
+    @Body('verificationCode') verificationCode: string | undefined,
+    @Headers('authorization') authorization: string | undefined,
+  ) {
+    if (!verificationCode || !authorization) throw new BadRequestException();
+
+    authorization = authorization.replace('Bearer ', '');
+
+    let userId = '';
+    try {
+      const payload = await this.jwtService.verifyAsync(authorization);
+      if (!payload.TOTPUnverified) throw new Error();
+      const user = await this.prisma.user.findFirstOrThrow({
+        where: { id: payload.sub },
+      });
+      if (user.optSecret === null) throw new Error();
+      if (
+        !se.totp.verify({
+          secret: user.optSecret,
+          token: verificationCode,
+          encoding: 'hex',
+        })
+      )
+        throw new Error();
+      userId = payload.sub;
+    } catch {
+      throw new BadRequestException();
+    }
+    return this.authService.generateJwtResponse(userId);
   }
 
   @Get('/back')

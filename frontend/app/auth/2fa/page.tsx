@@ -1,15 +1,40 @@
 "use client";
+import { triggerValidationToast } from "@/app/lib/Toast";
 import Button from "@/components/Button";
+import axios from "@/lib/axios";
+import Cookies from "js-cookie";
 import { Lock } from "lucide-react";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import AuthCode from "react-auth-code-input";
-
+import { mutate } from "swr";
 export default function Page() {
+  const { push } = useRouter();
   const [code, setCode] = useState("");
 
-  const handelSubmition = () => {
-    console.log(code);
+  const handelSubmit = async () => {
+    if (code.length !== 6) return;
+    try {
+      let response = await axios.post("/auth/verify/2fa", {
+        verificationCode: code,
+      });
+      Cookies.set("access_token", response.data.jwtToken);
+      push("/dashboard");
+    } catch (error) {
+      triggerValidationToast(
+        <Lock size={18} />,
+        "Code",
+        "Verification code is invalid."
+      );
+    }
   };
+
+  const removeAccessToken = () => {
+    mutate("/user/me");
+    Cookies.remove("access_token");
+  };
+
   return (
     <div className="">
       <div className="py-8">
@@ -35,11 +60,10 @@ export default function Page() {
         />
       </div>
       <div className="flex gap-2 justify-end">
-        <Button variant="secondary">Cancel</Button>
-        <Button
-          className="w-full"
-          onClick={handelSubmition}
-        >{`Let's Go`}</Button>
+        <Link href={"/auth/login"} onClick={removeAccessToken}>
+          <Button variant="secondary">Cancel</Button>
+        </Link>
+        <Button className="w-full" onClick={handelSubmit}>{`Let's Go`}</Button>
       </div>
     </div>
   );
