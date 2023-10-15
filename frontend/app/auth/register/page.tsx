@@ -17,7 +17,7 @@ export default function page() {
       <div className="text-center">
         <span className="text-gray-500">You have an account? </span>
         <Link href={"/auth/login"}>
-          <span className="text-primary font-medium">Login</span>
+          <span className="text-primary font-medium"> Login</span>
         </Link>
       </div>
     </div>

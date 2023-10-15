@@ -16,10 +16,20 @@ export default function Page() {
   const handelSubmit = async () => {
     if (code.length !== 6) return;
     try {
-      let response = await axios.post("/auth/verify/2fa", {
-        verificationCode: code,
-      });
+      let response = await axios.post(
+        "/auth/verify/2fa",
+        {
+          verificationCode: code,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + Cookies.get("access_token"),
+          },
+        }
+      );
       Cookies.set("access_token", response.data.jwtToken);
+      // console.log(response.data.jwtToken);
+      // mutate("/user/me");
       push("/dashboard");
     } catch (error) {
       triggerValidationToast(
@@ -31,8 +41,8 @@ export default function Page() {
   };
 
   const removeAccessToken = () => {
-    mutate("/user/me");
     Cookies.remove("access_token");
+    mutate("/user/me");
   };
 
   return (

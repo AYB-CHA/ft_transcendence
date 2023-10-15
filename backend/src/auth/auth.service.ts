@@ -29,7 +29,10 @@ export class AuthService {
       );
 
       if (compareSync(userData.password, user.password)) {
-        return this.generateJwtResponse(user.id);
+        return this.generateJwtResponse(
+          user.id,
+          user.optSecret !== null ? true : undefined,
+        );
       }
     } catch {}
     throw new UnauthorizedException(['username or password is wrong']);
@@ -47,6 +50,7 @@ export class AuthService {
     try {
       const user = await this.userService.findUserByUsername(userData.username);
       userId = user.id;
+      console.log(user.optSecret, userData.username, user);
       totp = user.optSecret !== null;
     } catch {
       userId = await this.userService.createUser({ ...userData, authProvider });
@@ -57,7 +61,7 @@ export class AuthService {
       (await this.generateJwtResponse(userId, totp)).jwtToken,
     );
     if (totp) redirectUrl.searchParams.append('2fa', 'true');
-    console.log(redirectUrl.toString());
+    // console.log(redirectUrl.toString());
     return {
       url: redirectUrl.toString(),
     };
@@ -65,7 +69,7 @@ export class AuthService {
 
   async generateJwtResponse(
     sub: string,
-    TOTPUnverified: string | undefined = undefined,
+    TOTPUnverified: boolean | undefined = undefined,
   ) {
     const jwtToken = await this.jwtService.signAsync({
       sub,

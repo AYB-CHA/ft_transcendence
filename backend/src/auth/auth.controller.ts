@@ -19,7 +19,6 @@ import { FtStrategy } from './OAuth/ft.strategy';
 import { RegisterUserType } from 'src/types';
 import { GithubStrategy } from './OAuth/github.strategy';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/db/prisma.service';
 
 @Controller('/auth')
@@ -70,6 +69,8 @@ export class AuthController {
 
     authorization = authorization.replace('Bearer ', '');
 
+    console.log(authorization);
+
     let userId = '';
     try {
       const payload = await this.jwtService.verifyAsync(authorization);
@@ -87,7 +88,9 @@ export class AuthController {
       )
         throw new Error();
       userId = payload.sub;
-    } catch {
+    } catch (e) {
+      console.log(e);
+
       throw new BadRequestException();
     }
     return this.authService.generateJwtResponse(userId);

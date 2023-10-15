@@ -35,6 +35,7 @@ export function useAuth({
   } = useSWR(
     "/user/me",
     async (param) => {
+      console.log(Cookies.get("access_token"));
       const response = await axios.get<UserType>(param, {
         headers: {
           Authorization: "Bearer " + Cookies.get("access_token"),
@@ -56,8 +57,10 @@ export function useAuth({
     if (
       isAxiosError(serverError) &&
       serverError.response?.data.error === "TOTP_UNVERIFIED"
-    )
+    ) {
+      console.log(user, serverError);
       return push("/auth/2fa");
+    }
     if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
     if (middleware === "auth" && !user && serverError) logOut();
   }, [middleware, user, push, redirectIfAuth, serverError]);

@@ -90,6 +90,7 @@ export class UserController {
       throw new InternalServerErrorException();
     }
   }
+
   @UseGuards(AuthGuard)
   @Put('/update/disable2FA')
   async disable2FA(@Req() request: RequestType) {
