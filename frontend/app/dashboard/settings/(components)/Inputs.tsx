@@ -115,73 +115,80 @@ export default function Inputs({
           </div>
         )}
         {user && (
-          <>
-            <div className="flex justify-center mb-8">
-              <EditAvatar
-                src={avatar.length ? avatar : user.avatar}
-                setSrc={setAvatarFullUrl as Dispatch<SetStateAction<string>>}
-              />
+          <div className="grid grid-cols-5">
+            <div className="col-span-3">
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <Label>Full Name</Label>
+                  <Input
+                    placeholder="Full Name"
+                    icon={<User size={17} />}
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Username</Label>
+                  <Input
+                    placeholder="Username"
+                    icon={<Fingerprint size={17} />}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Label>Email</Label>
+                  <Input
+                    placeholder="Email"
+                    icon={<Mail size={17} />}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                  />
+                </div>
+                <div className="col-span-2 text-xs text-dark-semi-light flex gap-2">
+                  <Info size={17} strokeWidth={1} />
+                  If you wish to keep your password unchanged, you can leave the
+                  password field empty.
+                </div>
+                <div>
+                  <Label>Password</Label>
+                  <Input
+                    disabled={!!user.passwordless}
+                    placeholder="Password"
+                    icon={<KeyRoundIcon size={17} type="password" />}
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    value={password}
+                  />
+                </div>
+                <div>
+                  <Label>Password confirmation</Label>
+                  <Input
+                    disabled={!!user.passwordless}
+                    placeholder="Password confirmation"
+                    icon={<Repeat size={17} type="password" />}
+                    type="password"
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    value={passwordConfirmation}
+                  />
+                </div>
+                {/* {!user.passwordless && (
+                  <>
+                    
+                  </>
+                )} */}
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <Label>Full Name</Label>
-                <Input
-                  placeholder="Full Name"
-                  icon={<User size={17} />}
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+            <div className="flex justify-center items-center col-span-2">
+              <div className="flex justify-center w-fit">
+                <EditAvatar
+                  src={avatar.length ? avatar : user.avatar}
+                  setSrc={setAvatarFullUrl as Dispatch<SetStateAction<string>>}
                 />
               </div>
-              <div>
-                <Label>Username</Label>
-                <Input
-                  placeholder="Username"
-                  icon={<Fingerprint size={17} />}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div className="col-span-2">
-                <Label>Email</Label>
-                <Input
-                  placeholder="Email"
-                  icon={<Mail size={17} />}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                />
-              </div>
-              {!user.passwordless && (
-                <>
-                  <div className="col-span-2 text-xs text-dark-semi-light flex gap-2">
-                    <Info size={17} strokeWidth={1} />
-                    If you wish to keep your password unchanged, you can leave
-                    the password field empty.
-                  </div>
-                  <div>
-                    <Label>Password</Label>
-                    <Input
-                      placeholder="Password"
-                      icon={<KeyRoundIcon size={17} type="password" />}
-                      type="password"
-                      onChange={(e) => setPassword(e.target.value)}
-                      value={password}
-                    />
-                  </div>
-                  <div>
-                    <Label>Password confirmation</Label>
-                    <Input
-                      placeholder="Password confirmation"
-                      icon={<Repeat size={17} type="password" />}
-                      type="password"
-                      onChange={(e) => setPasswordConfirmation(e.target.value)}
-                      value={passwordConfirmation}
-                    />
-                  </div>
-                </>
-              )}
             </div>
-          </>
+          </div>
         )}
       </CardBody>
       <CardFooter>

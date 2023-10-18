@@ -15,7 +15,7 @@ export default function Page() {
 
   return (
     <div className="h-full flex justify-center items-center">
-      <div className="max-w-xl w-full">
+      <div className="max-w-4xl w-full">
         <Card>
           <CardHeader>Profile Settings</CardHeader>
           {qrcode === null ? (

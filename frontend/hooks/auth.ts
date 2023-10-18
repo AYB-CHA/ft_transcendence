@@ -113,9 +113,7 @@ export function useAuth({
       Cookies.set("access_token", response.data.jwtToken);
       mutate();
       push("/dashboard");
-    } catch (error) {
-      console.log("-+++++++++++++++++++-", error);
-
+    } catch {
       triggerValidationToast(
         createElement(Lock, { size: 18 }),
         "Code",

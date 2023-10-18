@@ -65,12 +65,9 @@ export class AuthController {
     @Body('verificationCode') verificationCode: string | undefined,
     @Headers('authorization') authorization: string | undefined,
   ) {
-    console.log('OKKKKKK');
     if (!verificationCode || !authorization) throw new BadRequestException();
 
     authorization = authorization.replace('Bearer ', '');
-
-    console.log(authorization);
 
     let userId = '';
     try {
@@ -89,9 +86,7 @@ export class AuthController {
       )
         throw new Error();
       userId = payload.sub;
-    } catch (e) {
-      console.log(e);
-
+    } catch {
       throw new BadRequestException();
     }
     return this.authService.generateJwtResponse(userId);

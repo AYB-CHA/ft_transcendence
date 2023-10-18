@@ -10,7 +10,11 @@ export default function Input({ icon, ...props }: InputPropsType) {
   return (
     <div className="relative">
       <input
-        className="py-2.5 placeholder:text-gray-400 px-4 border border-dark-semi-light block w-full bg-dark-semi-dim focus:outline-none"
+        className={`py-2.5 px-4 border border-dark-semi-light block w-full bg-dark-semi-dim focus:outline-none ${
+          props.disabled
+            ? "placeholder:text-gray-600 cursor-not-allowed"
+            : "placeholder:text-gray-500"
+        }`}
         {...props}
       />
       <div className="absolute top-1/2 -translate-y-1/2 right-3 text-dark-semi-light">
