@@ -76,9 +76,12 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Put('/update/enable2FA')
   async enable2FA(@Req() request: RequestType) {
-    if ((await this.userService.findUser(request.userPayload.sub)).otpEnabled)
-      throw new BadRequestException();
-    const secret = se.generateSecret({ otpauth_url: true, name: 'PingPong' });
+    const user = await this.userService.findUser(request.userPayload.sub);
+    if (user.otpEnabled) throw new BadRequestException();
+    const secret = se.generateSecret({
+      otpauth_url: true,
+      name: `PingPong(${user.username})`,
+    });
 
     console.log(secret);
 

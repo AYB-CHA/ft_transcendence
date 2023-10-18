@@ -1,10 +1,12 @@
 import { camelCaseToNormal } from "@/lib/string";
 import { AxiosError, isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "@/lib/axios";
 import useSWR from "swr";
+import { triggerValidationToast } from "@/app/lib/Toast";
+import { Lock } from "lucide-react";
 
 export type UserType = {
   id: string;
@@ -50,6 +52,7 @@ export function useAuth({
 
   const logOut = () => {
     Cookies.remove("access_token");
+    mutate();
     push("/");
   };
 
@@ -93,5 +96,33 @@ export function useAuth({
     }
   };
 
-  return { user, error, register, login, logOut, isLoading, mutate };
+  const verify2FA = async (verificationCode: string) => {
+    console.log(verificationCode);
+    try {
+      let response = await axios.post(
+        "/auth/verify/2fa",
+        {
+          verificationCode,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + Cookies.get("access_token"),
+          },
+        }
+      );
+      Cookies.set("access_token", response.data.jwtToken);
+      mutate();
+      push("/dashboard");
+    } catch (error) {
+      console.log("-+++++++++++++++++++-", error);
+
+      triggerValidationToast(
+        createElement(Lock, { size: 18 }),
+        "Code",
+        "Verification code is invalid."
+      );
+    }
+  };
+
+  return { user, error, register, login, logOut, isLoading, verify2FA, mutate };
 }

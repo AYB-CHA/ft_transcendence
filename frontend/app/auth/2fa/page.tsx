@@ -1,6 +1,7 @@
 "use client";
 import { triggerValidationToast } from "@/app/lib/Toast";
 import Button from "@/components/Button";
+import { useAuth } from "@/hooks/auth";
 import axios from "@/lib/axios";
 import Cookies from "js-cookie";
 import { Lock } from "lucide-react";
@@ -10,40 +11,42 @@ import { useState } from "react";
 import AuthCode from "react-auth-code-input";
 import { mutate } from "swr";
 export default function Page() {
+  const { logOut, verify2FA } = useAuth();
   const { push } = useRouter();
   const [code, setCode] = useState("");
 
   const handelSubmit = async () => {
     if (code.length !== 6) return;
-    try {
-      let response = await axios.post(
-        "/auth/verify/2fa",
-        {
-          verificationCode: code,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + Cookies.get("access_token"),
-          },
-        }
-      );
-      Cookies.set("access_token", response.data.jwtToken);
-      // console.log(response.data.jwtToken);
-      // mutate("/user/me");
-      push("/dashboard");
-    } catch (error) {
-      triggerValidationToast(
-        <Lock size={18} />,
-        "Code",
-        "Verification code is invalid."
-      );
-    }
+    verify2FA(code);
+    // try {
+    //   let response = await axios.post(
+    //     "/auth/verify/2fa",
+    //     {
+    //       verificationCode: code,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: "Bearer " + Cookies.get("access_token"),
+    //       },
+    //     }
+    //   );
+    //   // Cookies.set("access_token", response.data.jwtToken);
+    //   // // console.log(response.data.jwtToken);
+    //   // mutate("/user/me");
+    //   // push("/dashboard");
+    // } catch (error) {
+    //   triggerValidationToast(
+    //     <Lock size={18} />,
+    //     "Code",
+    //     "Verification code is invalid."
+    //   );
+    // }
   };
 
-  const removeAccessToken = () => {
-    Cookies.remove("access_token");
-    mutate("/user/me");
-  };
+  // const removeAccessToken = () => {
+  //   Cookies.remove("access_token");
+  //   mutate("/user/me");
+  // };
 
   return (
     <div className="">
@@ -70,7 +73,7 @@ export default function Page() {
         />
       </div>
       <div className="flex gap-2 justify-end">
-        <Link href={"/auth/login"} onClick={removeAccessToken}>
+        <Link href={"/auth/login"} onClick={logOut}>
           <Button variant="secondary">Cancel</Button>
         </Link>
         <Button className="w-full" onClick={handelSubmit}>{`Let's Go`}</Button>
