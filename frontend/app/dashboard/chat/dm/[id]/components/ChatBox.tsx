@@ -17,6 +17,7 @@ import MyMessage from "../../../channel/[id]/(components)/MyMessage";
 import { useAuth } from "@/hooks/auth";
 import useSWR from "swr";
 import axios from "@/lib/axios";
+import { MehIcon } from "lucide-react";
 
 export type OtherUserType = {
   id: string;
@@ -51,8 +52,6 @@ export default function ChatBox() {
     }
   );
 
-  if (error) throw notFound();
-
   useEffect(() => {
     if (oldMessages) setMessages(oldMessages);
   }, [oldMessages]);
@@ -78,30 +77,39 @@ export default function ChatBox() {
         <CardHeader>
           <ChatBoxHeader isLoading={isLoading} data={otherUser} />
         </CardHeader>
-        <div className="grow h-0 overflow-auto">
-          <div className="flex flex-col p-4 gap-4">
-            {formatMessages(messages).map((messagesGroup) => {
-              if (messagesGroup[0].senderId === me?.id)
-                return (
-                  <MyMessage
-                    avatar={me.avatar}
-                    username={me.username}
-                    key={messagesGroup[0].id}
-                    messages={messagesGroup}
-                  />
-                );
-              return (
-                <OtherMessage
-                  key={messagesGroup[0].id}
-                  messages={messagesGroup}
-                />
-              );
-            })}
+        {error ? (
+          <div className="flex h-full justify-center items-center flex-col gap-4">
+            <MehIcon className="text-gray-600" size={50} strokeWidth={1} />
+            <span>{"You can't send new message."}</span>
           </div>
-        </div>
-        <CardFooter>
-          <ChatBoxInput handler={sendMessage} />
-        </CardFooter>
+        ) : (
+          <>
+            <div className="grow h-0 overflow-auto">
+              <div className="flex flex-col p-4 gap-4">
+                {formatMessages(messages).map((messagesGroup) => {
+                  if (messagesGroup[0].senderId === me?.id)
+                    return (
+                      <MyMessage
+                        avatar={me.avatar}
+                        username={me.username}
+                        key={messagesGroup[0].id}
+                        messages={messagesGroup}
+                      />
+                    );
+                  return (
+                    <OtherMessage
+                      key={messagesGroup[0].id}
+                      messages={messagesGroup}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <CardFooter>
+              <ChatBoxInput handler={sendMessage} />
+            </CardFooter>
+          </>
+        )}
       </div>
     </Card>
   );

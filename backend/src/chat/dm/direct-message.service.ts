@@ -28,13 +28,12 @@ export class DirectMessageService {
   }
 
   async sendDm(threadId: string, senderId: string, text: string) {
-    const thread = await this.prisma.dMThread.findFirst({
-      where: { id: threadId },
-    });
-    let userId = thread.initiatorId;
-    if (userId === senderId) userId = thread.participantId;
-    console.log(userId, senderId);
-    if (this.userService.usersHasBlockReletion(senderId, userId))
+    if (
+      await this.userService.usersHasBlockReletion(
+        senderId,
+        await this.getThreadOtherUserId(threadId, senderId),
+      )
+    )
       throw new Error();
 
     return this.prisma.dMMessage.create({
@@ -47,15 +46,19 @@ export class DirectMessageService {
   }
 
   async getThreadOtherUser(userOneId: string, threadId: string) {
+    return await this.prisma.user.findFirst({
+      where: { id: await this.getThreadOtherUserId(threadId, userOneId) },
+      select: { id: true, avatar: true, username: true, fullName: true },
+    });
+  }
+
+  async getThreadOtherUserId(threadId: string, userOneId: string) {
     const thread = await this.prisma.dMThread.findFirst({
       where: { id: threadId },
     });
     let userId = thread.initiatorId;
     if (userId === userOneId) userId = thread.participantId;
-    return await this.prisma.user.findFirst({
-      where: { id: userId },
-      select: { id: true, avatar: true, username: true, fullName: true },
-    });
+    return userId;
   }
 
   async getUserThreads(userId: string) {
@@ -94,6 +97,14 @@ export class DirectMessageService {
   }
 
   async getOldMessages(userId: string, threadId: string) {
+    if (
+      await this.userService.usersHasBlockReletion(
+        userId,
+        await this.getThreadOtherUserId(threadId, userId),
+      )
+    )
+      throw new UnauthorizedException();
+
     try {
       const { id } = await this.prisma.dMThread.findFirstOrThrow({
         where: {
