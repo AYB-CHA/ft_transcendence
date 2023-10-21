@@ -1,3 +1,4 @@
+"use client";
 import EditAvatar from "@/app/(components)/EditAvatar";
 import Spinner from "@/components/Spinner";
 import Input from "@/components/input/Input";
