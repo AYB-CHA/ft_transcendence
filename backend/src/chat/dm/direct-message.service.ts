@@ -1,8 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class DirectMessageService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
+
   async makeOnline(id: string) {
     await this.prisma.user.update({
       where: { id },
@@ -21,8 +27,16 @@ export class DirectMessageService {
     console.log('OFFLINE');
   }
 
-  constructor(private readonly prisma: PrismaService) {}
   async sendDm(threadId: string, senderId: string, text: string) {
+    const thread = await this.prisma.dMThread.findFirst({
+      where: { id: threadId },
+    });
+    let userId = thread.initiatorId;
+    if (userId === senderId) userId = thread.participantId;
+    console.log(userId, senderId);
+    if (this.userService.usersHasBlockReletion(senderId, userId))
+      throw new Error();
+
     return this.prisma.dMMessage.create({
       data: { text, senderId, threadId },
       select: {
@@ -31,12 +45,13 @@ export class DirectMessageService {
       },
     });
   }
-  async getThreadOtherUser(my_id: string, dm_id: string) {
+
+  async getThreadOtherUser(userOneId: string, threadId: string) {
     const thread = await this.prisma.dMThread.findFirst({
-      where: { id: dm_id },
+      where: { id: threadId },
     });
     let userId = thread.initiatorId;
-    if (userId === my_id) userId = thread.participantId;
+    if (userId === userOneId) userId = thread.participantId;
     return await this.prisma.user.findFirst({
       where: { id: userId },
       select: { id: true, avatar: true, username: true, fullName: true },
@@ -77,6 +92,7 @@ export class DirectMessageService {
         };
       });
   }
+
   async getOldMessages(userId: string, threadId: string) {
     try {
       const { id } = await this.prisma.dMThread.findFirstOrThrow({

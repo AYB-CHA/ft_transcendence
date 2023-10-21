@@ -52,7 +52,9 @@ export default function MemberLabel({
             {member.role.toLowerCase()}
           </span>
         </div>
-        <OnlineStatus status={member.status != "OFFLINE"} />
+        <OnlineStatus
+          status={member.status != "OFFLINE" || me.id === member.id}
+        />
       </div>
     </div>
   );

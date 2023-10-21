@@ -52,24 +52,24 @@ export class DirectMessageGateway
     @ConnectedSocket() client: Socket,
   ) {
     const senderId = this.getClientId(client);
-    const threadData = await this.dmService.sendDm(
-      data.threadId,
-      senderId,
-      data.text,
-    );
-    // let recipientId = threadData.thread.participantId;
-    // if (recipientId === senderId) recipientId = threadData.thread.initiatorId;
-    for (const client of this.clients) {
-      if (
-        client.id === threadData.thread.participantId ||
-        client.id === threadData.thread.initiatorId
-      )
-        client.socket.emit('newMessage', {
-          text: data.text,
-          senderId,
-          id: threadData.id,
-        });
-    }
+    try {
+      const threadData = await this.dmService.sendDm(
+        data.threadId,
+        senderId,
+        data.text,
+      );
+      for (const client of this.clients) {
+        if (
+          client.id === threadData.thread.participantId ||
+          client.id === threadData.thread.initiatorId
+        )
+          client.socket.emit('newMessage', {
+            text: data.text,
+            senderId,
+            id: threadData.id,
+          });
+      }
+    } catch {}
   }
   getClientId(client: Socket) {
     const authHeader: string | null =

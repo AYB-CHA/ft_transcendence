@@ -99,21 +99,6 @@ export default function ChannelController() {
             channel deletion.
           </p>
         </div>
-        {/* <div className="w-full grid grid-cols-2 gap-4">
-          <Button
-            disabled={data?.amIBaned}
-            variant="danger"
-            onClick={() => setLeaveConfirm(true)}
-          >
-            Leave Channel
-          </Button>
-          <Button>Invite People</Button>
-        </div>
-        <LeaveChannel
-          id={data?.id}
-          status={leaveConfirm}
-          setStatus={setLeaveConfirm}
-        /> */}
       </CardFooter>
     </Card>
   );

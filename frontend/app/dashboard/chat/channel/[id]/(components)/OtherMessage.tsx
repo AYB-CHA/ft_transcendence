@@ -1,15 +1,9 @@
-import Avatar from "@/components/DropDownAvatar";
 import React from "react";
 import { MessageType } from "./ChatBox";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import { UserType } from "@/hooks/auth";
-import SendDM from "./MembersAvatarDropDown/SendDM";
-import {
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/DropDown";
-import Block from "./MembersAvatarDropDown/Block";
+import Avatar from "@/components/Avatar";
 
 export default function OtherMessage({
   messages,
@@ -43,16 +37,7 @@ export default function OtherMessage({
           );
         })}
       </div>
-      <div>
-        {data && (
-          <Avatar src={data?.avatar} className="h-10 w-10">
-            <DropdownMenuLabel>User</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <Block userId={data?.id} />
-            <SendDM userId={data.id} />
-          </Avatar>
-        )}
-      </div>
+      <div>{data && <Avatar src={data?.avatar} className="h-10 w-10" />}</div>
     </div>
   );
 }
