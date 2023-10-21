@@ -2,7 +2,7 @@ import EditAvatar from "@/app/(components)/EditAvatar";
 import Spinner from "@/components/Spinner";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
-import { UserType } from "@/hooks/auth";
+import { UserType, useAuth } from "@/hooks/auth";
 import {
   Check,
   Fingerprint,
@@ -29,18 +29,11 @@ import { AxiosError } from "axios";
 import { camelCaseToNormal } from "@/lib/string";
 import CardFooter from "@/components/card/CardFooter";
 import Button from "@/components/Button";
+import Enable2FA from "./Enable2FA";
 
-export default function Inputs({
-  isLoading,
-  user,
-  mutate,
-  setQrcode,
-}: {
-  isLoading: boolean;
-  user?: UserType;
-  mutate: any;
-  setQrcode: Dispatch<SetStateAction<string | null>>;
-}) {
+export default function Inputs({}: {}) {
+  const { user, isLoading, mutate } = useAuth({ middleware: "auth" });
+
   const router = useRouter();
 
   const [avatar, setAvatar] = useState("");
@@ -91,14 +84,6 @@ export default function Inputs({
       }
     }
   };
-  async function enable2FAButtonClick() {
-    try {
-      let data = (await axios.put("/user/update/enable2FA")).data
-        .image as string;
-      mutate();
-      setQrcode(data);
-    } catch (error) {}
-  }
 
   async function disable2FAButtonClick() {
     try {
@@ -110,7 +95,7 @@ export default function Inputs({
     <form onSubmit={handelSubmit}>
       <CardBody className="py-8">
         {isLoading && (
-          <div className="flex justify-center my-8">
+          <div className="flex justify-center my-40">
             <Spinner />
           </div>
         )}
@@ -173,11 +158,6 @@ export default function Inputs({
                     value={passwordConfirmation}
                   />
                 </div>
-                {/* {!user.passwordless && (
-                  <>
-                    
-                  </>
-                )} */}
               </div>
             </div>
             <div className="flex justify-center items-center col-span-2">
@@ -192,19 +172,18 @@ export default function Inputs({
         )}
       </CardBody>
       <CardFooter>
-        {!user?.otpEnabled ? (
-          <Button type="button" onClick={enable2FAButtonClick}>
-            Enable 2F authentication
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="danger"
-            onClick={disable2FAButtonClick}
-          >
-            Disable 2F authentication
-          </Button>
-        )}
+        {!isLoading &&
+          (!user?.is2FAEnabled ? (
+            <Enable2FA mutate={mutate} />
+          ) : (
+            <Button
+              type="button"
+              variant="danger"
+              onClick={disable2FAButtonClick}
+            >
+              Disable 2F authentication
+            </Button>
+          ))}
         <Button type="submit" variant="secondary">
           Save changes
         </Button>

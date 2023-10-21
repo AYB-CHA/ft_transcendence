@@ -76,15 +76,19 @@ export class AuthController {
       const user = await this.prisma.user.findFirstOrThrow({
         where: { id: payload.sub },
       });
-      if (user.optSecret === null) throw new Error();
+
+      if (!user.is2FAEnabled) throw new Error();
+
       if (
         !se.totp.verify({
           secret: user.optSecret,
           token: verificationCode,
           encoding: 'hex',
         })
-      )
+      ) {
+        console.log('code is invalid');
         throw new Error();
+      }
       userId = payload.sub;
     } catch {
       throw new BadRequestException();

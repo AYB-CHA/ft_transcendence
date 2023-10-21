@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   InternalServerErrorException,
   Param,
   Post,
@@ -15,8 +16,8 @@ import { UserService } from './user.service';
 import { RequestType } from 'src/types';
 import UpdateUserDto from './dtos/update-user.dto';
 import UpdateUserPasswordDto from './dtos/update-user-password.dto';
-import * as se from 'speakeasy';
 import * as QRCode from 'qrcode';
+import * as se from 'speakeasy';
 
 @Controller('/user')
 export class UserController {
@@ -73,23 +74,49 @@ export class UserController {
       request.userPayload.sub,
     );
   }
+
   @UseGuards(AuthGuard)
   @Put('/update/enable2FA')
-  async enable2FA(@Req() request: RequestType) {
-    const user = await this.userService.findUser(request.userPayload.sub);
-    if (user.otpEnabled) throw new BadRequestException();
-    const secret = se.generateSecret({
-      otpauth_url: true,
-      name: `PingPong(${user.username})`,
-    });
-
-    console.log(secret);
-
+  async enable2FA(
+    @Req() request: RequestType,
+    @Body('verificationCode') verificationCode: string | undefined,
+  ) {
     try {
-      const data = await QRCode.toDataURL(secret.otpauth_url, {});
-      await this.userService.enable2FA(request.userPayload.sub, secret.hex);
+      const user = await this.userService.findUser(
+        request.userPayload.sub,
+        true,
+      );
+      if (!verificationCode || user.is2FAEnabled)
+        throw new BadRequestException();
+      if (
+        !se.totp.verify({
+          secret: user.otpSecret,
+          token: verificationCode,
+          encoding: 'hex',
+        })
+      )
+        throw new BadRequestException(['verification code is invalid']);
+      await this.userService.enable2FA(request.userPayload.sub);
+      return;
+    } catch (e) {
+      if (e instanceof HttpException) throw e;
+      throw new InternalServerErrorException();
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/2fa/qrcode')
+  async qrcode(@Req() request: RequestType) {
+    const user = await this.userService.findUser(request.userPayload.sub, true);
+    const url = se.otpauthURL({
+      secret: user.otpSecret,
+      label: `PingPong(${user.username})`,
+      encoding: 'hex',
+    });
+    try {
+      const data = await QRCode.toDataURL(url, {});
       return { image: data };
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException();
     }
   }

@@ -31,7 +31,8 @@ model User {
 
   authProvider AuthProvider?
 
-  optSecret String?
+  optSecret String
+  is2FAEnabled Boolean @default(false)
 
   status UserStatus @default(OFFLINE)
 

@@ -14,7 +14,7 @@ export type UserType = {
   email: string;
   fullName: string;
   username: string;
-  otpEnabled: Boolean;
+  is2FAEnabled: Boolean;
   passwordless: Boolean;
 };
 type AuthProps = {

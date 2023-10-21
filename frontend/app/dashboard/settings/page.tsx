@@ -10,20 +10,19 @@ import Inputs from "./(components)/Inputs";
 import Image from "next/image";
 
 export default function Page() {
-  const { user, isLoading, mutate } = useAuth({ middleware: "auth" });
-  const [qrcode, setQrcode] = useState<string | null>(null);
+  // const [qrcode, setQrCode] = useState<string | null>(null);
 
   return (
     <div className="h-full flex justify-center items-center">
       <div className="max-w-4xl w-full">
         <Card>
           <CardHeader>Profile Settings</CardHeader>
-          {qrcode === null ? (
+          {/* {qrcode === null ? (
             <Inputs
               isLoading={isLoading}
               user={user}
               mutate={mutate}
-              setQrcode={setQrcode}
+              setQrCode={setQrCode}
             />
           ) : (
             <>
@@ -46,14 +45,15 @@ export default function Page() {
               <CardFooter>
                 <Button
                   onClick={() => {
-                    setQrcode(null);
+                    setQrCode(null);
                   }}
                 >
                   Ok I Understand
                 </Button>
               </CardFooter>
             </>
-          )}
+          )} */}
+          <Inputs />
         </Card>
       </div>
     </div>

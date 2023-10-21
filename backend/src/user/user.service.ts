@@ -7,6 +7,8 @@ import {
 } from 'src/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import * as se from 'speakeasy';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -14,17 +16,17 @@ export class UserService {
     private readonly config: ConfigService,
   ) {}
 
-  async enable2FA(userId: string, secret: string) {
+  async enable2FA(userId: string) {
     await this.prisma.user.update({
       where: { id: userId },
-      data: { optSecret: secret },
+      data: { is2FAEnabled: true },
     });
   }
 
   async disable2FA(userId: string) {
     await this.prisma.user.update({
       where: { id: userId },
-      data: { optSecret: null },
+      data: { is2FAEnabled: false },
     });
   }
 
@@ -112,12 +114,15 @@ export class UserService {
 
     avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
 
+    const secret = se.generateSecret({});
+
     return (
       await this.prisma.user.create({
         data: {
           ...userData,
           password,
           avatar: avatar.toString(),
+          optSecret: secret.hex,
         },
         select: {
           id: true,
@@ -138,7 +143,7 @@ export class UserService {
     throw new BadRequestException(["old password doesn't match you password"]);
   }
 
-  async findUser(id: string, includePassword: boolean = false) {
+  async findUser(id: string, includeSensitives: boolean = false) {
     const data = await this.prisma.user.findFirstOrThrow({
       where: {
         id,
@@ -149,8 +154,9 @@ export class UserService {
         email: true,
         fullName: true,
         username: true,
-        password: includePassword,
-        optSecret: true,
+        password: includeSensitives,
+        optSecret: includeSensitives,
+        is2FAEnabled: true,
         authProvider: true,
       },
     });
@@ -162,8 +168,9 @@ export class UserService {
       fullName: data.fullName,
       username: data.username,
       password: data.password ?? undefined,
+      otpSecret: data.optSecret ?? undefined,
       passwordless: data.authProvider != null,
-      otpEnabled: data.optSecret != null,
+      is2FAEnabled: data.is2FAEnabled,
     };
   }
 
