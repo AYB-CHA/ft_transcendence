@@ -2,7 +2,7 @@ import EditAvatar from "@/app/(components)/EditAvatar";
 import Spinner from "@/components/Spinner";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
-import { UserType, useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth";
 import {
   Check,
   Fingerprint,
@@ -13,6 +13,7 @@ import {
   SpellCheck2,
   User,
 } from "lucide-react";
+
 import React, {
   Dispatch,
   FormEvent,
@@ -20,6 +21,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+
 import { avatarsBaseUrl } from "../../chat/(components)/NewChannel";
 import CardBody from "@/components/card/CardBody";
 import { useRouter } from "next/navigation";

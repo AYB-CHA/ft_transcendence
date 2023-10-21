@@ -63,17 +63,19 @@ export class DirectMessageService {
         },
       },
     });
-    return data.map((thread) => {
-      let user = thread.initiator;
-      if (user.id === userId) user = thread.participant;
-      let message = null;
-      if (thread.messages.length) message = thread.messages[0];
-      return {
-        id: thread.id,
-        user,
-        message,
-      };
-    });
+    return data
+      .filter((thread) => thread.messages.length)
+      .map((thread) => {
+        let user = thread.initiator;
+        if (user.id === userId) user = thread.participant;
+        let message = null;
+        if (thread.messages.length) message = thread.messages[0];
+        return {
+          id: thread.id,
+          user,
+          message,
+        };
+      });
   }
   async getOldMessages(userId: string, threadId: string) {
     try {

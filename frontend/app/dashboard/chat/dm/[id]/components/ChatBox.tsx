@@ -67,9 +67,11 @@ export default function ChatBox() {
       socket?.off("newMessage", onNewMessage);
     };
   }, [socket]);
+
   function sendMessage(text: string) {
     socket?.emit("newMessage", { text, threadId: id });
   }
+
   return (
     <Card className="col-span-3">
       <div className="flex flex-col h-full">
