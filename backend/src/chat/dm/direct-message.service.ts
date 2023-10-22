@@ -71,7 +71,7 @@ export class DirectMessageService {
         messages: {
           orderBy: { createdAt: 'desc' },
           take: 1,
-          select: { text: true },
+          select: { text: true, createdAt: true },
         },
         initiator: {
           select: { id: true, avatar: true, fullName: true, username: true },
@@ -80,6 +80,12 @@ export class DirectMessageService {
           select: { id: true, avatar: true, fullName: true, username: true },
         },
       },
+    });
+    data.sort((thread1, thread2) => {
+      return (
+        (thread2.messages[0]?.createdAt.getTime() ?? 0) -
+        (thread1.messages[0]?.createdAt.getTime() ?? 0)
+      );
     });
     return data
       .filter((thread) => thread.messages.length)

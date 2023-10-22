@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { ChannelType, getChannelData } from "./ChannelController";
 import { useEffect, useRef, useState } from "react";
 
-import { io, Socket } from "socket.io-client";
 import ChatBoxInput from "./ChatBoxInput";
 import ChatBoxHeader from "./ChatBoxHeader";
 import { useAuth } from "@/hooks/auth";

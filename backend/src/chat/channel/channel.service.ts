@@ -129,16 +129,22 @@ export class ChannelService {
     });
 
     if (!userData) throw new NotFoundException();
-    const response: any[] = [];
-    userData.users.forEach((user) =>
-      response.push({
+    // const response: any[] = [];
+    // userData.users.forEach((user) =>
+    //   response.push({
+    //     ...user.User,
+    //     role: user.role,
+    //     isMuted: user.mutedAt !== null,
+    //   }),
+    // );
+    // console.log(response);
+    return userData.users.map((user) => {
+      return {
         ...user.User,
         role: user.role,
         isMuted: user.mutedAt !== null,
-      }),
-    );
-    // console.log(response);
-    return response;
+      };
+    });
   }
 
   async upgradeUserGrade(
@@ -398,7 +404,7 @@ export class ChannelService {
   }
 
   async getUserChannels(userId: string) {
-    const channels = this.prisma.channel.findMany({
+    const channels = await this.prisma.channel.findMany({
       where: { users: { some: { User: { id: userId } } } },
       orderBy: { updatedAt: 'asc' },
       select: {
@@ -408,6 +414,15 @@ export class ChannelService {
         avatar: true,
         type: true,
         _count: { select: { users: true } },
+        Messages: {
+          select: {
+            createdAt: true,
+          },
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
         users: {
           where: {
             userId,
@@ -417,7 +432,14 @@ export class ChannelService {
       },
     });
 
-    return (await channels).map((channel) => {
+    channels.sort((channel1, channel2) => {
+      return (
+        (channel2.Messages[0]?.createdAt.getTime() ?? 0) -
+        (channel1.Messages[0]?.createdAt.getTime() ?? 0)
+      );
+    });
+
+    return channels.map((channel) => {
       return {
         id: channel.id,
         name: channel.name,

@@ -5,7 +5,7 @@ import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import ChatBoxHeader from "./ChatBoxHeader";
 import ChatBoxInput from "./ChatBoxInput";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useDMSocket } from "@/app/(components)/DMSocket";
 import { useEffect, useState } from "react";
 import {
