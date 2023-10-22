@@ -5,7 +5,7 @@ import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import ChatBoxHeader from "./ChatBoxHeader";
 import ChatBoxInput from "./ChatBoxInput";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { useDMSocket } from "@/app/(components)/DMSocket";
 import { useEffect, useState } from "react";
 import {
@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/auth";
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import { MehIcon } from "lucide-react";
+import { AxiosError } from "axios";
 
 export type OtherUserType = {
   id: string;
@@ -37,7 +38,7 @@ export default function ChatBox() {
   let { id } = useParams();
   let [messages, setMessages] = useState<MessageType[]>([]);
 
-  let { data: oldMessages, error } = useSWR<MessageType[]>(
+  let { data: oldMessages, error } = useSWR<MessageType[], AxiosError>(
     `/chat/dm/messages/${id}`,
     getOldMessages,
     {
@@ -45,6 +46,10 @@ export default function ChatBox() {
       revalidateOnReconnect: false,
     }
   );
+
+  useEffect(() => {
+    if (error?.response?.status === 404) throw notFound();
+  }, [error]);
   let { data: otherUser, isLoading } = useSWR(
     `/chat/dm/thread/other/${chatThreadId}`,
     async (url: string) => {

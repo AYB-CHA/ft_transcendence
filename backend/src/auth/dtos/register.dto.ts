@@ -1,9 +1,9 @@
 import {
-  IsAlphanumeric,
   IsEmail,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
+  Matches,
   MaxLength,
 } from 'class-validator';
 
@@ -15,7 +15,10 @@ export default class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @Matches(/^[a-zA-Z0-9-_]+$/, {
+    message:
+      'The username can only contain alphanumeric characters, dashes or underscores',
+  })
   username: string;
 
   @IsString()

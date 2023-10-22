@@ -1,10 +1,10 @@
 import {
-  IsAlphanumeric,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsStrongPassword,
+  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -20,7 +20,10 @@ export default class UpdateUserDto {
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(20)
-  @IsAlphanumeric()
+  @Matches(/^[a-zA-Z0-9-_]+$/, {
+    message:
+      'The username can only contain alphanumeric characters, dashes or underscores',
+  })
   username: string;
 
   @IsString()

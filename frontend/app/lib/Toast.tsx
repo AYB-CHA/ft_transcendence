@@ -1,7 +1,9 @@
 import { X } from "lucide-react";
 import { PropsWithChildren, ReactNode } from "react";
 import { toast } from "react-toastify";
-const Container = (props: PropsWithChildren) => <div>{props.children}</div>;
+const Container = (props: PropsWithChildren & { onClick?: () => void }) => (
+  <div onClick={props.onClick}>{props.children}</div>
+);
 
 export function triggerValidationToast(
   icon: ReactNode,
@@ -31,11 +33,12 @@ export function triggerValidationToast(
 export function triggerSuccessToast(
   icon: ReactNode,
   title: string,
-  message: string
+  message: string,
+  onclick?: () => void
 ) {
   toast.dismiss();
   toast(
-    <Container>
+    <Container onClick={onclick}>
       <div className="toast-content-wrapper">
         <div className="mb-2 flex gap-2 items-center">
           <div className="text-green-500">{icon}</div>
