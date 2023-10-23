@@ -12,7 +12,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { DirectMessageService } from './direct-message.service';
 
-@WebSocketGateway({ namespace: '/dm', cors: true })
+@WebSocketGateway({
+  namespace: '/dm',
+  cors: { origin: process.env['FRONTEND_BASEURL'] },
+})
 export class DirectMessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {

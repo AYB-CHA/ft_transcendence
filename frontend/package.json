@@ -35,13 +35,13 @@
     "socket.io-client": "^4.7.2",
     "swr": "^2.2.4",
     "tailwindcss": "3.3.3",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.4",
     "@types/lodash": "^4.14.199",
     "bufferutil": "^4.0.7",
-    "tailwindcss-animate": "^1.0.7",
-    "utf-8-validate": "^6.0.3"
+    "tailwindcss-animate": "^1.0.7"
   }
 }
