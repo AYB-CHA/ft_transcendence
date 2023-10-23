@@ -17,6 +17,7 @@ export type UserType = {
   is2FAEnabled: Boolean;
   passwordless: Boolean;
 };
+
 type AuthProps = {
   middleware?: "guest" | "auth";
   redirectIfAuth?: string;
@@ -73,8 +74,8 @@ export function useAuth({
         password,
       });
       Cookies.set("access_token", response.data.jwtToken);
-      push("/dashboard");
       mutate();
+      push("/dashboard");
     } catch (error) {
       if (error instanceof AxiosError) {
         setError(camelCaseToNormal(error.response?.data.message[0]));

@@ -5,7 +5,14 @@ const axios = Axios.create({
   baseURL: process.env["NEXT_PUBLIC_BACKEND_BASEURL"],
 });
 
-axios.defaults.headers.common["Authorization"] =
-  "Bearer " + Cookies.get("access_token");
+axios.interceptors.request.use(
+  function (config) {
+    config.headers.Authorization = "Bearer " + Cookies.get("access_token");
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 export default axios;

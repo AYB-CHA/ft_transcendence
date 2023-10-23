@@ -31,7 +31,7 @@ export class AuthService {
       if (compareSync(userData.password, user.password)) {
         return this.generateJwtResponse(
           user.id,
-          user.optSecret !== null ? true : undefined,
+          user.is2FAEnabled ? true : undefined,
         );
       }
     } catch {}
