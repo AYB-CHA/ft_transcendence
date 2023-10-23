@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RegisterUserType } from 'src/types';
 
@@ -25,9 +29,8 @@ export class FtStrategy {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (!response.ok) throw new Error();
+      if (!response.ok) throw new BadRequestException();
       const data = await response.json();
-      console.log(data);
       return {
         email: data.email,
         fullName: data.usual_full_name,

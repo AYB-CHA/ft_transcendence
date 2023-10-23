@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RegisterUserType } from 'src/types';
 
@@ -23,13 +27,13 @@ export class GithubStrategy {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (!response.ok) throw new Error();
+      if (!response.ok) throw new BadRequestException();
       const emailsResponse = await fetch('https://api.github.com/user/emails', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (!emailsResponse.ok) throw new Error();
+      if (!emailsResponse.ok) throw new BadRequestException();
       const data = await response.json();
       const eMails = await emailsResponse.json();
 

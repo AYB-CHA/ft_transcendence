@@ -60,7 +60,9 @@ export class AuthService {
       'access_token',
       (await this.generateJwtResponse(userId, totp)).jwtToken,
     );
+
     if (totp) redirectUrl.searchParams.append('2fa', 'true');
+
     return {
       url: redirectUrl.toString(),
     };
