@@ -14,7 +14,10 @@ import { ChannelService } from './channel.service';
 import { ChannelUserRole } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 
-@WebSocketGateway({ namespace: 'channel', cors: true })
+@WebSocketGateway({
+  namespace: 'channel',
+  cors: { origin: process.env['FRONTEND_BASEURL'] },
+})
 export class ChannelSocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
