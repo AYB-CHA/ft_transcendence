@@ -1,0 +1,45 @@
+version: "3.5"
+
+services:
+  postgres:
+    image: postgres:bullseye
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  frontend:
+    image: node:lts-bullseye
+    container_name: frontend
+    restart: always
+    working_dir: /app
+    command: bash -c 'yarn && yarn dev'
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app
+
+  backend:
+    image: node:lts-bullseye
+    container_name: backend
+    restart: always
+    working_dir: /app
+    command: bash -c "yarn && yarn start:dev"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+
+  nginx:
+    image: nginx:bullseye
+    container_name: nginx
+    restart: always
+    ports:
+      - 0.0.0.0:3000:3000
+      - 0.0.0.0:4000:4000
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf

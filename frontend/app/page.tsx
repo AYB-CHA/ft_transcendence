@@ -32,20 +32,11 @@ export default function Home() {
   return (
     <div>
       <div
-        className="h-1 bg-primary-500 fixed top-0 w-full z-50"
+        className="h-1 bg-primary-500 fixed top-0z-50 w-0"
         ref={progressRef}
       ></div>
       <div className="h-[300vh] relative" ref={container}>
-        <div className="sticky top-0 w-full h-[100vh] flex justify-center items-center">
-          <motion.div
-            className="rounded-full bg-dark border-[4px] aspect-square flex justify-center items-center"
-            style={{
-              height: useTransform(scrollYProgress, [0, 0.05], ["0px", "30px"]),
-            }}
-          ></motion.div>
-          <div className="h-32 w-6 border-[4px] absolute top-5 left-0"></div>
-          <div className="h-32 w-6 border-[4px] absolute top-5 right-0"></div>
-        </div>
+        <div className="sticky top-0 w-full h-[100vh] flex justify-center items-center"></div>
       </div>
       <div>
         <div className="bg-red-500 h-[100vh]">footer</div>

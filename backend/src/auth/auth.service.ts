@@ -44,6 +44,7 @@ export class AuthService {
   ) {
     let userId: string;
     let totp = undefined;
+    console.log(this.configService.get('FRONTEND_BASEURL'));
     const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
     redirectUrl.pathname = '/auth/provider';
 

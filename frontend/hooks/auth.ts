@@ -7,6 +7,7 @@ import axios from "@/lib/axios";
 import useSWR from "swr";
 import { triggerValidationToast } from "@/app/lib/Toast";
 import { Lock } from "lucide-react";
+import { clearSWRCache } from "@/app/dashboard/chat/channel/[id]/page";
 
 export type UserType = {
   id: string;
@@ -50,8 +51,9 @@ export function useAuth({
   );
 
   const logOut = () => {
+    console.log("LOGOUT");
     Cookies.remove("access_token");
-    mutate();
+    clearSWRCache();
     push("/");
   };
 
