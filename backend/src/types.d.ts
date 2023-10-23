@@ -5,6 +5,7 @@ export type HelloTranscendence = 'Hello Transcendence!';
 export type RequestType = Request & { userPayload: { sub: string } };
 
 export type RegisterUserType = {
+  providerId?: number;
   username: string;
   email: string;
   fullName: string;

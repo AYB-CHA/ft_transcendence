@@ -31,6 +31,9 @@ model User {
 
   authProvider AuthProvider?
 
+  ftId Int?
+  githubId Int?
+
   optSecret String
   is2FAEnabled Boolean @default(false)
 

@@ -38,6 +38,7 @@ export class GithubStrategy {
       const eMails = await emailsResponse.json();
 
       return {
+        providerId: data.id,
         email: eMails[0].email,
         fullName: data.name,
         username: data.login,

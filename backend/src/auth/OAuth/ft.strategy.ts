@@ -31,7 +31,9 @@ export class FtStrategy {
       });
       if (!response.ok) throw new BadRequestException();
       const data = await response.json();
+
       return {
+        providerId: data.id,
         email: data.email,
         fullName: data.usual_full_name,
         username: data.login,

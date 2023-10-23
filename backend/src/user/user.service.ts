@@ -119,10 +119,19 @@ export class UserService {
     return (
       await this.prisma.user.create({
         data: {
-          ...userData,
+          fullName: userData.fullName,
+          email: userData.email,
+          username: userData.username,
           password,
           avatar: avatar.toString(),
           optSecret: secret.hex,
+          authProvider: userData.authProvider,
+          githubId:
+            userData.authProvider === 'GITHUB'
+              ? userData.providerId
+              : undefined,
+          ftId:
+            userData.authProvider === 'FT' ? userData.providerId : undefined,
         },
         select: {
           id: true,
@@ -185,7 +194,16 @@ export class UserService {
   async findUserByUsername(username: string) {
     return await this.prisma.user.findFirstOrThrow({ where: { username } });
   }
-
+  async findUserByProviderId(id: number, provider: 'FT' | 'GITHUB') {
+    console.log(provider, id);
+    return await this.prisma.user.findFirstOrThrow({
+      where: {
+        authProvider: provider,
+        githubId: provider === 'GITHUB' ? id : undefined,
+        ftId: provider === 'FT' ? id : undefined,
+      },
+    });
+  }
   async findUserByEmail(email: string) {
     return await this.prisma.user.findFirstOrThrow({ where: { email } });
   }

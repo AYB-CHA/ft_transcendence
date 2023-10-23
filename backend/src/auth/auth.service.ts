@@ -44,12 +44,14 @@ export class AuthService {
   ) {
     let userId: string;
     let totp = undefined;
-    console.log(this.configService.get('FRONTEND_BASEURL'));
     const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
     redirectUrl.pathname = '/auth/provider';
 
     try {
-      const user = await this.userService.findUserByUsername(userData.username);
+      const user = await this.userService.findUserByProviderId(
+        userData.providerId,
+        authProvider,
+      );
       userId = user.id;
       totp = user.is2FAEnabled ? true : undefined;
     } catch {

@@ -19,6 +19,8 @@ CREATE TABLE "User" (
     "password" TEXT,
     "avatar" TEXT NOT NULL,
     "authProvider" "AuthProvider",
+    "ftId" INTEGER,
+    "githubId" INTEGER,
     "optSecret" TEXT NOT NULL,
     "is2FAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "status" "UserStatus" NOT NULL DEFAULT 'OFFLINE',
