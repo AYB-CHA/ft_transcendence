@@ -11,12 +11,19 @@ import { useEffect, useState } from "react";
 export default function LoginBoard() {
   const [usernameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { error, login } = useAuth({ middleware: "guest" });
+  const { error, setError, login } = useAuth({ middleware: "guest" });
 
   useEffect(() => {
     if (error)
-      triggerValidationToast(<SpellCheck2 size={18} />, "Validation", error);
-  }, [error]);
+      triggerValidationToast(
+        <SpellCheck2 size={18} />,
+        "Validation",
+        error,
+        () => {
+          setError(null);
+        }
+      );
+  }, [error, setError]);
 
   return (
     <div>

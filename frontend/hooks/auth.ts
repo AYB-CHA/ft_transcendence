@@ -122,5 +122,15 @@ export function useAuth({
     }
   };
 
-  return { user, error, register, login, logOut, isLoading, verify2FA, mutate };
+  return {
+    user,
+    error,
+    register,
+    login,
+    logOut,
+    isLoading,
+    verify2FA,
+    mutate,
+    setError,
+  };
 }

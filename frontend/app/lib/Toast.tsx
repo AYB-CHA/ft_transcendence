@@ -8,11 +8,12 @@ const Container = (props: PropsWithChildren & { onClick?: () => void }) => (
 export function triggerValidationToast(
   icon: ReactNode,
   title: string,
-  message: string
+  message: string,
+  onclick?: () => void
 ) {
   toast.dismiss();
   toast(
-    <Container>
+    <Container onClick={onclick}>
       <div className="toast-content-wrapper">
         <div className="mb-2 flex gap-2 items-center">
           <div className="text-primary">{icon}</div>

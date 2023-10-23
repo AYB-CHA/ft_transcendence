@@ -20,7 +20,19 @@ export default function RegisterBoard() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
-  const { error, register } = useAuth({ middleware: "guest" });
+  const { error, setError, register } = useAuth({ middleware: "guest" });
+
+  useEffect(() => {
+    if (error)
+      triggerValidationToast(
+        <SpellCheck2 size={18} />,
+        "Validation",
+        error,
+        () => {
+          setError(null);
+        }
+      );
+  }, [error, setError]);
 
   return (
     <div>
@@ -63,13 +75,6 @@ export default function RegisterBoard() {
           className="w-full"
           onClick={() => {
             register({ fullName, username, password, email });
-            if (error) {
-              triggerValidationToast(
-                <SpellCheck2 size={18} />,
-                "Validation",
-                error
-              );
-            }
           }}
         >
           Register
