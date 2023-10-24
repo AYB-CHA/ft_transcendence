@@ -92,7 +92,7 @@ export class ChannelSocketGateway
     for (const client of this.clients) {
       if (
         client.channelId === data.channelId &&
-        !(await this.userService.usersHasBlockReletion(senderId, client.id))
+        !(await this.userService.usersHasBlockRelation(senderId, client.id))
       ) {
         client.socket.emit('newMessage', {
           text: data.text,

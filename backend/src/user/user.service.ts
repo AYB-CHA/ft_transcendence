@@ -40,7 +40,7 @@ export class UserService {
     } catch (error) {}
     throw new BadRequestException(["you can't block user."]);
   }
-  async usersHasBlockReletion(userTwoId: string, userOneId: string) {
+  async usersHasBlockRelation(userTwoId: string, userOneId: string) {
     return (
       (await this.prisma.userBlock.count({
         where: {

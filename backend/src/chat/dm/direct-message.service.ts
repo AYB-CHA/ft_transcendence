@@ -33,7 +33,7 @@ export class DirectMessageService {
 
   async sendDm(threadId: string, senderId: string, text: string) {
     if (
-      await this.userService.usersHasBlockReletion(
+      await this.userService.usersHasBlockRelation(
         senderId,
         await this.getThreadOtherUserId(threadId, senderId),
       )
@@ -112,7 +112,7 @@ export class DirectMessageService {
 
   async getOldMessages(userId: string, threadId: string) {
     if (
-      await this.userService.usersHasBlockReletion(
+      await this.userService.usersHasBlockRelation(
         userId,
         await this.getThreadOtherUserId(threadId, userId),
       )
@@ -151,9 +151,8 @@ export class DirectMessageService {
         select: { id: true },
       });
       return { id: thread.id };
-    } catch (error) {
-      console.error(error);
-    }
+    } catch {}
+
     return {
       id: (
         await this.prisma.dMThread.create({
