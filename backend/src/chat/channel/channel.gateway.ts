@@ -31,13 +31,16 @@ export class ChannelSocketGateway
     private readonly userService: UserService,
   ) {}
 
-  handleConnection(@ConnectedSocket() client: Socket) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
     const id = this.getClientId(client);
 
     const channelId: string =
       (client.handshake.query?.channelId as string) ?? '';
 
-    if (!this.channelService.isUserBelongsToChannel(id, channelId) || !id) {
+    if (
+      !(await this.channelService.isUserBelongsToChannel(id, channelId)) ||
+      !id
+    ) {
       client.disconnect();
       return;
     }
@@ -73,12 +76,17 @@ export class ChannelSocketGateway
   ) {
     const senderId = this.getClientId(client);
 
-    if (!this.channelService.isUserBelongsToChannel(senderId, data.channelId)) {
+    if (
+      !(await this.channelService.isUserBelongsToChannel(
+        senderId,
+        data.channelId,
+      ))
+    ) {
       client.disconnect();
       return;
     }
 
-    if (!this.channelService.isUserMuted(senderId, data.channelId)) {
+    if (!(await this.channelService.isUserMuted(senderId, data.channelId))) {
       return;
     }
 
