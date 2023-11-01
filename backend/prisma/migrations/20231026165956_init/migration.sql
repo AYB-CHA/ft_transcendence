@@ -39,6 +39,16 @@ CREATE TABLE "UserBlock" (
 );
 
 -- CreateTable
+CREATE TABLE "Friendship" (
+    "id" TEXT NOT NULL,
+    "senderId" TEXT NOT NULL,
+    "receiverId" TEXT NOT NULL,
+    "isPending" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "Friendship_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Channel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -102,6 +112,12 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Friendship_id_key" ON "Friendship"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Friendship_senderId_receiverId_key" ON "Friendship"("senderId", "receiverId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Messages_id_key" ON "Messages"("id");
 
 -- CreateIndex
@@ -115,6 +131,12 @@ ALTER TABLE "UserBlock" ADD CONSTRAINT "UserBlock_blocker_id_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "UserBlock" ADD CONSTRAINT "UserBlock_blocked_id_fkey" FOREIGN KEY ("blocked_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friendship" ADD CONSTRAINT "Friendship_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friendship" ADD CONSTRAINT "Friendship_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChannelsOnUsers" ADD CONSTRAINT "ChannelsOnUsers_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;

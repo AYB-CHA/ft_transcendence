@@ -31,10 +31,10 @@ model User {
 
   authProvider AuthProvider?
 
-  ftId Int?
+  ftId     Int?
   githubId Int?
 
-  optSecret String
+  optSecret    String
   is2FAEnabled Boolean @default(false)
 
   status UserStatus @default(OFFLINE)
@@ -42,13 +42,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels           ChannelsOnUsers[]
-  Messages           Messages[]
-  sentDMMessages     DMMessage[]
-  initaitedDMThreads DMThread[]        @relation(name: "initiator_relation")
-  secondDMThreads    DMThread[]        @relation(name: "participant_relation")
-  blocked            UserBlock[]       @relation(name: "blocker_relation")
-  wasBlocked         UserBlock[]       @relation(name: "blocked_relation")
+  channels               ChannelsOnUsers[]
+  Messages               Messages[]
+  sentDMMessages         DMMessage[]
+  initaitedDMThreads     DMThread[]        @relation(name: "initiator_relation")
+  secondDMThreads        DMThread[]        @relation(name: "participant_relation")
+  blocked                UserBlock[]       @relation(name: "blocker_relation")
+  wasBlocked             UserBlock[]       @relation(name: "blocked_relation")
+  sentFriendRequests     Friendship[]      @relation(name: "sentFriendRequests")
+  receivedFriendRequests Friendship[]      @relation(name: "receivedFriendRequests")
 }
 
 model UserBlock {
@@ -58,6 +60,17 @@ model UserBlock {
   Blocked    User   @relation(fields: [blocked_id], references: [id], name: "blocked_relation")
 
   @@id([blocked_id, blocker_id])
+}
+
+model Friendship {
+  id         String  @id @unique @default(uuid())
+  senderId   String
+  receiverId String
+  isPending  Boolean @default(true)
+  sender     User    @relation(name: "sentFriendRequests", fields: [senderId], references: [id])
+  receiver   User    @relation(name: "receivedFriendRequests", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
 }
 
 enum ChannelType {

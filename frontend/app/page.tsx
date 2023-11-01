@@ -1,15 +1,15 @@
 "use client";
-// import Card from "@/components/card/Card";
-// import CardHeader from "@/components/card/CardHeader";
-// import CardFooter from "@/components/card/CardFooter";
-// import CardBody from "@/components/card/CardBody";
-import Lenis from "@studio-freight/lenis";
-import { useScroll, motion, useTransform } from "framer-motion";
+
+import { useScroll } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import Lenis from "@studio-freight/lenis";
+import Link from "next/link";
+import Button from "@/components/Button";
+
 export default function Home() {
-  let progressRef = useRef<HTMLDivElement | null>(null);
-  let container = useRef<HTMLDivElement | null>(null);
+  const progressRef = useRef<HTMLDivElement | null>(null);
+  const container = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -36,7 +36,11 @@ export default function Home() {
         ref={progressRef}
       ></div>
       <div className="h-[300vh] relative" ref={container}>
-        <div className="sticky top-0 w-full h-[100vh] flex justify-center items-center"></div>
+        <div className="sticky top-0 w-full h-[100vh] flex justify-center items-center">
+          <Button>
+            <Link href="/auth/login">Login</Link>
+          </Button>
+        </div>
       </div>
       <div>
         <div className="bg-red-500 h-[100vh]">footer</div>
