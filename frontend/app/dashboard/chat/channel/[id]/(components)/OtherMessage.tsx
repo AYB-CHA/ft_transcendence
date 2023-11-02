@@ -30,7 +30,7 @@ export default function OtherMessage({
           return (
             <div
               key={message.id}
-              className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tr-none"
+              className="p-2 border border-gray-700 w-fit bg-dark-semi-dim rounded rounded-tr-none"
             >
               {message.text}
             </div>

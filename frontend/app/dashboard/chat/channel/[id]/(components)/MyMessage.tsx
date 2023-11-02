@@ -20,7 +20,7 @@ export default function MyMessage({
         {messages.map((message) => (
           <div
             key={message.id}
-            className="p-2 border border-gray-600 w-fit bg-dark-semi-dim rounded rounded-tl-none"
+            className="p-2 border border-gray-700 w-fit bg-dark-semi-dim rounded rounded-tl-none"
           >
             {message.text}
           </div>
