@@ -51,7 +51,7 @@ export default function ChatBox() {
           </div>
         ) : (
           <>
-            <MessagesBox me={me} />
+            <MessagesBox me={me} channel={data} isLoading={isLoading} />
           </>
         )}
       </div>

@@ -9,6 +9,8 @@ import CardFooter from "@/components/card/CardFooter";
 import ChatBoxInput from "./ChatBoxInput";
 import { UserType } from "@/hooks/auth";
 import axios from "@/lib/axios";
+import { ChannelType } from "./ChannelController";
+import Spinner from "@/components/Spinner";
 
 async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;
@@ -33,7 +35,15 @@ export function formatMessages(messages: MessageType[]) {
   return messagesGroup;
 }
 
-export default function MessagesBox({ me }: { me?: UserType }) {
+export default function MessagesBox({
+  me,
+  channel,
+  isLoading,
+}: {
+  me?: UserType;
+  channel: ChannelType | undefined;
+  isLoading: boolean;
+}) {
   let { id } = useParams();
   let socket = useChannelChatSocket();
   let [messages, setMessages] = useState<MessageType[]>([]);
@@ -89,7 +99,19 @@ export default function MessagesBox({ me }: { me?: UserType }) {
         </div>
       </div>
       <CardFooter>
-        <ChatBoxInput handler={sendMessage} />
+        {isLoading ? (
+          <div className="flex justify-center py-2.5 w-full">
+            <Spinner />
+          </div>
+        ) : (
+          <ChatBoxInput
+            handler={sendMessage}
+            mutedUntil={
+              (channel?.amIMuted && new Date(channel?.mutedUntil as string)) ||
+              undefined
+            }
+          />
+        )}
       </CardFooter>
     </>
   );

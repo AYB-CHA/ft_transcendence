@@ -15,6 +15,7 @@ import Ban from "./MembersAvatarDropDown/Ban";
 import SendDM from "./MembersAvatarDropDown/SendDM";
 import OnlineStatus from "@/app/dashboard/(components)/OnlineStatus";
 import Block from "./MembersAvatarDropDown/Block";
+import Mute from "./MembersAvatarDropDown/Mute";
 
 export default function MemberLabel({
   channel,
@@ -34,8 +35,19 @@ export default function MemberLabel({
             <DropdownMenuSeparator />
             <MakeAdmin channel={channel} me={me} member={member} />
             <MakeModerator channel={channel} member={member} />
-            <SendDM userId={member.id} />
-            <Block userId={member.id} myId={me.id} />
+            <Mute
+              isDisabled={
+                member.isMuted ||
+                member.role === "ADMINISTRATOR" ||
+                channel.myRole === "MEMBER" ||
+                me.id === member.id
+              }
+              userId={member.id}
+              channelId={channel.id}
+              isMuted={member.isMuted}
+            />
+            {/* <SendDM userId={member.id} />
+            <Block userId={member.id} myId={me.id} /> */}
             <DropdownMenuSeparator />
             <KickOut channel={channel} member={member} />
             <Ban channel={channel} member={member} />

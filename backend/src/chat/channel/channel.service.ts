@@ -82,7 +82,7 @@ export class ChannelService {
             where: {
               userId: myId,
             },
-            select: { role: true, banedAt: true, mutedAt: true },
+            select: { role: true, banedAt: true, mutedUntil: true },
           },
         },
       });
@@ -96,13 +96,16 @@ export class ChannelService {
         members: channel._count.users,
         myRole: channel.users[0].role,
         amIBaned: channel.users[0].banedAt != null,
-        amIMuted: channel.users[0].mutedAt != null,
+        mutedUntil: channel.users[0].mutedUntil,
+        amIMuted: new Boolean(
+          channel.users[0].mutedUntil &&
+            channel.users[0].mutedUntil.getTime() > Date.now(),
+        ),
       };
     } catch (error) {
       throw new NotFoundException();
     }
   }
-
   async getChannelUsers(myId: string, id: string) {
     const userData = await this.prisma.channel.findFirst({
       where: { id },
@@ -112,7 +115,7 @@ export class ChannelService {
             banedAt: null,
           },
           select: {
-            mutedAt: true,
+            mutedUntil: true,
             role: true,
             User: {
               select: {
@@ -142,7 +145,7 @@ export class ChannelService {
       return {
         ...user.User,
         role: user.role,
-        isMuted: user.mutedAt !== null,
+        isMuted: user.mutedUntil && user.mutedUntil.getTime() > Date.now(),
       };
     });
   }
@@ -229,6 +232,7 @@ export class ChannelService {
     channelId: string,
     userId: string,
     adminId: string,
+    duration: number,
   ) {
     try {
       const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
@@ -243,7 +247,7 @@ export class ChannelService {
               ? { in: ['MEMBER', 'MODERATOR'] }
               : 'MEMBER',
         },
-        data: { mutedAt: new Date() },
+        data: { mutedUntil: new Date(duration + Date.now()) },
       });
       return;
     } catch (error) {
@@ -251,32 +255,32 @@ export class ChannelService {
     }
     throw new Error("you can't mute the user");
   }
-  async unmuteUserFromOnChannel(
-    channelId: string,
-    userId: string,
-    adminId: string,
-  ) {
-    try {
-      const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
-        where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
-        select: { role: true },
-      });
-      await this.prisma.channelsOnUsers.update({
-        where: {
-          userId_channelId: { channelId, userId },
-          role:
-            role === 'ADMINISTRATOR'
-              ? { in: ['MEMBER', 'MODERATOR'] }
-              : 'MEMBER',
-        },
-        data: { mutedAt: null },
-      });
-      return;
-    } catch (error) {
-      console.error(error);
-    }
-    throw new Error("you can't mute the user");
-  }
+  // async unmuteUserFromOnChannel(
+  //   channelId: string,
+  //   userId: string,
+  //   adminId: string,
+  // ) {
+  //   try {
+  //     const { role } = await this.prisma.channelsOnUsers.findFirstOrThrow({
+  //       where: { userId: adminId, channelId, role: { not: 'MEMBER' } },
+  //       select: { role: true },
+  //     });
+  //     await this.prisma.channelsOnUsers.update({
+  //       where: {
+  //         userId_channelId: { channelId, userId },
+  //         role:
+  //           role === 'ADMINISTRATOR'
+  //             ? { in: ['MEMBER', 'MODERATOR'] }
+  //             : 'MEMBER',
+  //       },
+  //       data: { mutedUntil: null },
+  //     });
+  //     return;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   throw new Error("you can't mute the user");
+  // }
   async deleteChannelByOwner(channelId: string, userId: string) {
     try {
       await this.prisma.channel.delete({
@@ -427,7 +431,7 @@ export class ChannelService {
           where: {
             userId,
           },
-          select: { role: true, banedAt: true, mutedAt: true },
+          select: { role: true, banedAt: true, mutedUntil: true },
         },
       },
     });
@@ -449,7 +453,10 @@ export class ChannelService {
         members: channel._count.users,
         myRole: channel.users[0].role,
         amIBaned: channel.users[0].banedAt !== null,
-        amIMuted: channel.users[0].mutedAt !== null,
+        amIMuted: new Boolean(
+          channel.users[0].mutedUntil &&
+            channel.users[0].mutedUntil.getTime() > Date.now(),
+        ),
       };
     });
   }
@@ -465,7 +472,7 @@ export class ChannelService {
   async isUserMuted(userId: string, channelId: string) {
     return (
       (await this.prisma.channelsOnUsers.count({
-        where: { userId, channelId, mutedAt: null },
+        where: { userId, channelId, AND: [{ mutedUntil: { gt: new Date() } }] },
       })) > 0
     );
   }
