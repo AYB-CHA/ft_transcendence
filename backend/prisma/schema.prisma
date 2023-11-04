@@ -107,7 +107,8 @@ model ChannelsOnUsers {
   User      User            @relation(fields: [userId], references: [id])
   userId    String
   banedAt   DateTime?
-  mutedAt   DateTime?
+  mutedUntil   DateTime?
+
   role      ChannelUserRole @default(MEMBER)
 
   createdAt DateTime @default(now())

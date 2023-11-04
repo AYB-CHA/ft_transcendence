@@ -14,6 +14,7 @@ export type ChannelMemberType = {
   id: string;
   username: string;
   fullName: string;
+  isMuted: boolean;
   avatar: string;
   role: UserRoleOnChannel;
   status: UserStatusType;

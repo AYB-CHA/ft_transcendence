@@ -17,6 +17,7 @@ export function useChannelChatSocket() {
 export function clearSWRCache() {
   mutate(/* match all keys */ () => true);
 }
+
 export default function Page() {
   let [socket, setSocket] = useState<Socket | null>(null);
   let { id } = useParams();

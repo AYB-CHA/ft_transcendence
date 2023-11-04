@@ -14,6 +14,15 @@ import { ChannelService } from './channel.service';
 import { ChannelUserRole } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 
+const muteDurationValues = {
+  '10M': 10 * 60 * 1000,
+  '30M': 30 * 60 * 1000,
+  '1H': 1 * 60 * 60 * 1000,
+  FOREVER: 3153600000 * 1000, // 100 Years
+};
+
+type muteDurations = keyof typeof muteDurationValues;
+
 @WebSocketGateway({
   namespace: 'channel',
   cors: { origin: process.env['FRONTEND_BASEURL'] },
@@ -31,13 +40,16 @@ export class ChannelSocketGateway
     private readonly userService: UserService,
   ) {}
 
-  handleConnection(@ConnectedSocket() client: Socket) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
     const id = this.getClientId(client);
 
     const channelId: string =
       (client.handshake.query?.channelId as string) ?? '';
 
-    if (!this.channelService.isUserBelongsToChannel(id, channelId) || !id) {
+    if (
+      !id &&
+      !(await this.channelService.isUserBelongsToChannel(id, channelId))
+    ) {
       client.disconnect();
       return;
     }
@@ -73,12 +85,18 @@ export class ChannelSocketGateway
   ) {
     const senderId = this.getClientId(client);
 
-    if (!this.channelService.isUserBelongsToChannel(senderId, data.channelId)) {
+    if (
+      !(await this.channelService.isUserBelongsToChannel(
+        senderId,
+        data.channelId,
+      ))
+    ) {
       client.disconnect();
       return;
     }
 
-    if (!this.channelService.isUserMuted(senderId, data.channelId)) {
+    if (await this.channelService.isUserMuted(senderId, data.channelId)) {
+      console.log('cant send message your muted');
       return;
     }
 
@@ -132,6 +150,7 @@ export class ChannelSocketGateway
       data.userId,
       adminId,
     );
+
     this.sendCriticalEvent(data.channelId);
   }
 
@@ -152,31 +171,19 @@ export class ChannelSocketGateway
 
   @SubscribeMessage('muteUser')
   async handleMuteEvent(
-    @MessageBody() data: { channelId: string; userId: string },
+    @MessageBody()
+    data: { channelId: string; userId: string; duration: muteDurations },
     @ConnectedSocket() client: Socket,
   ) {
+    if (!muteDurationValues.hasOwnProperty(data.duration)) return;
+
     const adminId = this.getClientId(client);
 
-    this.channelService.muteUserFromOnChannel(
+    await this.channelService.muteUserFromOnChannel(
       data.channelId,
       data.userId,
       adminId,
-    );
-
-    this.sendCriticalEvent(data.channelId, [data.userId, adminId]);
-  }
-
-  @SubscribeMessage('unmuteUser')
-  async handleUnmuteEvent(
-    @MessageBody() data: { channelId: string; userId: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    const adminId = this.getClientId(client);
-
-    this.channelService.unmuteUserFromOnChannel(
-      data.channelId,
-      data.userId,
-      adminId,
+      muteDurationValues[data.duration],
     );
 
     this.sendCriticalEvent(data.channelId, [data.userId, adminId]);

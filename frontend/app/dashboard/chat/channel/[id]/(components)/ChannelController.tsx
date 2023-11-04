@@ -26,6 +26,8 @@ export type ChannelType = {
   type: ChannelVisibilityType;
   myRole: UserRoleOnChannel;
   amIBaned: boolean;
+  mutedUntil: string | null;
+  amIMuted: boolean;
 };
 
 export default function ChannelController() {
