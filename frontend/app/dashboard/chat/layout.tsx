@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Input placeholder="Search" icon={<Search size={18} />} />
             </CardHeader>
             <CardHeader>
-              <TabsList>
+              <TabsList className="py-8">
                 <TabsTrigger value="channels">Channels</TabsTrigger>
                 <TabsTrigger value="dms">DMs</TabsTrigger>
               </TabsList>

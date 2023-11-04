@@ -46,8 +46,8 @@ export default function MemberLabel({
               channelId={channel.id}
               isMuted={member.isMuted}
             />
-            {/* <SendDM userId={member.id} />
-            <Block userId={member.id} myId={me.id} /> */}
+            <SendDM userId={member.id} />
+            <Block userId={member.id} myId={me.id} />
             <DropdownMenuSeparator />
             <KickOut channel={channel} member={member} />
             <Ban channel={channel} member={member} />

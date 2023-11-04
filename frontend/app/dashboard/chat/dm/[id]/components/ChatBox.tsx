@@ -8,10 +8,7 @@ import ChatBoxInput from "./ChatBoxInput";
 import { notFound, useParams } from "next/navigation";
 import { useDMSocket } from "@/app/(components)/DMSocket";
 import { useEffect, useState } from "react";
-import {
-  MessageType,
-  formatMessages,
-} from "../../../channel/[id]/(components)/ChatBox";
+import { MessageType } from "../../../channel/[id]/(components)/ChatBox";
 import OtherMessage from "../../../channel/[id]/(components)/OtherMessage";
 import MyMessage from "../../../channel/[id]/(components)/MyMessage";
 import { useAuth } from "@/hooks/auth";
@@ -19,6 +16,7 @@ import useSWR from "swr";
 import axios from "@/lib/axios";
 import { MehIcon } from "lucide-react";
 import { AxiosError } from "axios";
+import { formatMessages } from "../../../channel/[id]/(components)/MessagesBox";
 
 export type OtherUserType = {
   id: string;
