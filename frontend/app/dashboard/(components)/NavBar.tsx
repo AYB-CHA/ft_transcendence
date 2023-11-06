@@ -42,6 +42,7 @@ import {
   MessageSquare,
   UserPlus,
 } from "lucide-react";
+
 import { io } from "socket.io-client";
 
 type NotificationType =
@@ -188,7 +189,7 @@ function Notifications() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="border-0 rounded-none p-0"
+        className="border-0 rounded-none px-0 py-0 shadow-lg shadow-dark-semi-dim/20"
         sideOffset={30}
         collisionPadding={{
           bottom: 72,
@@ -221,7 +222,7 @@ function Notifications() {
             <div className="w-full text-center">
               <span
                 onClick={clearNotifications}
-                className="text-xs text-gray-500 hover:underline cursor-pointer"
+                className="text-xs text-gray-500 hover:underline cursor-pointer select-none"
               >
                 Clear Notifications
               </span>

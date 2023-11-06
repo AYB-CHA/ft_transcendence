@@ -127,7 +127,7 @@ export function SearchFriendsModal({
             />
           </div>
           <div className="flex flex-col flex-1 divide-y divide-dark-semi-dim py-[8px]">
-            <LoadingIndicator visible={isLoading} />
+            <LoadingIndicator visible={isLoading} className="py-[110px]" />
             {data &&
               (data.length == 0 ? (
                 <EmptyState
