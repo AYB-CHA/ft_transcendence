@@ -8,12 +8,15 @@ import {
 import { compareSync, hashSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import * as se from 'speakeasy';
+import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async enable2FA(userId: string) {
@@ -206,5 +209,14 @@ export class UserService {
   }
   async findUserByEmail(email: string) {
     return await this.prisma.user.findFirstOrThrow({ where: { email } });
+  }
+  getClientIdFromSocket(client: Socket) {
+    const authHeader: string | null =
+      client.handshake.headers.authorization?.replace('Bearer ', '');
+    try {
+      const payload = this.jwtService.verify(authHeader ?? '');
+      return payload.sub as string;
+    } catch (error) {}
+    return null;
   }
 }

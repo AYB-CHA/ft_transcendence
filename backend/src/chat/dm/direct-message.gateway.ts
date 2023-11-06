@@ -11,6 +11,7 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { DirectMessageService } from './direct-message.service';
+import { UserService } from 'src/user/user.service';
 
 @WebSocketGateway({
   namespace: '/dm',
@@ -27,10 +28,11 @@ export class DirectMessageGateway
   constructor(
     private readonly jwtService: JwtService,
     private readonly dmService: DirectMessageService,
+    private readonly userService: UserService,
   ) {}
 
   handleConnection(@ConnectedSocket() client: Socket) {
-    const id = this.getClientId(client);
+    const id = this.userService.getClientIdFromSocket(client);
     if (!id) {
       client.disconnect();
       return;
@@ -42,7 +44,7 @@ export class DirectMessageGateway
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     console.log('DISCONNECTION <<<<<<<<<<<<');
-    const id = this.getClientId(client);
+    const id = this.userService.getClientIdFromSocket(client);
     this.clients = this.clients.filter((c) => {
       return c.id != id;
     });
@@ -54,7 +56,7 @@ export class DirectMessageGateway
     @MessageBody() data: { threadId: string; text: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const senderId = this.getClientId(client);
+    const senderId = this.userService.getClientIdFromSocket(client);
     try {
       const threadData = await this.dmService.sendDm(
         data.threadId,
@@ -73,14 +75,5 @@ export class DirectMessageGateway
           });
       }
     } catch {}
-  }
-  getClientId(client: Socket) {
-    const authHeader: string | null =
-      client.handshake.headers.authorization?.replace('Bearer ', '');
-    try {
-      const payload = this.jwtService.verify(authHeader ?? '');
-      return payload.sub as string;
-    } catch (error) {}
-    return null;
   }
 }

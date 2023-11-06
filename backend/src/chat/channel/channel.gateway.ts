@@ -1,4 +1,3 @@
-import { JwtService } from '@nestjs/jwt';
 import {
   ConnectedSocket,
   MessageBody,
@@ -36,7 +35,6 @@ export class ChannelSocketGateway
   clients: { id: string; socket: Socket; channelId: string }[] = [];
 
   constructor(
-    private readonly jwtService: JwtService,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
     private readonly channelGlue: ChannelGlue,
@@ -57,7 +55,7 @@ export class ChannelSocketGateway
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const id = this.getClientId(client);
+    const id = this.userService.getClientIdFromSocket(client);
 
     const channelId: string =
       (client.handshake.query?.channelId as string) ?? '';
@@ -75,7 +73,7 @@ export class ChannelSocketGateway
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
-    const id = this.getClientId(client);
+    const id = this.userService.getClientIdFromSocket(client);
     // console.log(id);
 
     this.clients = this.clients.filter((c) => {
@@ -84,22 +82,12 @@ export class ChannelSocketGateway
     // console.log('disconnect: ', this.clients);
   }
 
-  getClientId(client: Socket) {
-    const authHeader: string | null =
-      client.handshake.headers.authorization?.replace('Bearer ', '');
-    try {
-      const payload = this.jwtService.verify(authHeader ?? '');
-      return payload.sub as string;
-    } catch (error) {}
-    return null;
-  }
-
   @SubscribeMessage('newMessage')
   async handleNewMessageEvent(
     @MessageBody() data: { channelId: string; text: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const senderId = this.getClientId(client);
+    const senderId = this.userService.getClientIdFromSocket(client);
 
     if (
       !(await this.channelService.isUserBelongsToChannel(
@@ -142,7 +130,7 @@ export class ChannelSocketGateway
     data: { channelId: string; userId: string; grade: ChannelUserRole },
     @ConnectedSocket() client: Socket,
   ) {
-    const adminId = this.getClientId(client);
+    const adminId = this.userService.getClientIdFromSocket(client);
 
     this.channelService.upgradeUserGrade(
       data.channelId,
@@ -159,7 +147,7 @@ export class ChannelSocketGateway
     @MessageBody() data: { channelId: string; userId: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const adminId = this.getClientId(client);
+    const adminId = this.userService.getClientIdFromSocket(client);
 
     this.channelService.kickUserFromChannel(
       data.channelId,
@@ -175,7 +163,7 @@ export class ChannelSocketGateway
     @MessageBody() data: { channelId: string; userId: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const adminId = this.getClientId(client);
+    const adminId = this.userService.getClientIdFromSocket(client);
 
     this.channelService.banUserFromChannel(
       data.channelId,
@@ -193,7 +181,7 @@ export class ChannelSocketGateway
   ) {
     if (!muteDurationValues.hasOwnProperty(data.duration)) return;
 
-    const adminId = this.getClientId(client);
+    const adminId = this.userService.getClientIdFromSocket(client);
 
     await this.channelService.muteUserFromOnChannel(
       data.channelId,
