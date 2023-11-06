@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
+
+trap cleanup SIGINT
+
+cleanup () {
+    pkill -P $$
+    exit 0
+}
+
 if docker compose up -d 2> /dev/null ; then
-    cd ./backend && npm run start:dev &
+    cd ./backend && npx prisma db push && npm run start:dev &
     cd ./frontend && npm run dev & 
 else
-    echo "check if docker is running."
+    echo "Check if docker is running."
     exit 1
 fi
 

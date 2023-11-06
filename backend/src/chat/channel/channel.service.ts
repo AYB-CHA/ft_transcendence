@@ -8,10 +8,14 @@ import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
 import { ChannelUserRole } from '@prisma/client';
+import { ChannelGlue } from './channel.glue';
 
 @Injectable()
 export class ChannelService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly channelGlue: ChannelGlue,
+  ) {}
 
   async getMessagesOnChannel(channelId: string, userId: string) {
     if (!(await this.isUserBelongsToChannel(userId, channelId)))
@@ -330,6 +334,7 @@ export class ChannelService {
           userId,
         },
       });
+      this.channelGlue.emit({ name: 'NEW_CHANNEL_MEMBER', channelId });
       return;
     }
     throw new UnauthorizedException(['the password is wrong']);
@@ -351,6 +356,7 @@ export class ChannelService {
           userId,
         },
       });
+      this.channelGlue.emit({ name: 'NEW_CHANNEL_MEMBER', channelId });
       return;
     }
     throw new BadRequestException(['no channel found']);
@@ -367,6 +373,7 @@ export class ChannelService {
           banedAt: null,
         },
       });
+      this.channelGlue.emit({ name: 'CHANNEL_MEMBER_LEFT', channelId });
       return;
     } catch (error) {
       console.error(error);

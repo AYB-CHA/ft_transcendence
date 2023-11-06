@@ -13,6 +13,7 @@ import { Server, Socket } from 'socket.io';
 import { ChannelService } from './channel.service';
 import { ChannelUserRole } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
+import { ChannelGlue, ChannelGlueEventsType } from './channel.glue';
 
 const muteDurationValues = {
   '10M': 10 * 60 * 1000,
@@ -38,7 +39,23 @@ export class ChannelSocketGateway
     private readonly jwtService: JwtService,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
+    private readonly channelGlue: ChannelGlue,
   ) {}
+
+  afterInit() {
+    // const __self = this;
+
+    this.channelGlue.listen((event) => {
+      const handlers: Record<
+        ChannelGlueEventsType,
+        (channelId: string) => void
+      > = {
+        CHANNEL_MEMBER_LEFT: this.sendCriticalEvent,
+        NEW_CHANNEL_MEMBER: this.sendCriticalEvent,
+      };
+      handlers[event.name](event.channelId);
+    });
+  }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
     const id = this.getClientId(client);
@@ -189,7 +206,7 @@ export class ChannelSocketGateway
     this.sendCriticalEvent(data.channelId, [data.userId, adminId]);
   }
 
-  sendCriticalEvent(channelId: string, userIds?: string[]) {
+  sendCriticalEvent = (channelId: string, userIds?: string[]) => {
     for (const client of this.clients) {
       if (
         client.channelId === channelId &&
@@ -197,5 +214,5 @@ export class ChannelSocketGateway
       )
         client.socket.emit('criticalChange');
     }
-  }
+  };
 }
