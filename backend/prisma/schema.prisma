@@ -31,10 +31,10 @@ model User {
 
   authProvider AuthProvider?
 
-  ftId Int?
+  ftId     Int?
   githubId Int?
 
-  optSecret String
+  optSecret    String
   is2FAEnabled Boolean @default(false)
 
   status UserStatus @default(OFFLINE)
@@ -42,13 +42,17 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels           ChannelsOnUsers[]
-  Messages           Messages[]
-  sentDMMessages     DMMessage[]
-  initaitedDMThreads DMThread[]        @relation(name: "initiator_relation")
-  secondDMThreads    DMThread[]        @relation(name: "participant_relation")
-  blocked            UserBlock[]       @relation(name: "blocker_relation")
-  wasBlocked         UserBlock[]       @relation(name: "blocked_relation")
+  channels               ChannelsOnUsers[]
+  Messages               Messages[]
+  sentDMMessages         DMMessage[]
+  initaitedDMThreads     DMThread[]        @relation(name: "initiator_relation")
+  secondDMThreads        DMThread[]        @relation(name: "participant_relation")
+  blocked                UserBlock[]       @relation(name: "blocker_relation")
+  wasBlocked             UserBlock[]       @relation(name: "blocked_relation")
+  sentFriendRequests     Friendship[]      @relation(name: "sentFriendRequests")
+  receivedFriendRequests Friendship[]      @relation(name: "receivedFriendRequests")
+  sentNotifications      Notification[]    @relation(name: "sentNotifications")
+  receivedNotifications  Notification[]    @relation(name: "receivedNotifications")
 }
 
 model UserBlock {
@@ -58,6 +62,17 @@ model UserBlock {
   Blocked    User   @relation(fields: [blocked_id], references: [id], name: "blocked_relation")
 
   @@id([blocked_id, blocker_id])
+}
+
+model Friendship {
+  id         String  @id @unique @default(uuid())
+  senderId   String
+  receiverId String
+  isPending  Boolean @default(true)
+  sender     User    @relation(name: "sentFriendRequests", fields: [senderId], references: [id])
+  receiver   User    @relation(name: "receivedFriendRequests", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
 }
 
 enum ChannelType {
@@ -78,8 +93,9 @@ model Channel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users    ChannelsOnUsers[]
-  Messages Messages[]
+  users           ChannelsOnUsers[]
+  Messages        Messages[]
+  sentInvitations Notification[]
 }
 
 enum ChannelUserRole {
@@ -89,14 +105,14 @@ enum ChannelUserRole {
 }
 
 model ChannelsOnUsers {
-  Channel   Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  channelId String
-  User      User            @relation(fields: [userId], references: [id])
-  userId    String
-  banedAt   DateTime?
-  mutedUntil   DateTime?
+  Channel    Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId  String
+  User       User      @relation(fields: [userId], references: [id])
+  userId     String
+  banedAt    DateTime?
+  mutedUntil DateTime?
 
-  role      ChannelUserRole @default(MEMBER)
+  role ChannelUserRole @default(MEMBER)
 
   createdAt DateTime @default(now())
 
@@ -134,4 +150,24 @@ model DMMessage {
   thread   DMThread @relation(fields: [threadId], references: [id])
 
   createdAt DateTime @default(now())
+}
+
+model Notification {
+  id         String           @id @unique @default(uuid())
+  link       String
+  read       Boolean          @default(false)
+  type       NotificationType
+  senderId   String
+  receiverId String
+  channelId  String?
+  createdAt  DateTime         @default(now())
+  sender     User             @relation(fields: [senderId], references: [id], name: "sentNotifications")
+  receiver   User             @relation(fields: [receiverId], references: [id], name: "receivedNotifications")
+  channel    Channel?         @relation(fields: [channelId], references: [id])
+}
+
+enum NotificationType {
+  CHANNEL_INVITAION
+  FRIEND_INVITAION
+  GAME_INVITAION
 }

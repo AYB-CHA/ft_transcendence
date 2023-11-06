@@ -10,10 +10,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatModule } from './chat/chat.module';
 import { UploadModule } from './upload/upload.module';
+import { FriendsModule } from './friends/friends.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
     AuthModule,
+    FriendsModule,
+    NotificationModule,
     UserModule,
     ChatModule,
     PrismaModule,

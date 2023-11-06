@@ -1,6 +1,31 @@
 "use client";
-import { usePathname } from "next/navigation";
+
+import DropDownAvatar from "@/components/DropDownAvatar";
+import CardFooter from "@/components/card/CardFooter";
+import CardHeader from "@/components/card/CardHeader";
+import CardBody from "@/components/card/CardBody";
+import Card from "@/components/card/Card";
+import Button from "@/components/Button";
+import Cookies from "js-cookie";
+import axios from "@/lib/axios";
 import NavTab from "./NavTab";
+import Link from "next/link";
+import useSWR from "swr";
+
+import { EmptyState } from "@/components/EmptyState";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/auth";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropDown";
+
 import {
   MessageCircle,
   Trophy,
@@ -10,16 +35,203 @@ import {
   LogOut,
   Users,
   Activity,
+  Bell,
+  LucideProps,
+  Swords,
+  BellOff,
+  MessageSquare,
+  UserPlus,
 } from "lucide-react";
+import { io } from "socket.io-client";
 
-import { useAuth } from "@/hooks/auth";
+type NotificationType =
+  | "CHANNEL_INVITAION"
+  | "FRIEND_INVITAION"
+  | "GAME_INVITAION";
 
-import {
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/DropDown";
-import DropDownAvatar from "@/components/DropDownAvatar";
+type Notification = {
+  id: string;
+  type: NotificationType;
+  description: string;
+  read: boolean;
+  link: string;
+};
+
+type NotificationMetadata = {
+  Icon: (props: LucideProps) => ReactNode;
+  title: string;
+  link: string;
+};
+
+const notificationsMetadata: Record<NotificationType, NotificationMetadata> = {
+  CHANNEL_INVITAION: {
+    Icon: MessageSquare,
+    link: "Join Channel",
+    title: "Join Channel",
+  },
+  FRIEND_INVITAION: {
+    Icon: UserPlus,
+    link: "See Friend Requests",
+    title: "Friend Request",
+  },
+  GAME_INVITAION: {
+    Icon: Swords,
+    link: "Start New Game",
+    title: "Game Challenge",
+  },
+};
+
+type NotificationItemProps = {
+  link: string;
+  description: string;
+  type: NotificationType;
+  read: boolean;
+  markAsRead: () => void;
+};
+
+function NotificationItem({
+  description,
+  markAsRead,
+  link,
+  type,
+  read,
+}: NotificationItemProps) {
+  const metatdata = notificationsMetadata[type];
+
+  return (
+    <div className={`flex flex-col items-end gap-2 p-4 ${!read && "bg-dark"}`}>
+      <div className="flex flex-row w-full gap-4">
+        <metatdata.Icon className="min-w-[24px] min-h-[24px]" strokeWidth={1} />
+        <div className="flex flex-col gap-1">
+          <p className="uppercase">{metatdata.title}</p>
+          <p className="text-xs text-gray-500">{description}</p>
+        </div>
+      </div>
+      <Link href={link} onClick={markAsRead}>
+        <Button>{metatdata.link}</Button>
+      </Link>
+    </div>
+  );
+}
+
+function Notifications() {
+  const { data, mutate } = useSWR<Notification[]>(
+    "/user/notifications",
+    async (key: string) => {
+      const { data } = await axios.get(key);
+      return data;
+    }
+  );
+
+  const socket = useMemo(() => {
+    const url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
+    url.pathname = "/notification";
+    url.protocol = "ws";
+    return io(url.toString(), {
+      extraHeaders: {
+        Authorization: `Bearer ${Cookies.get("access_token")}`,
+      },
+    });
+  }, []);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const userId: string | undefined = user?.id;
+
+    if (userId === undefined) {
+      return;
+    }
+
+    socket.on(userId, () => {
+      mutate();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket, user?.id]);
+
+  async function clearNotifications() {
+    await axios.delete("/user/notifications");
+    mutate();
+  }
+
+  const [open, setOpen] = useState(false);
+
+  function markAsRead(notificationId: string) {
+    return async () => {
+      setOpen(false);
+      await axios.patch("/user/notifications/" + notificationId);
+      mutate();
+    };
+  }
+
+  const unreadCount = useMemo(
+    () => data?.reduce((acc, item) => acc + (item.read ? 0 : 1), 0) ?? 0,
+    [data]
+  );
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <div className="relative">
+          <Bell
+            className="hover:text-gray-300 cursor-pointer transition-colors"
+            strokeWidth={1}
+          />
+          {unreadCount > 0 && (
+            <span className="absolute bg-primary text-xs text-dark border border-dark px-1 -top-[6px] -right-[3px] rounded-lg">
+              {unreadCount}
+            </span>
+          )}
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="border-0 rounded-none p-0"
+        sideOffset={30}
+        collisionPadding={{
+          bottom: 72,
+        }}
+        side="right"
+      >
+        <Card className="w-[600px]">
+          <CardHeader>Notifications</CardHeader>
+          <CardBody className="max-h-[700px] overflow-auto py-0 px-0 divide-y divide-dark-semi-dim">
+            {data &&
+              (data.length === 0 ? (
+                <EmptyState
+                  Icon={BellOff}
+                  description="You have no notifications."
+                />
+              ) : (
+                data.map((notification) => (
+                  <NotificationItem
+                    key={notification.id}
+                    description={notification.description}
+                    link={notification.link}
+                    type={notification.type}
+                    read={notification.read}
+                    markAsRead={markAsRead(notification.id)}
+                  />
+                ))
+              ))}
+          </CardBody>
+          <CardFooter>
+            <div className="w-full text-center">
+              <span
+                onClick={clearNotifications}
+                className="text-xs text-gray-500 hover:underline cursor-pointer"
+              >
+                Clear Notifications
+              </span>
+            </div>
+          </CardFooter>
+        </Card>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -62,7 +274,8 @@ export default function NavBar() {
           ))}
         </div>
         <div>
-          <div className="flex items-center">
+          <div className="flex flex-col items-center gap-6">
+            <Notifications />
             {isLoading ? (
               <div className="h-10 w-10 rounded-full animate-pulse bg-dark-semi-dim"></div>
             ) : (

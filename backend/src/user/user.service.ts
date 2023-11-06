@@ -1,15 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
+import { compareSync, hashSync } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { UserSearchEntity } from './types.d';
+import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
+
+import * as se from 'speakeasy';
+
 import {
   RegisterUserType,
   UpdateUserPasswordType,
   UpdateUserType,
 } from 'src/types';
-import { compareSync, hashSync } from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
-import * as se from 'speakeasy';
-import { JwtService } from '@nestjs/jwt';
-import { Socket } from 'socket.io';
 
 @Injectable()
 export class UserService {
@@ -43,6 +46,7 @@ export class UserService {
     } catch (error) {}
     throw new BadRequestException(["you can't block user."]);
   }
+
   async usersHasBlockRelation(userTwoId: string, userOneId: string) {
     return (
       (await this.prisma.userBlock.count({
@@ -55,6 +59,7 @@ export class UserService {
       })) > 0
     );
   }
+
   // the third param is provided if you want to exclude a user from the check (useful in the updates).
   async validateUniquenessOfEmailAndUsername(
     username: string,
@@ -186,20 +191,20 @@ export class UserService {
     };
   }
 
-  async findUserByEmailOrUsername(usernameOrEmail: string) {
-    return await this.prisma.user.findFirstOrThrow({
+  findUserByEmailOrUsername(usernameOrEmail: string) {
+    return this.prisma.user.findFirstOrThrow({
       where: {
         OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
       },
     });
   }
 
-  async findUserByUsername(username: string) {
-    return await this.prisma.user.findFirstOrThrow({ where: { username } });
+  findUserByUsername(username: string) {
+    return this.prisma.user.findFirstOrThrow({ where: { username } });
   }
-  async findUserByProviderId(id: number, provider: 'FT' | 'GITHUB') {
-    console.log(provider, id);
-    return await this.prisma.user.findFirstOrThrow({
+
+  findUserByProviderId(id: number, provider: 'FT' | 'GITHUB') {
+    return this.prisma.user.findFirstOrThrow({
       where: {
         authProvider: provider,
         githubId: provider === 'GITHUB' ? id : undefined,
@@ -207,8 +212,33 @@ export class UserService {
       },
     });
   }
-  async findUserByEmail(email: string) {
-    return await this.prisma.user.findFirstOrThrow({ where: { email } });
+
+  findUserByEmail(email: string) {
+    return this.prisma.user.findFirstOrThrow({ where: { email } });
+  }
+
+  findUsers(
+    userId: string,
+    query: string | undefined = '',
+  ): Promise<UserSearchEntity> {
+    return this.prisma.$queryRaw`
+      SELECT u."id", f."id" "requestId", u."username", u."avatar", u."fullName",
+        CASE
+          WHEN f."isPending" = FALSE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN 'FRIEND'
+          WHEN f."isPending" = TRUE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN
+            CASE
+              WHEN f."senderId" = ${userId} THEN 'PENDING-SENDER'
+              WHEN f."receiverId" = ${userId} THEN 'PENDING-RECEIVER'
+            END
+          ELSE 'NONE'
+        END "status"
+      FROM "User" u
+      LEFT JOIN "Friendship" f
+        ON f."senderId" = u.id OR f."receiverId" = u.id
+      WHERE u.id != ${userId}
+        AND (u."fullName" ILIKE '%' || ${query} || '%'
+          OR u."username" ILIKE '%' || ${query} || '%')
+    `;
   }
   getClientIdFromSocket(client: Socket) {
     const authHeader: string | null =
