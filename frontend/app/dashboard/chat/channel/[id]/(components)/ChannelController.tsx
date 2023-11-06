@@ -5,14 +5,13 @@ import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
 import CardFooter from "@/components/card/CardFooter";
 import { PenIcon, Search } from "lucide-react";
-import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import useSWR from "swr";
 import { notFound, useParams } from "next/navigation";
 import axios from "@/lib/axios";
 import ChannelMembers from "./ChannelMembers";
-import LeaveChannel from "../../../(components)/LeaveChannel";
 import { useState } from "react";
+import UpdateChannel from "./UpdateChannel";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
@@ -50,7 +49,7 @@ export default function ChannelController() {
         <div className="py-10">
           <div className="flex justify-center items-center">
             <div className="text-center flex flex-col items-center">
-              <div className="relative cursor-pointer mb-6">
+              <div className="relative mb-6">
                 <div
                   className={`border-2 h-32 w-32 rounded-full overflow-hidden  ${
                     !isLoading ? "border-primary" : "border-dark-dim"
@@ -69,9 +68,11 @@ export default function ChannelController() {
                         unoptimized
                       />
                       {data?.myRole === "ADMINISTRATOR" && (
-                        <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
-                          <PenIcon size={11} />
-                        </div>
+                        <UpdateChannel channelData={data}>
+                          <div className="absolute bg-primary text-dark top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border border-dark h-5 w-5 flex justify-center items-center rounded-full">
+                            <PenIcon size={11} />
+                          </div>
+                        </UpdateChannel>
                       )}
                     </>
                   )}

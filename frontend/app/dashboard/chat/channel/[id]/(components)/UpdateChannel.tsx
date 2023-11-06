@@ -1,6 +1,5 @@
 "use client";
 import EditAvatar from "@/app/(components)/EditAvatar";
-import { triggerValidationToast } from "@/app/lib/Toast";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
@@ -17,61 +16,60 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 
-import axios from "@/lib/axios";
-import { camelCaseToNormal } from "@/lib/string";
-import { AxiosError } from "axios";
-
 import {
   AlignRight,
   Fingerprint,
+  Info,
   KeyRoundIcon,
   SpellCheck2,
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
+import {
+  ChannelVisibilityType,
+  avatarsBaseUrl,
+} from "../../../(components)/NewChannel";
+import { ChannelType } from "./ChannelController";
+import axios from "@/lib/axios";
 import { toast } from "react-toastify";
-import { mutate } from "swr";
+import { AxiosError } from "axios";
+import { triggerValidationToast } from "@/app/lib/Toast";
+import { camelCaseToNormal } from "@/lib/string";
 
-export type ChannelVisibilityType = "PUBLIC" | "PRIVATE" | "PROTECTED";
-
-export function avatarsBaseUrl() {
-  let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
-  avatarUrl.pathname = "public/avatars/";
-  return avatarUrl.toString();
-}
-
-export default function NewChannel({
-  setParentDialog,
-}: {
-  setParentDialog: Dispatch<SetStateAction<boolean>>;
-}) {
-  const router = useRouter();
+export default function UpdateChannel({
+  children,
+  channelData,
+}: { channelData: ChannelType } & PropsWithChildren) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(channelData.name);
   const [password, setPassword] = useState("");
-  const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState<ChannelVisibilityType>("PUBLIC");
-  const [avatar, setAvatar] = useState("channel.jpg");
+  const [description, setDescription] = useState(channelData.topic);
+  const [visibility, setVisibility] = useState<ChannelVisibilityType>(
+    channelData.type
+  );
+  const [avatar, setAvatar] = useState(channelData.avatar);
+  function setAvatarFullUrl(avatarName: string) {
+    setAvatar(avatarsBaseUrl() + avatarName);
+  }
 
   const handelSumption = async () => {
     let data: {
       [key: string]: string;
     } = {
       name,
-      avatar: avatarsBaseUrl() + avatar,
-      type: visibility.toLowerCase(),
+      avatar: avatar,
+      type: visibility,
       topic: description,
     };
-    if (visibility === "PROTECTED") data.password = password;
-
+    if (visibility === "PROTECTED" && password.length) data.password = password;
     try {
-      let response = await axios.post("chat/channel", data);
-      router.push(`/dashboard/chat/channel/${response.data?.id}`);
-      setOpen(false);
-      setParentDialog(false);
-      mutate("/chat/channel");
+      let response = await axios.put(
+        `chat/channel/update/${channelData.id}`,
+        data
+      );
       toast.dismiss();
+      setOpen(false);
     } catch (error) {
       if (error instanceof AxiosError)
         triggerValidationToast(
@@ -85,11 +83,9 @@ export default function NewChannel({
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button className="mx-auto">Create New Channel</Button>
-        </DialogTrigger>
+        <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="max-w-3xl">
-          <CardHeader>New Channel</CardHeader>
+          <CardHeader>Update Channel</CardHeader>
           <CardBody>
             <div className="grid grid-cols-2 px-2 py-4 gap-8">
               <div>
@@ -99,6 +95,7 @@ export default function NewChannel({
                     placeholder="Channel Name"
                     icon={<Fingerprint size={17} />}
                     onChange={(e) => setName(e.target.value)}
+                    value={name}
                     maxLength={40}
                   />
                 </div>
@@ -136,6 +133,7 @@ export default function NewChannel({
                   <TextArea
                     placeholder="Channel brief description."
                     icon={<AlignRight size={17} />}
+                    value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
@@ -143,8 +141,10 @@ export default function NewChannel({
               <div className="flex justify-center items-center">
                 <div className="text-center flex flex-col items-center">
                   <EditAvatar
-                    src={avatarsBaseUrl() + avatar}
-                    setSrc={setAvatar}
+                    src={avatar}
+                    setSrc={
+                      setAvatarFullUrl as Dispatch<SetStateAction<string>>
+                    }
                   />
                   <h3 className="font-medium text-base">
                     {name.length > 0 ? name : "Channel Name"}
@@ -159,7 +159,13 @@ export default function NewChannel({
             </div>
           </CardBody>
           <CardFooter>
-            <Button onClick={handelSumption}>Create Channel</Button>
+            <div className="flex w-full justify-between">
+              <span className="ms-2 text-xs text-dark-semi-light inline-flex items-center gap-2">
+                <Info size={15} strokeWidth={1.5} /> leave the password filed
+                empty to not change it
+              </span>
+              <Button onClick={handelSumption}>Save Changes</Button>
+            </div>
           </CardFooter>
         </DialogContent>
       </Dialog>

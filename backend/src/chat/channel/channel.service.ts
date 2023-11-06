@@ -9,6 +9,7 @@ import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
 import { ChannelUserRole } from '@prisma/client';
 import { ChannelGlue } from './channel.glue';
+import UpdateChannelDto from './dtos/update-channel.dto';
 
 @Injectable()
 export class ChannelService {
@@ -16,6 +17,52 @@ export class ChannelService {
     private readonly prisma: PrismaService,
     private readonly channelGlue: ChannelGlue,
   ) {}
+
+  async updateChannel(id: string, body: UpdateChannelDto, adminId: string) {
+    try {
+      const channel = await this.prisma.channel.findFirstOrThrow({
+        where: {
+          id,
+          users: {
+            some: {
+              AND: [{ userId: adminId }, { role: 'ADMINISTRATOR' }],
+            },
+          },
+        },
+      });
+
+      if (body.type !== 'PROTECTED' && body.password)
+        throw new BadRequestException([
+          "public and protected channels can't have a password",
+        ]);
+
+      if (
+        channel.type !== 'PROTECTED' &&
+        body.type === 'PROTECTED' &&
+        !body.password
+      ) {
+        throw new BadRequestException([
+          'protected channels should have a password',
+        ]);
+      }
+
+      await this.prisma.channel.update({
+        where: {
+          id,
+        },
+        data: {
+          avatar: body.avatar,
+          type: body.type,
+          password: body.password ? hashSync(body.password, 10) : undefined,
+          name: body.name,
+          topic: body.topic,
+        },
+      });
+      this.channelGlue.emit({ name: 'CHANNEL_EDITED', channelId: channel.id });
+    } catch (e) {
+      throw e;
+    }
+  }
 
   async getMessagesOnChannel(channelId: string, userId: string) {
     if (!(await this.isUserBelongsToChannel(userId, channelId)))

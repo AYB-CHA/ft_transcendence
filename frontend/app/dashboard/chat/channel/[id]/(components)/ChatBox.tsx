@@ -1,21 +1,13 @@
 import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
-import CardFooter from "@/components/card/CardFooter";
-import MyMessage from "./MyMessage";
+import MessagesBox from "./MessagesBox";
+import ChatBoxHeader from "./ChatBoxHeader";
 
 import { notFound, useParams } from "next/navigation";
-import useSWR from "swr";
 import { ChannelType, getChannelData } from "./ChannelController";
-import { useEffect, useRef, useState } from "react";
-
-import ChatBoxInput from "./ChatBoxInput";
-import ChatBoxHeader from "./ChatBoxHeader";
 import { useAuth } from "@/hooks/auth";
-import OtherMessage from "./OtherMessage";
-import axios from "@/lib/axios";
+import useSWR from "swr";
 import { MehIcon } from "lucide-react";
-import { useChannelChatSocket } from "../page";
-import MessagesBox from "./MessagesBox";
 
 export type MessageType = {
   text: string;

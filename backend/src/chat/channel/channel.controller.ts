@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -15,6 +17,7 @@ import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
 import NewChannelDto from './dtos/new-channel.dto';
 import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
+import UpdateChannelDto from './dtos/update-channel.dto';
 
 @UseGuards(AuthGuard)
 @Controller('/chat/channel')
@@ -104,6 +107,18 @@ export class ChannelController {
   getMessages(@Param('id') channelId: string, @Req() request: RequestType) {
     return this.channelService.getMessagesOnChannel(
       channelId,
+      request.userPayload.sub,
+    );
+  }
+  @Put(`/update/:id`)
+  async updateChannel(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: UpdateChannelDto,
+    @Req() request: RequestType,
+  ) {
+    return await this.channelService.updateChannel(
+      id,
+      body,
       request.userPayload.sub,
     );
   }

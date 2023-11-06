@@ -52,6 +52,7 @@ export class ChannelSocketGateway
       > = {
         CHANNEL_MEMBER_LEFT: this.sendCriticalEvent,
         NEW_CHANNEL_MEMBER: this.sendCriticalEvent,
+        CHANNEL_EDITED: this.sendCriticalEvent,
       };
       handlers[event.name](event.channelId);
     });

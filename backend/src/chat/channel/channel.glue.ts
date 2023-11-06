@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 
 export type ChannelGlueEventsType =
   | 'NEW_CHANNEL_MEMBER'
+  | 'CHANNEL_EDITED'
   | 'CHANNEL_MEMBER_LEFT';
 
 type SubjectType = {

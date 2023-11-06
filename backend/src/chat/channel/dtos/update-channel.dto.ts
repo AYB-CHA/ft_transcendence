@@ -1,3 +1,4 @@
+import { ChannelType } from '@prisma/client';
 import {
   IsEnum,
   IsNotEmpty,
@@ -6,13 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export enum ChannelType {
-  USER = 'private',
-  ADMIN = 'public',
-  BLOGGER = 'protected',
-}
-
-export default class NewChannelDto {
+export default class UpdateChannelDto {
   @IsNotEmpty()
   @MaxLength(20)
   name: string;
