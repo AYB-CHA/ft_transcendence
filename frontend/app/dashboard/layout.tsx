@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavBar />
       </div>
       <div className="grow">
-        <div className="container h-full flex flex-col">
+        <div className="container h-full flex flex-col px-4">
           <DMSocketProvider>{children}</DMSocketProvider>
         </div>
       </div>

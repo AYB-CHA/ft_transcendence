@@ -18,14 +18,14 @@ export function BasicTabCard({
 }: BasicTabCardProps) {
   return (
     <div
-      className={`flex flex-col p-[16px] gap-[14px] border-[1px] border-[#1F2329] min-w-[187px] ${
+      className={`flex flex-col p-[16px] gap-[14px] border-[1px] border-[#1F2329] min-w-[187px] cursor-pointer ${
         selected ? "bg-primary" : "bg-[#13141B]"
       }`}
       onClick={onClick}
     >
       <Icon
         strokeWidth={1.5}
-        size={37}
+        size={25}
         color={selected ? "black" : "#6B7280"}
       />
       <div
@@ -40,7 +40,7 @@ export function BasicTabCard({
   );
 }
 
-export type Tabs = "friends" | "friend-requets";
+export type Tabs = "friends" | "friend-requests";
 
 export type TabCardProps = {
   name: Tabs;

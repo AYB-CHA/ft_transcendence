@@ -1,5 +1,6 @@
 import Avatar from "@/components/Avatar";
 import Button from "@/components/Button";
+import { PropsWithChildren } from "react";
 
 type StatisticTextProps = {
   title: string;
@@ -38,7 +39,7 @@ function BasicFriendWithStatsCard({
   const winRatio = Math.round((wonGames * 100) / playedGames);
 
   return (
-    <div className="grid grid-cols-6 p-[16px]">
+    <div className="grid grid-cols-6 p-[8px]">
       <div className="flex flex-row items-center gap-[7px]">
         <Avatar src={image} className="max-w-[44px] max-h-[44px]" />
         <div className="flex flex-col">
@@ -54,21 +55,21 @@ function BasicFriendWithStatsCard({
       <StatisticText title="Won Games" value={String(wonGames)} />
       <StatisticText title="Lost Games" value={String(lostGames)} />
       <StatisticText title="Win Ratio" value={`${winRatio}%`} />
-      <div className="flex flex-row items-end justify-center gap-[18px]">
+      <div className="flex flex-row items-center justify-end gap-[18px]">
         {actions}
       </div>
     </div>
   );
 }
 
-type BasicFriendCardProps = {
+export type BasicFriendCardProps = {
   image: string;
   name: string;
   username: string;
   actions: JSX.Element;
 };
 
-function BasicFriendCard({
+export function BasicFriendCard({
   image,
   name,
   username,
@@ -132,27 +133,6 @@ export function FriendRequestCard(props: FriendRequestCard) {
             Accept
           </Button>
         </>
-      }
-    />
-  );
-}
-
-export type SearchFriendCardProps = Omit<
-  BasicFriendCardWithStatsProps,
-  "actions" | "wonGames" | "lostGames"
-> & {
-  userId: string;
-  action: { text: string; fn: () => void };
-};
-
-export function SearchFriendRequestCard(props: SearchFriendCardProps) {
-  return (
-    <BasicFriendCard
-      {...props}
-      actions={
-        <Button variant="secondary" onClick={() => props.action.fn()}>
-          {props.action.text}
-        </Button>
       }
     />
   );

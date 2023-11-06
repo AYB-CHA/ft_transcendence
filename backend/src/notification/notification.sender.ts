@@ -1,7 +1,6 @@
 import { Subject, Subscription } from 'rxjs';
 import { Injectable } from '@nestjs/common';
-
-export type Notification = {};
+import { Notification } from './types';
 
 @Injectable()
 export class NotificationSender {

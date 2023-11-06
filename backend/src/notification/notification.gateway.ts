@@ -9,12 +9,12 @@ import { Server } from 'socket.io';
 })
 export class NotificationGateway {
   @WebSocketServer()
-  server: Server;
+  private server: Server;
 
-  constructor(
-    private readonly service: NotificationService,
-    sender: NotificationSender,
-  ) {
-    sender.listen((value) => {});
+  constructor(service: NotificationService, sender: NotificationSender) {
+    sender.listen(async (value) => {
+      await service.storeNotification(value);
+      this.server.emit(value.receiverId);
+    });
   }
 }

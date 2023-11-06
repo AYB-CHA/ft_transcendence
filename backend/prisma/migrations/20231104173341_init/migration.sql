@@ -67,7 +67,7 @@ CREATE TABLE "ChannelsOnUsers" (
     "channelId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "banedAt" TIMESTAMP(3),
-    "mutedAt" TIMESTAMP(3),
+    "mutedUntil" TIMESTAMP(3),
     "role" "ChannelUserRole" NOT NULL DEFAULT 'MEMBER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

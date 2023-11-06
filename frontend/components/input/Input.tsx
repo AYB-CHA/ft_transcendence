@@ -4,9 +4,10 @@ import { InputHTMLAttributes, PropsWithChildren, ReactNode } from "react";
 
 type InputPropsType = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode;
+  className?: string;
 };
 
-export default function Input({ icon, ...props }: InputPropsType) {
+export default function Input({ icon, className, ...props }: InputPropsType) {
   return (
     <div className="relative">
       <input
@@ -14,7 +15,7 @@ export default function Input({ icon, ...props }: InputPropsType) {
           props.disabled
             ? "placeholder:text-gray-600 cursor-not-allowed"
             : "placeholder:text-gray-500"
-        }`}
+        } ${className}`}
         {...props}
       />
       <div className="absolute top-1/2 -translate-y-1/2 right-3 text-dark-semi-light">
