@@ -48,18 +48,16 @@ export default function DMSocketProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     socket?.on("newMessage", (message: MessageType) => {
-      console.log(user?.id, message.senderId);
-
-      if (message.senderId !== user?.id) {
-        triggerSuccessToast(
-          <MessageCircle size={18} />,
-          "New Messages",
-          message.text,
-          () => {
-            // router.push(`/dashboard/chat/dm/${message.th}`);
-          }
-        );
-      }
+      // if (message.senderId !== user?.id) {
+      //   triggerSuccessToast(
+      //     <MessageCircle size={18} />,
+      //     "New Messages",
+      //     message.text,
+      //     () => {
+      //       // router.push(`/dashboard/chat/dm/${message.th}`);
+      //     }
+      //   );
+      // }
     });
     return () => {
       socket?.off("newMessage");

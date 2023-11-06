@@ -94,7 +94,7 @@ export class ChannelService {
       where: {
         users: { none: { userId } },
         type: { not: 'PRIVATE' },
-        name: { contains: query },
+        name: { contains: query, mode: 'insensitive' },
       },
       take: 6,
       orderBy: { createdAt: 'asc' },
@@ -420,7 +420,7 @@ export class ChannelService {
           banedAt: null,
         },
       });
-      this.channelGlue.emit({ name: 'CHANNEL_MEMBER_LEFT', channelId });
+      this.channelGlue.emit({ name: 'CHANNEL_MEMBER_LEFT', channelId, userId });
       return;
     } catch (error) {
       console.error(error);

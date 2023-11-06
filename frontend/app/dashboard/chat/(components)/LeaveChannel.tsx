@@ -1,4 +1,3 @@
-import React, { PropsWithChildren, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +25,10 @@ export default function LeaveChannel({
 }) {
   const router = useRouter();
   async function leaveCurrentChannel() {
-    await axios.delete(`/chat/channel/${id}/leave`);
     router.push("/dashboard/chat");
+    await axios.delete(`/chat/channel/${id}/leave`);
     setStatus(false);
-    mutate("/chat/channel");
+    mutate("/chat/channel", undefined);
   }
 
   return (

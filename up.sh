@@ -12,6 +12,7 @@ if docker compose up -d 2> /dev/null ; then
     cd ./backend && npx prisma db push && npm run start:dev &
     cd ./frontend && npm run dev & 
 else
+    open /Applications/Docker.app
     echo "Check if docker is running."
     exit 1
 fi

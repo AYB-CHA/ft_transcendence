@@ -46,15 +46,13 @@ export class ChannelSocketGateway
     // const __self = this;
 
     this.channelGlue.listen((event) => {
-      const handlers: Record<
-        ChannelGlueEventsType,
-        (channelId: string) => void
-      > = {
-        CHANNEL_MEMBER_LEFT: this.sendCriticalEvent,
-        NEW_CHANNEL_MEMBER: this.sendCriticalEvent,
-        CHANNEL_EDITED: this.sendCriticalEvent,
+      const handlers: Record<ChannelGlueEventsType, () => void> = {
+        CHANNEL_MEMBER_LEFT: () =>
+          this.sendCriticalEvent(event.channelId, undefined, [event.userId]),
+        NEW_CHANNEL_MEMBER: () => this.sendCriticalEvent(event.channelId),
+        CHANNEL_EDITED: () => this.sendCriticalEvent(event.channelId),
       };
-      handlers[event.name](event.channelId);
+      handlers[event.name]();
     });
   }
 
@@ -207,11 +205,16 @@ export class ChannelSocketGateway
     this.sendCriticalEvent(data.channelId, [data.userId, adminId]);
   }
 
-  sendCriticalEvent = (channelId: string, userIds?: string[]) => {
+  sendCriticalEvent = (
+    channelId: string,
+    userIds?: string[],
+    exceptIds?: string[],
+  ) => {
     for (const client of this.clients) {
       if (
         client.channelId === channelId &&
-        (userIds ? userIds.includes(client.id) : true)
+        userIds?.includes(client.id) &&
+        !exceptIds?.includes(client.id)
       )
         client.socket.emit('criticalChange');
     }

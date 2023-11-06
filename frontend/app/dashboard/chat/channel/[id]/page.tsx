@@ -15,7 +15,12 @@ export function useChannelChatSocket() {
 }
 
 export function clearSWRCache() {
-  mutate(/* match all keys */ () => true);
+  mutate(
+    /* match all keys */ (key) => {
+      console.log(key);
+      return true;
+    }
+  );
 }
 
 export default function Page() {
@@ -37,6 +42,7 @@ export default function Page() {
     setSocket(socket);
 
     socket.on("criticalChange", () => {
+      console.log("SHOULD RELOAD.");
       clearSWRCache();
     });
 

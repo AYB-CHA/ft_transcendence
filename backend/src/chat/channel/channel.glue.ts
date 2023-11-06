@@ -9,6 +9,7 @@ export type ChannelGlueEventsType =
 type SubjectType = {
   name: ChannelGlueEventsType;
   channelId?: string;
+  userId?: string;
 };
 
 @Injectable()
