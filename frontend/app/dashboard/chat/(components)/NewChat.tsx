@@ -65,12 +65,14 @@ export default function NewChat() {
                 {!channels.length && (
                   <div className="py-20 flex justify-center flex-col items-center">
                     <SearchSlash
-                      size={50}
+                      size={35}
                       strokeWidth={1}
                       className="text-gray-500"
                     />
                     <div className="mt-4">
-                      <span className="text-gray-500">No Channels found.</span>
+                      <span className="text-gray-500 text-xs">
+                        No Channels found.
+                      </span>
                     </div>
                   </div>
                 )}

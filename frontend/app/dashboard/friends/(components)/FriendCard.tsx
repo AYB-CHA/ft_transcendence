@@ -43,10 +43,8 @@ function BasicFriendWithStatsCard({
       <div className="flex flex-row items-center gap-[7px]">
         <Avatar src={image} className="max-w-[44px] max-h-[44px]" />
         <div className="flex flex-col">
-          <p className="font-semibold text-[#F3F4F6] text-[15px] leading-[23px]">
-            {name}
-          </p>
-          <p className="font-normal text-[#9CA3AF] text-[12px] leading-[19px]">
+          <p className="text-primary text-[15px] leading-[23px]">{name}</p>
+          <p className="font-normal text-gray-500 text-[12px] leading-[19px]">
             @{username}
           </p>
         </div>
@@ -80,10 +78,8 @@ export function BasicFriendCard({
       <div className="flex flex-row items-center gap-[7px] col-span-1">
         <Avatar src={image} className="max-w-[44px] max-h-[44px]" />
         <div className="flex flex-col">
-          <p className="font-semibold text-[#F3F4F6] text-[15px] leading-[23px]">
-            {name}
-          </p>
-          <p className="font-normal text-[#9CA3AF] text-[12px] leading-[19px]">
+          <p className="text-primary text-[15px] leading-[23px]">{name}</p>
+          <p className="font-normal text-gray-500 text-[12px] leading-[19px]">
             @{username}
           </p>
         </div>

@@ -151,7 +151,7 @@ function Notifications() {
     return () => {
       socket.disconnect();
     };
-  }, [socket, user?.id]);
+  }, [socket, user?.id, mutate]);
 
   async function clearNotifications() {
     await axios.delete("/user/notifications");

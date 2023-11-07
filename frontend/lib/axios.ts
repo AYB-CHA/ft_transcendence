@@ -1,11 +1,11 @@
 import Axios from "axios";
 import Cookies from "js-cookie";
 
-const axios = Axios.create({
+const APIClient = Axios.create({
   baseURL: process.env["NEXT_PUBLIC_BACKEND_BASEURL"],
 });
 
-axios.interceptors.request.use(
+APIClient.interceptors.request.use(
   function (config) {
     config.headers.Authorization = "Bearer " + Cookies.get("access_token");
     return config;
@@ -15,4 +15,4 @@ axios.interceptors.request.use(
   }
 );
 
-export default axios;
+export default APIClient;

@@ -3,8 +3,7 @@ import { LoadingIndicator } from "./LoadingIndicator";
 import { FriendRequestCard } from "./FriendCard";
 import { EmptyState } from "../../../../components/EmptyState";
 import { UserPlus } from "lucide-react";
-
-import axios from "axios";
+import axios from "@/lib/axios";
 
 export function FriendRequestsTabContent() {
   const { data, mutate, isLoading } = useFriendRequests();

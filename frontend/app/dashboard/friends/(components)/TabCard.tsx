@@ -29,7 +29,7 @@ export function BasicTabCard({
         color={selected ? "black" : "#6B7280"}
       />
       <div
-        className={`flex items-center justify-between font-normal text-[17px] leading-[26px] ${
+        className={`flex items-center justify-between font-normal text-[17px] leading-[26px] text-sm ${
           selected ? "text-black" : "#6B7280"
         }`}
       >
