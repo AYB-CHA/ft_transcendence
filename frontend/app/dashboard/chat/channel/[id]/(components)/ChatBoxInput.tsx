@@ -17,7 +17,6 @@ export default function ChatBoxInput({
     if (mutedUntil) {
       const delay = mutedUntil.getTime() - Date.now();
       let timeOutHandler = setTimeout(() => {
-        console.log("USER UNMUTED NOW.");
         clearSWRCache();
       }, delay);
       return () => {

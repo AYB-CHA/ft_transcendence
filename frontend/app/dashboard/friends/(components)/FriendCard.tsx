@@ -101,7 +101,7 @@ export function FriendCard(props: FriendCardProps) {
       {...props}
       actions={
         <Button onClick={props.onRemove} variant="secondary">
-          Remove Friend
+          Unfriend
         </Button>
       }
     />

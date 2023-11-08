@@ -132,7 +132,7 @@ export class ChannelSocketGateway
   ) {
     const adminId = this.userService.getClientIdFromSocket(client);
 
-    this.channelService.upgradeUserGrade(
+    await this.channelService.upgradeUserGrade(
       data.channelId,
       adminId,
       data.userId,
@@ -149,7 +149,7 @@ export class ChannelSocketGateway
   ) {
     const adminId = this.userService.getClientIdFromSocket(client);
 
-    this.channelService.kickUserFromChannel(
+    await this.channelService.kickUserFromChannel(
       data.channelId,
       data.userId,
       adminId,
@@ -165,7 +165,7 @@ export class ChannelSocketGateway
   ) {
     const adminId = this.userService.getClientIdFromSocket(client);
 
-    this.channelService.banUserFromChannel(
+    await this.channelService.banUserFromChannel(
       data.channelId,
       data.userId,
       adminId,
@@ -198,13 +198,17 @@ export class ChannelSocketGateway
     userIds?: string[],
     exceptIds?: string[],
   ) => {
+    console.log('======================');
+    console.log(channelId);
+    console.log(userIds);
+    console.log(exceptIds);
+
     for (const client of this.clients) {
-      if (
-        client.channelId === channelId &&
-        userIds?.includes(client.id) &&
-        !exceptIds?.includes(client.id)
-      )
+      if (client.channelId === channelId) {
+        if (userIds && !userIds.includes(client.id)) continue;
+        if (exceptIds && exceptIds.includes(client.id)) continue;
         client.socket.emit('criticalChange');
+      }
     }
   };
 }

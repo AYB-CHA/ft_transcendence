@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -17,6 +18,67 @@ export class ChannelService {
     private readonly prisma: PrismaService,
     private readonly channelGlue: ChannelGlue,
   ) {}
+
+  async inviteToPrivateChannelSearch(channelId: string, query: string) {
+    return await this.prisma.user.findMany({
+      where: {
+        username: {
+          contains: query,
+          mode: 'insensitive',
+        },
+        channels: {
+          none: {
+            channelId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        avatar: true,
+      },
+      take: 10,
+    });
+  }
+
+  async joinPrivateChannel(userId: string, invitationId: string) {
+    try {
+      const channelInvitation =
+        await this.prisma.channelInvitations.findFirstOrThrow({
+          where: {
+            id: invitationId,
+            recipientId: userId,
+          },
+          select: {
+            id: true,
+            channelId: true,
+            recipientId: true,
+          },
+        });
+
+      try {
+        const data = await this.prisma.channelsOnUsers.create({
+          data: {
+            channelId: channelInvitation.channelId,
+            userId: channelInvitation.recipientId,
+          },
+          select: {
+            channelId: true,
+          },
+        });
+        await this.prisma.channelInvitations.delete({
+          where: { id: channelInvitation.id },
+        });
+        return data;
+      } catch {
+        throw new BadRequestException({ channelId: channelInvitation.id });
+      }
+    } catch (e) {
+      if (e instanceof HttpException) throw e;
+      throw new UnauthorizedException([]);
+    }
+  }
 
   async updateChannel(id: string, body: UpdateChannelDto, adminId: string) {
     try {
@@ -61,6 +123,44 @@ export class ChannelService {
       this.channelGlue.emit({ name: 'CHANNEL_EDITED', channelId: channel.id });
     } catch (e) {
       throw e;
+    }
+  }
+
+  async inviteToPrivateChannel(
+    memberId: string,
+    userId: string,
+    channelId: string,
+  ) {
+    try {
+      await this.prisma.channel.findFirstOrThrow({
+        where: {
+          id: channelId,
+          type: 'PRIVATE',
+          users: {
+            some: {
+              userId: memberId,
+            },
+            none: {
+              userId,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      return await this.prisma.channelInvitations.create({
+        data: {
+          channelId: channelId,
+          recipientId: userId,
+          senderId: memberId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    } catch {
+      throw new UnauthorizedException([]);
     }
   }
 

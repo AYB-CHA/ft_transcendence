@@ -46,7 +46,7 @@ import {
 import { io } from "socket.io-client";
 
 type NotificationType =
-  | "CHANNEL_INVITAION"
+  | "CHANNEL_INVITATION"
   | "FRIEND_INVITAION"
   | "GAME_INVITAION";
 
@@ -65,7 +65,7 @@ type NotificationMetadata = {
 };
 
 const notificationsMetadata: Record<NotificationType, NotificationMetadata> = {
-  CHANNEL_INVITAION: {
+  CHANNEL_INVITATION: {
     Icon: MessageSquare,
     link: "Join Channel",
     title: "Join Channel",

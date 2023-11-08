@@ -29,6 +29,8 @@ export function SearchFriendsModal({
 
   const { data, mutate, isLoading, error } = useSearchFriends(debouncedQuery);
 
+  console.log(data);
+
   function addFriend(userId: string) {
     return async () => {
       await axios.post("/user/friends/add/" + userId);
@@ -109,7 +111,7 @@ export function SearchFriendsModal({
       <DialogTrigger>
         <BasicTabCard
           Icon={Search}
-          title="Search Friends"
+          title="Search"
           onClick={() => setOpen(true)}
         />
       </DialogTrigger>
@@ -148,11 +150,7 @@ export function SearchFriendsModal({
           </div>
         </CardBody>
         <CardFooter>
-          <Button
-            className="w-24"
-            variant="secondary"
-            onClick={() => setOpen(false)}
-          >
+          <Button className="w-24" onClick={() => setOpen(false)}>
             Go Back
           </Button>
         </CardFooter>

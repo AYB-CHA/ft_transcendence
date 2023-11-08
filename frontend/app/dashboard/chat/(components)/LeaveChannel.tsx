@@ -35,25 +35,21 @@ export default function LeaveChannel({
     <div>
       <Dialog open={status} onOpenChange={setStatus}>
         <DialogContent className="max-w-md">
-          <Card>
-            <CardHeader>
-              <DialogTitle>Are you sure you want to Leave ?</DialogTitle>
-            </CardHeader>
-            <CardBody>
-              <DialogDescription>
-                Are you certain you want to proceed? Leaving this channel may
-                result in irreversible consequences.
-              </DialogDescription>
-            </CardBody>
-            <CardFooter>
-              <Button variant="danger" onClick={leaveCurrentChannel}>
-                Leave Channel
-              </Button>
-              <Button variant="secondary" onClick={() => setStatus(false)}>
-                Cancel
-              </Button>
-            </CardFooter>
-          </Card>
+          <CardHeader>Are you sure you want to Leave ?</CardHeader>
+          <CardBody>
+            <DialogDescription>
+              Are you certain you want to proceed? Leaving this channel may
+              result in irreversible consequences.
+            </DialogDescription>
+          </CardBody>
+          <CardFooter>
+            <Button variant="danger" onClick={leaveCurrentChannel}>
+              Leave Channel
+            </Button>
+            <Button variant="secondary" onClick={() => setStatus(false)}>
+              Cancel
+            </Button>
+          </CardFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -18,11 +19,17 @@ import { ChannelService } from './channel.service';
 import NewChannelDto from './dtos/new-channel.dto';
 import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
 import UpdateChannelDto from './dtos/update-channel.dto';
+import { NotificationSender } from 'src/notification/notification.sender';
+import { ConfigService } from '@nestjs/config';
 
 @UseGuards(AuthGuard)
 @Controller('/chat/channel')
 export class ChannelController {
-  constructor(private readonly channelService: ChannelService) {}
+  constructor(
+    private readonly channelService: ChannelService,
+    private readonly notifier: NotificationSender,
+    private readonly configService: ConfigService,
+  ) {}
   @Get()
   async getChannels(@Req() request: RequestType) {
     return await this.channelService.getUserChannels(request.userPayload.sub);
@@ -78,6 +85,53 @@ export class ChannelController {
     );
   }
 
+  @Get('/private/:id/invite/')
+  inviteToPrivateChannelSearch(
+    @Param('id', ParseUUIDPipe) channelId: string,
+    @Query('q') query: string | undefined = '',
+  ) {
+    return this.channelService.inviteToPrivateChannelSearch(channelId, query);
+  }
+
+  @Post('/private/:id/join')
+  joinPrivateChannel(
+    @Req() request: RequestType,
+    @Param('id', ParseUUIDPipe) invitationId: string,
+  ) {
+    return this.channelService.joinPrivateChannel(
+      request.userPayload.sub,
+      invitationId,
+    );
+  }
+
+  @Post('/private/:id/invite')
+  async inviteToPrivateChannel(
+    @Req() request: RequestType,
+    @Param('id', ParseUUIDPipe) channelId: string,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+    if (!userId) throw new BadRequestException();
+
+    const data = await this.channelService.inviteToPrivateChannel(
+      request.userPayload.sub,
+      userId,
+      channelId,
+    );
+
+    const url = new URL(this.configService.get<string>('FRONTEND_BASEURL'));
+    url.pathname = `/dashboard/invited/channel/${data.id}`;
+
+    this.notifier.notify({
+      link: url.toString(),
+      receiverId: userId,
+      senderId: request.userPayload.sub,
+      type: 'CHANNEL_INVITATION',
+      channelId: channelId,
+    });
+
+    return data;
+  }
+
   @Post()
   async createChannel(
     @Req() request: RequestType,
@@ -110,6 +164,7 @@ export class ChannelController {
       request.userPayload.sub,
     );
   }
+
   @Put(`/update/:id`)
   async updateChannel(
     @Param('id', ParseUUIDPipe) id: string,

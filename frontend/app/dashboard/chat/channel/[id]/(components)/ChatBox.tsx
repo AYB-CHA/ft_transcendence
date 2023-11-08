@@ -37,9 +37,13 @@ export default function ChatBox() {
           <ChatBoxHeader data={data} isLoading={isLoading} />
         </CardHeader>
         {data?.amIBaned ? (
-          <div className="flex h-full justify-center items-center flex-col gap-4">
-            <MehIcon className="text-gray-600" size={50} strokeWidth={1} />
-            <span>You are baned from this channel.</span>
+          <div className="flex h-full justify-center items-center flex-col gap-4 text-dark-semi-light">
+            <MehIcon
+              className="text-dark-semi-light"
+              size={50}
+              strokeWidth={1}
+            />
+            <span className="text-xs">You are baned from this channel.</span>
           </div>
         ) : (
           <>

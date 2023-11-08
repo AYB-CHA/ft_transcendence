@@ -13,6 +13,7 @@ import ChannelsSidebar from "./(components)/ChannelsSidebar";
 import ThreadSideBar from "./(components)/ThreadSideBar";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import NewChannel from "./(components)/NewChannel";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   let path = usePathname();
@@ -64,7 +65,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Tabs>
         </div>
         <CardFooter>
-          <div className="w-full">
+          <div className="w-full grid grid-cols-2 gap-2">
+            <NewChannel />
             <NewChat />
           </div>
         </CardFooter>

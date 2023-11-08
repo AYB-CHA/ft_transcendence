@@ -62,7 +62,7 @@ export default function ThreadSideBar() {
                       <h4>{thread.user.fullName}</h4>
                       <h5 className="text-gray-500 text-xs">
                         {thread.message
-                          ? thread.message.text + "..."
+                          ? thread.message.text + ""
                           : "@" + thread.user.username}
                       </h5>
                     </div>

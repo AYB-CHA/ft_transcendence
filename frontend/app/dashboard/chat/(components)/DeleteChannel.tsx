@@ -34,26 +34,22 @@ export default function DeleteChannel({
   return (
     <Dialog open={status} onOpenChange={setStatus}>
       <DialogContent className="max-w-md">
-        <Card>
-          <CardHeader>
-            <DialogTitle>Are you sure you want to delete channel ?</DialogTitle>
-          </CardHeader>
-          <CardBody>
-            <DialogDescription>
-              This action cannot be undone and will permanently remove all
-              content and members associated with the channel. Please confirm
-              your decision to proceed with the deletion.
-            </DialogDescription>
-          </CardBody>
-          <CardFooter>
-            <Button variant="danger" onClick={deleteCurrentChannel}>
-              Delete Channel
-            </Button>
-            <Button variant="secondary" onClick={() => setStatus(false)}>
-              Cancel
-            </Button>
-          </CardFooter>
-        </Card>
+        <CardHeader>Are you sure you want to delete channel ?</CardHeader>
+        <CardBody>
+          <DialogDescription>
+            This action cannot be undone and will permanently remove all content
+            and members associated with the channel. Please confirm your
+            decision to proceed with the deletion.
+          </DialogDescription>
+        </CardBody>
+        <CardFooter>
+          <Button variant="danger" onClick={deleteCurrentChannel}>
+            Delete Channel
+          </Button>
+          <Button variant="secondary" onClick={() => setStatus(false)}>
+            Cancel
+          </Button>
+        </CardFooter>
       </DialogContent>
     </Dialog>
   );

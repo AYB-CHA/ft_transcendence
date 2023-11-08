@@ -246,7 +246,7 @@ export class UserService {
     try {
       const payload = this.jwtService.verify(authHeader ?? '');
       return payload.sub as string;
-    } catch (error) {}
+    } catch {}
     return null;
   }
 }

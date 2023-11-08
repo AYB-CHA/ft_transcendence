@@ -41,11 +41,7 @@ export function avatarsBaseUrl() {
   return avatarUrl.toString();
 }
 
-export default function NewChannel({
-  setParentDialog,
-}: {
-  setParentDialog: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function NewChannel({}: {}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -69,7 +65,6 @@ export default function NewChannel({
       let response = await axios.post("chat/channel", data);
       router.push(`/dashboard/chat/channel/${response.data?.id}`);
       setOpen(false);
-      setParentDialog(false);
       mutate("/chat/channel");
       toast.dismiss();
     } catch (error) {
@@ -86,7 +81,9 @@ export default function NewChannel({
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="mx-auto">Create New Channel</Button>
+          <Button className="w-full" variant="secondary">
+            Create New Channel
+          </Button>
         </DialogTrigger>
         <DialogContent className="max-w-3xl">
           <CardHeader>New Channel</CardHeader>

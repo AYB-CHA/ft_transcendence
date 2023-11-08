@@ -1,5 +1,5 @@
 export type NotificationType =
-  | 'CHANNEL_INVITAION'
+  | 'CHANNEL_INVITATION'
   | 'FRIEND_INVITAION'
   | 'GAME_INVITAION';
 

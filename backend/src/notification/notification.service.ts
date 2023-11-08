@@ -33,7 +33,7 @@ export class NotificationService {
       channelId?: string,
     ) {
       switch (type) {
-        case 'CHANNEL_INVITAION':
+        case 'CHANNEL_INVITATION':
           return `${sender} sent you a request to join ${channelId} Channel.`;
         case 'FRIEND_INVITAION':
           return `${sender} sent you a friend request.`;

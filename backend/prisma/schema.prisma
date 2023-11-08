@@ -42,17 +42,19 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels               ChannelsOnUsers[]
-  Messages               Messages[]
-  sentDMMessages         DMMessage[]
-  initaitedDMThreads     DMThread[]        @relation(name: "initiator_relation")
-  secondDMThreads        DMThread[]        @relation(name: "participant_relation")
-  blocked                UserBlock[]       @relation(name: "blocker_relation")
-  wasBlocked             UserBlock[]       @relation(name: "blocked_relation")
-  sentFriendRequests     Friendship[]      @relation(name: "sentFriendRequests")
-  receivedFriendRequests Friendship[]      @relation(name: "receivedFriendRequests")
-  sentNotifications      Notification[]    @relation(name: "sentNotifications")
-  receivedNotifications  Notification[]    @relation(name: "receivedNotifications")
+  channels                  ChannelsOnUsers[]
+  Messages                  Messages[]
+  sentDMMessages            DMMessage[]
+  initaitedDMThreads        DMThread[]          @relation(name: "initiator_relation")
+  secondDMThreads           DMThread[]          @relation(name: "participant_relation")
+  blocked                   UserBlock[]         @relation(name: "blocker_relation")
+  wasBlocked                UserBlock[]         @relation(name: "blocked_relation")
+  sentFriendRequests        Friendship[]        @relation(name: "sentFriendRequests")
+  receivedFriendRequests    Friendship[]        @relation(name: "receivedFriendRequests")
+  sentNotifications         Notification[]      @relation(name: "sentNotifications")
+  receivedNotifications     Notification[]      @relation(name: "receivedNotifications")
+  sentChannelInvitations     ChannelInvitations[] @relation(name: "sender_relation")
+  receivedChannelInvitations ChannelInvitations[] @relation(name: "recipient_relation")
 }
 
 model UserBlock {
@@ -95,6 +97,7 @@ model Channel {
 
   users           ChannelsOnUsers[]
   Messages        Messages[]
+  Invitations     ChannelInvitations[]
   sentInvitations Notification[]
 }
 
@@ -167,7 +170,20 @@ model Notification {
 }
 
 enum NotificationType {
-  CHANNEL_INVITAION
+  CHANNEL_INVITATION
   FRIEND_INVITAION
   GAME_INVITAION
+}
+
+model ChannelInvitations {
+  id         String           @id @unique @default(uuid())
+
+  channelId String
+  Channel   Channel @relation(fields: [channelId], references: [id])
+
+  senderId String
+  Sender   User   @relation(fields: [senderId], references: [id], name: "sender_relation")
+
+  recipientId String
+  Recipient   User   @relation(fields: [recipientId], references: [id], name: "recipient_relation")
 }

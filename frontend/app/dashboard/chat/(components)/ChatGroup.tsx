@@ -20,10 +20,12 @@ import Link from "next/link";
 import LeaveChannel from "./LeaveChannel";
 import DeleteChannel from "./DeleteChannel";
 import { ChannelType } from "../channel/[id]/(components)/ChannelController";
+import Invite from "./Invite";
 
 export default function ChatGroup({ data }: { data: ChannelType }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [leaveConfirm, setLeaveConfirm] = useState(false);
+  const [inviteStatus, setInviteStatus] = useState(false);
 
   return (
     <div className="flex items-center">
@@ -32,10 +34,6 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
           <Avatar src={data.avatar} className="h-10 w-10">
             <DropdownMenuLabel>Channel</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LinkIcon className="mr-2 h-4 w-4" />
-              <span>Invite People</span>
-            </DropdownMenuItem>
             <DropdownMenuItem
               disabled={data.amIBaned}
               onClick={() => setLeaveConfirm(true)}
@@ -44,6 +42,17 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Leave Channel</span>
               </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
+                data.myRole !== "ADMINISTRATOR" && data.type === "PRIVATE"
+              }
+              onClick={() => {
+                setInviteStatus(true);
+              }}
+            >
+              <LinkIcon className="mr-2 h-4 w-4" />
+              <span>Invite People</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -61,7 +70,7 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
         >
           <div>
             <h4>{data.name}</h4>
-            <h5 className="text-gray-500 text-xs">{data.topic}...</h5>
+            <h5 className="text-gray-500 text-xs">{data.topic}.</h5>
           </div>
         </Link>
       </div>
@@ -84,12 +93,19 @@ export default function ChatGroup({ data }: { data: ChannelType }) {
         id={data.id}
         status={leaveConfirm}
         setStatus={setLeaveConfirm}
-      ></LeaveChannel>
+      />
       <DeleteChannel
         id={data.id}
         status={deleteConfirm}
         setStatus={setDeleteConfirm}
-      ></DeleteChannel>
+      />
+      {data.myRole === "ADMINISTRATOR" && data.type === "PRIVATE" && (
+        <Invite
+          channelId={data.id}
+          open={inviteStatus}
+          setOpen={setInviteStatus}
+        />
+      )}
     </div>
   );
 }

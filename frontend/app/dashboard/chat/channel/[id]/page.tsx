@@ -17,7 +17,6 @@ export function useChannelChatSocket() {
 export function clearSWRCache() {
   mutate(
     /* match all keys */ (key) => {
-      console.log(key);
       return true;
     }
   );

@@ -96,7 +96,6 @@ export function useAuth({
   };
 
   const verify2FA = async (verificationCode: string) => {
-    console.log(verificationCode);
     try {
       let response = await axios.post(
         "/auth/verify/2fa",
