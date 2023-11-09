@@ -124,6 +124,7 @@ export class ChannelSocketGateway
       }
     }
   }
+
   @SubscribeMessage('upgrade')
   async handleUpgradeEvent(
     @MessageBody()

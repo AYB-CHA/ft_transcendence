@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+
 import { PrismaService } from 'src/db/prisma.service';
 import { newChannelType } from '../types';
 import { compareSync, hashSync } from 'bcrypt';
@@ -18,6 +19,30 @@ export class ChannelService {
     private readonly prisma: PrismaService,
     private readonly channelGlue: ChannelGlue,
   ) {}
+
+  async getInvitationChannelPublicData(userId: string, invitationId: string) {
+    try {
+      const invitation = await this.prisma.channelInvitations.findFirstOrThrow({
+        where: {
+          id: invitationId,
+          recipientId: userId,
+        },
+        select: {
+          Channel: {
+            select: {
+              id: true,
+              avatar: true,
+              name: true,
+              topic: true,
+            },
+          },
+        },
+      });
+      return { ...invitation.Channel };
+    } catch {
+      throw new UnauthorizedException([]);
+    }
+  }
 
   async inviteToPrivateChannelSearch(channelId: string, query: string) {
     return await this.prisma.user.findMany({

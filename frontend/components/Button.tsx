@@ -2,7 +2,6 @@
 
 import React, {
   ButtonHTMLAttributes,
-  LegacyRef,
   PropsWithChildren,
   forwardRef,
 } from "react";

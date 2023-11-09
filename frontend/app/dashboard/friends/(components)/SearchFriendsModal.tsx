@@ -116,7 +116,6 @@ export function SearchFriendsModal({
         />
       </DialogTrigger>
       <DialogContent className="max-w-3xl" closeButton={false}>
-        <CardHeader>Search For Friends</CardHeader>
         <CardBody className="flex flex-col flex-1">
           <div className="p-2">
             <Input

@@ -85,12 +85,23 @@ export class ChannelController {
     );
   }
 
-  @Get('/private/:id/invite/')
+  @Get('/private/:id/invite')
   inviteToPrivateChannelSearch(
     @Param('id', ParseUUIDPipe) channelId: string,
     @Query('q') query: string | undefined = '',
   ) {
     return this.channelService.inviteToPrivateChannelSearch(channelId, query);
+  }
+
+  @Get('/private/:id/channel')
+  getInvitationChannelPublicData(
+    @Req() request: RequestType,
+    @Param('id', ParseUUIDPipe) invitationId: string,
+  ) {
+    return this.channelService.getInvitationChannelPublicData(
+      request.userPayload.sub,
+      invitationId,
+    );
   }
 
   @Post('/private/:id/join')
