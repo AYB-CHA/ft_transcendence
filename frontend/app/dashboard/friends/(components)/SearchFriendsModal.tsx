@@ -14,6 +14,7 @@ import CardBody from "@/components/card/CardBody";
 import Input from "@/components/input/Input";
 import Button from "@/components/Button";
 import axios from "@/lib/axios";
+import Card from "@/components/card/Card";
 
 export type SearchFriendsModalProps = {
   isOpen: boolean;
@@ -115,19 +116,19 @@ export function SearchFriendsModal({
           onClick={() => setOpen(true)}
         />
       </DialogTrigger>
-      <DialogContent className="max-w-3xl" closeButton={false}>
-        <CardBody className="flex flex-col flex-1">
-          <div className="p-2">
+      <DialogContent className="max-w-2xl" closeButton={false}>
+        <div className="absolute -top-16 -left-px w-[calc(100%+2px)]  bg-slate-500">
+          <Card>
             <Input
-              className="py-3"
-              color="#4B5563"
-              icon={<Search strokeWidth={1} />}
-              placeholder="Enter a search query..."
+              className="bg-dark-dim border-0 py-4"
+              placeholder="Search"
+              icon={<Search size={16} />}
               onChange={(event) => setQuery(event.target.value)}
-              value={query}
             />
-          </div>
-          <div className="flex flex-col flex-1 divide-y divide-dark-semi-dim py-[8px]">
+          </Card>
+        </div>
+        <CardBody className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 divide-y divide-dark-semi-dim">
             <LoadingIndicator visible={isLoading} className="py-[110px]" />
             {data &&
               (data.length == 0 ? (
