@@ -222,7 +222,7 @@ export class UserService {
     query: string | undefined = '',
   ): Promise<UserSearchEntity> {
     return this.prisma.$queryRaw`
-      SELECT u."id", f."id" "requestId", u."username", u."avatar", u."fullName",
+      SELECT DISTINCT u."id", f."id" "requestId", u."username", u."avatar", u."fullName",
         CASE
           WHEN f."isPending" = FALSE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN 'FRIEND'
           WHEN f."isPending" = TRUE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN

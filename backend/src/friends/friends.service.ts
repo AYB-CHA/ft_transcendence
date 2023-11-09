@@ -21,7 +21,9 @@ export class FriendsService {
     });
 
     if (friendshipExists > 0) {
-      throw new ForbiddenException('An invitaion or friendship already exists');
+      throw new ForbiddenException(
+        'An invitation or friendship already exists',
+      );
     }
 
     return this.prisma.friendship.create({

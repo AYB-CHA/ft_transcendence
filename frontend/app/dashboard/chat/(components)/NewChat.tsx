@@ -22,10 +22,11 @@ type SearchChannelType = {
 };
 
 export default function NewChat() {
+  const [channels, setChannels] = useState<SearchChannelType[]>([]);
+  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  let [channels, setChannels] = useState<SearchChannelType[]>([]);
+
   // let [loading, setLoading] = useState(false);
-  let [query, setQuery] = useState("");
 
   useEffect(() => {
     // setLoading(true);
