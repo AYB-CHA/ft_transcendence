@@ -222,19 +222,22 @@ export class UserService {
     query: string | undefined = '',
   ): Promise<UserSearchEntity> {
     return this.prisma.$queryRaw`
-      SELECT DISTINCT u."id", f."id" "requestId", u."username", u."avatar", u."fullName",
+      SELECT
+        u. "id", f. "id" "requestId", u. "username", u. "avatar", u. "fullName",
         CASE
-          WHEN f."isPending" = FALSE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN 'FRIEND'
-          WHEN f."isPending" = TRUE AND (f."senderId" = ${userId} OR f."receiverId" = ${userId}) THEN
+          WHEN f. "senderId" = ${userId} OR f. "receiverId" = ${userId} THEN
             CASE
-              WHEN f."senderId" = ${userId} THEN 'PENDING-SENDER'
-              WHEN f."receiverId" = ${userId} THEN 'PENDING-RECEIVER'
+              WHEN f. "isPending" = FALSE THEN 'FRIEND'
+              ELSE CASE
+                WHEN f. "receiverId" = ${userId} THEN 'PENDING-RECEIVER'
+                WHEN f. "senderId"   = ${userId} THEN 'PENDING-SENDER'
+              END
             END
           ELSE 'NONE'
         END "status"
       FROM "User" u
-      LEFT JOIN "Friendship" f
-        ON f."senderId" = u.id OR f."receiverId" = u.id
+      LEFT JOIN "Friendship" f ON (u.id = f. "senderId" OR u.id = f. "receiverId") AND
+          (f. "senderId" = ${userId} OR f. "receiverId" = ${userId})
       WHERE u.id != ${userId}
         AND (u."fullName" ILIKE '%' || ${query} || '%'
           OR u."username" ILIKE '%' || ${query} || '%')

@@ -36,11 +36,14 @@ export class FriendsController {
   }
 
   @Post('/add/:id')
-  addFriend(
+  async addFriend(
     @Req() request: RequestType,
     @Param('id', ParseUUIDPipe) targetId: string,
   ) {
-    const result = this.friends.addFriend(request.userPayload.sub, targetId);
+    const result = await this.friends.addFriend(
+      request.userPayload.sub,
+      targetId,
+    );
     this.notifier.notify([request.userPayload.sub, targetId]);
     this.notification.notify({
       senderId: request.userPayload.sub,

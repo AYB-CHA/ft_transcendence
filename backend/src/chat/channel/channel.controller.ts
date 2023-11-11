@@ -1,3 +1,7 @@
+import NewChannelDto from './dtos/new-channel.dto';
+import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
+import UpdateChannelDto from './dtos/update-channel.dto';
+
 import {
   BadRequestException,
   Body,
@@ -16,9 +20,6 @@ import {
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RequestType } from 'src/types';
 import { ChannelService } from './channel.service';
-import NewChannelDto from './dtos/new-channel.dto';
-import JoinProtectedChannelDto from './dtos/join-protected-channel.dto';
-import UpdateChannelDto from './dtos/update-channel.dto';
 import { NotificationSender } from 'src/notification/notification.sender';
 import { ConfigService } from '@nestjs/config';
 
@@ -129,11 +130,12 @@ export class ChannelController {
       channelId,
     );
 
-    const url = new URL(this.configService.get<string>('FRONTEND_BASEURL'));
-    url.pathname = `/dashboard/invited/channel/${data.id}`;
+    // const url = new URL(this.configService.get<string>('FRONTEND_BASEURL'));
+    // url.pathname = `/dashboard/invited/channel/${data.id}`;
 
     this.notifier.notify({
-      link: url.toString(),
+      // link: url.toString(),
+      link: `/dashboard/invited/channel/${data.id}`,
       receiverId: userId,
       senderId: request.userPayload.sub,
       type: 'CHANNEL_INVITATION',
