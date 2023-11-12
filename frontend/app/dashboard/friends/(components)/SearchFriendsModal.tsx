@@ -28,9 +28,7 @@ export function SearchFriendsModal({
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebounce(query, 200);
 
-  const { data, mutate, isLoading, error } = useSearchFriends(debouncedQuery);
-
-  console.log(data);
+  const { data, mutate, isLoading } = useSearchFriends(debouncedQuery);
 
   function addFriend(userId: string) {
     return async () => {

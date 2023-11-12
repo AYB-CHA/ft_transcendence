@@ -7,12 +7,10 @@ import {
   useEffect,
   useState,
 } from "react";
+
 import { Socket, io } from "socket.io-client";
-import Cookies from "js-cookie";
 import { useAuth } from "@/hooks/auth";
 import { MessageType } from "../dashboard/chat/channel/[id]/(components)/ChatBox";
-import { triggerSuccessToast } from "../lib/Toast";
-import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 let socketProvider = createContext<Socket | null>(null);
@@ -22,7 +20,7 @@ export function useDMSocket() {
 }
 
 export default function DMSocketProvider({ children }: PropsWithChildren) {
-  let [socket, setSocket] = useState<null | Socket>(null);
+  const [socket, setSocket] = useState<null | Socket>(null);
   const { user } = useAuth();
   const router = useRouter();
   useEffect(() => {
@@ -30,10 +28,12 @@ export default function DMSocketProvider({ children }: PropsWithChildren) {
     url.protocol = "ws";
     url.pathname = "/dm";
     let createdSocket = io(url.toString(), {
-      extraHeaders: {
-        Authorization: `Bearer ${Cookies.get("access_token")}`,
-      },
+      // extraHeaders: {
+      //   Authorization: `Bearer ${Cookies.get("access_token")}`,
+      // },
       query: {},
+      withCredentials: true,
+      transports: ["websocket"],
       reconnection: false,
     });
 

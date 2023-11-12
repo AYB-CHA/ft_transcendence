@@ -1,4 +1,3 @@
-import { JwtService } from '@nestjs/jwt';
 import {
   ConnectedSocket,
   MessageBody,
@@ -26,7 +25,6 @@ export class DirectMessageGateway
   clients: { id: string; socket: Socket }[] = [];
 
   constructor(
-    private readonly jwtService: JwtService,
     private readonly dmService: DirectMessageService,
     private readonly userService: UserService,
   ) {}
@@ -37,13 +35,11 @@ export class DirectMessageGateway
       client.disconnect();
       return;
     }
-    console.log('CONNECTION >>>>>>>>>>>>');
     this.clients.push({ id, socket: client });
     this.dmService.makeOnline(id);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
-    console.log('DISCONNECTION <<<<<<<<<<<<');
     const id = this.userService.getClientIdFromSocket(client);
     this.clients = this.clients.filter((c) => {
       return c.id != id;

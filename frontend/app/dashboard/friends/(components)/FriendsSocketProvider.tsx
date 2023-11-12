@@ -22,9 +22,8 @@ export function FriendsSocketProvider({ children }: PropsWithChildren) {
     url.pathname = "/friends";
     url.protocol = "ws";
     return io(url.toString(), {
-      extraHeaders: {
-        Authorization: `Bearer ${Cookies.get("access_token")}`,
-      },
+      withCredentials: true,
+      transports: ["websocket"],
     });
   }, []);
 
@@ -37,7 +36,7 @@ export function FriendsSocketProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    socket.on(userId, () => {
+    const callback = () => {
       mutate((key: unknown) => {
         const actualKey =
           typeof key === "string"
@@ -47,10 +46,12 @@ export function FriendsSocketProvider({ children }: PropsWithChildren) {
           actualKey.startsWith("/user/friends") || actualKey === "/user/search"
         );
       });
-    });
+    };
+
+    socket.on(userId, callback);
 
     return () => {
-      socket.disconnect();
+      socket.off(userId, callback);
     };
   }, [socket, user?.id]);
 

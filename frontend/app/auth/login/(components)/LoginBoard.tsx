@@ -1,6 +1,5 @@
 "use client";
 import { triggerValidationToast } from "@/app/lib/Toast";
-import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
@@ -14,6 +13,7 @@ export default function LoginBoard() {
   const { error, setError, login } = useAuth({ middleware: "guest" });
 
   useEffect(() => {
+    console.log(error);
     if (error)
       triggerValidationToast(
         <SpellCheck2 size={18} />,

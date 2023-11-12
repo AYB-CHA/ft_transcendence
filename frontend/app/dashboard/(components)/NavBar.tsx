@@ -97,19 +97,19 @@ function NotificationItem({
   type,
   read,
 }: NotificationItemProps) {
-  const metatdata = notificationsMetadata[type];
+  const metadata = notificationsMetadata[type];
 
   return (
     <div className={`flex flex-col items-end gap-2 p-4 ${!read && "bg-dark"}`}>
       <div className="flex flex-row w-full gap-4">
-        <metatdata.Icon className="min-w-[24px] min-h-[24px]" strokeWidth={1} />
+        <metadata.Icon className="min-w-[24px] min-h-[24px]" strokeWidth={1} />
         <div className="flex flex-col gap-1">
-          <p className="uppercase">{metatdata.title}</p>
+          <p className="uppercase">{metadata.title}</p>
           <p className="text-xs text-gray-500">{description}</p>
         </div>
       </div>
       <Link href={link} onClick={markAsRead}>
-        <Button>{metatdata.link}</Button>
+        <Button>{metadata.link}</Button>
       </Link>
     </div>
   );
@@ -129,9 +129,8 @@ function Notifications() {
     url.pathname = "/notification";
     url.protocol = "ws";
     return io(url.toString(), {
-      extraHeaders: {
-        Authorization: `Bearer ${Cookies.get("access_token")}`,
-      },
+      withCredentials: true,
+      transports: ["websocket"],
     });
   }, []);
 
@@ -144,12 +143,14 @@ function Notifications() {
       return;
     }
 
-    socket.on(userId, () => {
+    const callback = () => {
       mutate();
-    });
+    };
+
+    socket.on(userId, callback);
 
     return () => {
-      socket.disconnect();
+      socket.off(userId, callback);
     };
   }, [socket, user?.id, mutate]);
 

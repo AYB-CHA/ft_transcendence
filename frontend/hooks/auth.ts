@@ -1,5 +1,5 @@
 import { camelCaseToNormal } from "@/lib/string";
-import { AxiosError, isAxiosError } from "axios";
+import rawAxios, { AxiosError, isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { createElement, useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -35,14 +35,11 @@ export function useAuth({
     mutate,
     isLoading,
     error: serverError,
-  } = useSWR(
+  } = useSWR<UserType, AxiosError<{ error?: "TOTP_UNVERIFIED" }>>(
     "/user/me",
     async (param) => {
-      const response = await axios.get<UserType>(param, {
-        headers: {
-          Authorization: "Bearer " + Cookies.get("access_token"),
-        },
-      });
+      const response = await axios.get<UserType>(param);
+      console.log(response);
       return response.data;
     },
     {
@@ -50,8 +47,11 @@ export function useAuth({
     }
   );
 
-  const logOut = () => {
-    Cookies.remove("access_token");
+  const logOut = async () => {
+    try {
+      await rawAxios.post("/auth/logout");
+    } catch {}
+
     mutate(undefined, { revalidate: false });
     push("/");
   };
@@ -64,7 +64,9 @@ export function useAuth({
       return push("/auth/2fa");
     }
     if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
-    if (middleware === "auth" && !user && serverError) logOut();
+    if (middleware === "auth" && !user && serverError) {
+      // logOut();
+    }
   }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const login = async (usernameOrEmail: string, password: string) => {
@@ -85,7 +87,7 @@ export function useAuth({
 
   const register = async (data: { [key: string]: string }) => {
     try {
-      let response = await axios.post("auth/register", data);
+      const response = await axios.post("auth/register", data);
       Cookies.set("access_token", response.data.jwtToken);
       push("/dashboard/settings");
       mutate();
@@ -97,18 +99,10 @@ export function useAuth({
 
   const verify2FA = async (verificationCode: string) => {
     try {
-      let response = await axios.post(
-        "/auth/verify/2fa",
-        {
-          verificationCode,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + Cookies.get("access_token"),
-          },
-        }
-      );
-      Cookies.set("access_token", response.data.jwtToken);
+      await axios.post("/auth/verify/2fa", {
+        verificationCode,
+      });
+      console.log("ok");
       mutate();
       push("/dashboard");
     } catch {

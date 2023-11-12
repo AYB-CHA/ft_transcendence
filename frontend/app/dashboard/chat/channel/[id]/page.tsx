@@ -1,12 +1,11 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import ChannelController from "./(components)/ChannelController";
-import ChatBox from "./(components)/ChatBox";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import { useParams, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { mutate } from "swr";
+import ChatBox from "./(components)/ChatBox";
+import ChannelController from "./(components)/ChannelController";
 
 let ChatSocketContext = createContext<Socket | null>(null);
 
@@ -16,39 +15,41 @@ export function useChannelChatSocket() {
 
 export function clearSWRCache() {
   mutate(
-    /* match all keys */ (key) => {
+    /* match all keys for now */ (key) => {
       return true;
     }
   );
 }
 
 export default function Page() {
-  let [socket, setSocket] = useState<Socket | null>(null);
   let { id } = useParams();
-  let { refresh } = useRouter();
+
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
+    const url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/channel";
-    let socket = io(url.toString(), {
-      extraHeaders: { Authorization: `Bearer ${Cookies.get("access_token")}` },
+    const socket = io(url.toString(), {
+      withCredentials: true,
+      transports: ["websocket"],
       query: {
         channelId: id,
       },
+      reconnection: false,
     });
-
-    setSocket(socket);
 
     socket.on("criticalChange", () => {
       console.log("SHOULD RELOAD.");
       clearSWRCache();
     });
 
+    setSocket(socket);
     return () => {
+      socket.off("criticalChange");
       socket.disconnect();
     };
-  }, [id, refresh]);
+  }, [id]);
 
   return (
     <>

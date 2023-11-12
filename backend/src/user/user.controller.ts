@@ -12,11 +12,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserService } from './user.service';
 import { RequestType } from 'src/types';
+
 import UpdateUserDto from './dtos/update-user.dto';
 import UpdateUserPasswordDto from './dtos/update-user-password.dto';
+
 import * as QRCode from 'qrcode';
 import * as se from 'speakeasy';
 

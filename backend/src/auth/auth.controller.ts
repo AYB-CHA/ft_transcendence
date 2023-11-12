@@ -3,23 +3,30 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Param,
   Post,
   Query,
   Redirect,
+  Req,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import * as se from 'speakeasy';
 
 import RegisterDto from './dtos/register.dto';
-import { AuthService } from './auth.service';
 import LoginDto from './dtos/login.dto';
+
+import { AuthService } from './auth.service';
 import { FtStrategy } from './OAuth/ft.strategy';
 import { RegisterUserType } from 'src/types';
 import { GithubStrategy } from './OAuth/github.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/db/prisma.service';
+
+import { AuthGuard } from './guards/auth.guard';
+import { Request, Response } from 'express';
+
+import * as se from 'speakeasy';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('/auth')
 export class AuthController {
@@ -29,6 +36,7 @@ export class AuthController {
     private readonly githubStrategy: GithubStrategy,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('register')
@@ -63,11 +71,12 @@ export class AuthController {
   @Post('verify/2fa')
   async verify2FA(
     @Body('verificationCode') verificationCode: string | undefined,
-    @Headers('authorization') authorization: string | undefined,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
   ) {
-    if (!verificationCode || !authorization) throw new BadRequestException();
+    if (!verificationCode) throw new BadRequestException();
 
-    authorization = authorization.replace('Bearer ', '');
+    const authorization = AuthGuard.extractTokenFromCookie(request);
 
     let userId = '';
     try {
@@ -86,14 +95,22 @@ export class AuthController {
           encoding: 'hex',
         })
       ) {
-        console.log('code is invalid');
         throw new Error();
       }
       userId = payload.sub;
     } catch {
       throw new BadRequestException();
     }
-    return this.authService.generateJwtResponse(userId);
+    const { jwtToken } = await this.authService.generateJwtResponse(userId);
+    const domain = this.configService.get<string>('BASE_DOMAIN');
+
+    response.cookie('access_token', jwtToken, {
+      httpOnly: true,
+      domain,
+      sameSite: 'strict',
+      secure: false,
+    });
+    return {};
   }
 
   @Get('/back')

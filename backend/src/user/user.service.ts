@@ -6,6 +6,7 @@ import { UserSearchEntity } from './types.d';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
 
+import * as Cookie from 'cookie';
 import * as se from 'speakeasy';
 
 import {
@@ -243,11 +244,11 @@ export class UserService {
           OR u."username" ILIKE '%' || ${query} || '%')
     `;
   }
+
   getClientIdFromSocket(client: Socket) {
-    const authHeader: string | null =
-      client.handshake.headers.authorization?.replace('Bearer ', '');
+    const authHeader = Cookie.parse(client.handshake.headers.cookie);
     try {
-      const payload = this.jwtService.verify(authHeader ?? '');
+      const payload = this.jwtService.verify(authHeader.access_token ?? '');
       return payload.sub as string;
     } catch {}
     return null;

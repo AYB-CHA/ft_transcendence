@@ -19,7 +19,6 @@ export class DirectMessageService {
       data: { status: 'ONLINE' },
       select: { id: true },
     });
-    console.log('ONLINE');
   }
 
   async makeOffline(id: string) {
@@ -28,7 +27,6 @@ export class DirectMessageService {
       data: { status: 'OFFLINE' },
       select: { id: true },
     });
-    console.log('OFFLINE');
   }
 
   async sendDm(threadId: string, senderId: string, text: string) {

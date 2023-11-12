@@ -6,7 +6,7 @@ export const GET = (request: NextRequest) => {
 
   const cookieStore = cookies();
   let redirectUrl = new URL(process.env["FRONTEND_BASEURL"] as string);
-  cookieStore.set("access_token", token, { httpOnly: false, secure: false });
+  cookieStore.set("access_token", token, { httpOnly: true, secure: false });
 
   if (request.nextUrl.searchParams.get("2fa"))
     redirectUrl.pathname = "/auth/2fa";

@@ -59,11 +59,14 @@ export class ChannelSocketGateway
 
     const channelId: string =
       (client.handshake.query?.channelId as string) ?? '';
+    console.log('userId', id);
+    console.log('channelId', channelId);
 
     if (
       !id &&
       !(await this.channelService.isUserBelongsToChannel(id, channelId))
     ) {
+      console.log('I AM GONNA DISCONNECT');
       client.disconnect();
       return;
     }
@@ -199,11 +202,6 @@ export class ChannelSocketGateway
     userIds?: string[],
     exceptIds?: string[],
   ) => {
-    console.log('======================');
-    console.log(channelId);
-    console.log(userIds);
-    console.log(exceptIds);
-
     for (const client of this.clients) {
       if (client.channelId === channelId) {
         if (userIds && !userIds.includes(client.id)) continue;
