@@ -4,8 +4,6 @@ import { Socket, io } from "socket.io-client";
 import { useAuth } from "@/hooks/auth";
 import { mutate } from "swr";
 
-import Cookies from "js-cookie";
-
 import { createContext, PropsWithChildren, useMemo, useEffect } from "react";
 
 const FriendsSocketContext = createContext<Socket | undefined>(undefined);

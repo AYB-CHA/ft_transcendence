@@ -1,11 +1,10 @@
-import Cookies from "js-cookie";
 import axios from "@/lib/axios";
 import rawAxios from "axios";
 import useSWR from "swr";
 
-import { createElement, useEffect, useState } from "react";
 import { dispatchNotification } from "@/app/lib/Toast";
 import { AxiosError, isAxiosError } from "axios";
+import { useEffect, useState } from "react";
 import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
@@ -74,7 +73,7 @@ export function useAuth({
         usernameOrEmail,
         password,
       });
-      Cookies.set("access_token", response.data.jwtToken);
+
       mutate();
       push("/dashboard");
     } catch (error) {
@@ -87,7 +86,6 @@ export function useAuth({
   const register = async (data: { [key: string]: string }) => {
     try {
       const response = await axios.post("auth/register", data);
-      Cookies.set("access_token", response.data.jwtToken);
       push("/dashboard/settings");
       mutate();
     } catch (error) {

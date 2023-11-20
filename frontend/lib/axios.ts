@@ -1,5 +1,4 @@
 import Axios from "axios";
-import Cookies from "js-cookie";
 
 const APIClient = Axios.create({
   baseURL: process.env["NEXT_PUBLIC_BACKEND_BASEURL"],

@@ -23,7 +23,6 @@
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.2",
     "framer-motion": "^10.16.4",
-    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lucide-react": "^0.279.0",
     "next": "13.5.2",
@@ -41,7 +40,6 @@
     "utf-8-validate": "^5.0.10"
   },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.4",
     "@types/lodash": "^4.14.199",
     "bufferutil": "^4.0.7",
     "tailwindcss-animate": "^1.0.7"

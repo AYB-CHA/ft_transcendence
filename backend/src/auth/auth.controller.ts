@@ -40,21 +40,29 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() body: RegisterDto) {
-    return await this.authService.registerNewUser({
+  async register(
+    @Body() body: RegisterDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { jwtToken } = await this.authService.registerNewUser({
       email: body.email,
       fullName: body.fullName,
       password: body.password,
       username: body.username,
     });
+    this.setAuthCookies(response, jwtToken);
   }
 
   @Post('login')
-  login(@Body() body: LoginDto) {
-    return this.authService.loginUser({
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { jwtToken } = await this.authService.loginUser({
       password: body.password,
       usernameOrEmail: body.usernameOrEmail,
     });
+    this.setAuthCookies(response, jwtToken);
   }
 
   @Get('login/:provider')
@@ -102,14 +110,7 @@ export class AuthController {
       throw new BadRequestException();
     }
     const { jwtToken } = await this.authService.generateJwtResponse(userId);
-    const domain = this.configService.get<string>('BASE_DOMAIN');
-
-    response.cookie('access_token', jwtToken, {
-      httpOnly: true,
-      domain,
-      sameSite: 'strict',
-      secure: false,
-    });
+    this.setAuthCookies(response, jwtToken);
     return {};
   }
 
@@ -130,5 +131,14 @@ export class AuthController {
       userData = await this.githubStrategy.getUserData(code);
       return this.authService.logInUserOAuth(userData, 'GITHUB');
     }
+  }
+  private setAuthCookies(response: Response, jwtToken: string) {
+    const domain = this.configService.get<string>('BASE_DOMAIN');
+    response.cookie('access_token', jwtToken, {
+      httpOnly: true,
+      domain,
+      sameSite: 'strict',
+      secure: false,
+    });
   }
 }
