@@ -10,10 +10,9 @@ import Button from "@/components/Button";
 import axios from "@/lib/axios";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import { dispatchNotification } from "@/app/lib/Toast";
 import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { mutate } from "swr";
@@ -68,7 +67,6 @@ export default function NewChannel({}: {}) {
       router.push(`/dashboard/chat/channel/${response.data?.id}`);
       setOpen(false);
       mutate("/chat/channel");
-      toast.dismiss();
     } catch (error) {
       if (error instanceof AxiosError)
         dispatchNotification({

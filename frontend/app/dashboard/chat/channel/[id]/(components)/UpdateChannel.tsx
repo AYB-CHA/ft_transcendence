@@ -12,10 +12,9 @@ import axios from "@/lib/axios";
 
 import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import { dispatchNotification } from "@/app/lib/Toast";
 import { ChannelType } from "./ChannelController";
 import { camelCaseToNormal } from "@/lib/string";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
 import {
@@ -71,7 +70,6 @@ export default function UpdateChannel({
 
     try {
       await axios.put(`chat/channel/update/${channelData.id}`, data);
-      toast.dismiss();
       setOpen(false);
     } catch (error) {
       if (error instanceof AxiosError)

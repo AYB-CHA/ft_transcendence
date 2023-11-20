@@ -10,11 +10,7 @@ import Button from "@/components/Button";
 import Enable2FA from "./Enable2FA";
 import axios from "@/lib/axios";
 
-import {
-  dispatchNotification,
-  triggerSuccessToast,
-  triggerValidationToast,
-} from "@/app/lib/Toast";
+import { dispatchNotification } from "@/app/lib/Toast";
 import { avatarsBaseUrl } from "../../chat/(components)/NewChannel";
 import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";

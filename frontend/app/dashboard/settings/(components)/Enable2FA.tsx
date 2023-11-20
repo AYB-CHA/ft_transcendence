@@ -1,14 +1,16 @@
-import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import Image from "next/image";
+import axios from "@/lib/axios";
 import Button from "@/components/Button";
+import AuthCode from "react-auth-code-input";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import axios from "@/lib/axios";
+
 import { Lock } from "lucide-react";
-import Image from "next/image";
-import React, { createElement, useEffect, useState } from "react";
-import AuthCode from "react-auth-code-input";
+import { dispatchNotification } from "@/app/lib/Toast";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
+
+import React, { useEffect, useState } from "react";
 
 export default function Enable2FA({ mutate }: { mutate: any }) {
   const [qrcode, setQrcode] = useState<string | null>(null);
