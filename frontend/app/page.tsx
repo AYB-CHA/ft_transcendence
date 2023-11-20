@@ -4,8 +4,6 @@ import { useScroll } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import Lenis from "@studio-freight/lenis";
-import Link from "next/link";
-import Button from "@/components/Button";
 
 export default function Home() {
   const progressRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +23,8 @@ export default function Home() {
     }
     requestAnimationFrame(raf);
   });
-  let { scrollYProgress } = useScroll({
+
+  const { scrollYProgress } = useScroll({
     target: container,
   });
 
@@ -37,9 +36,13 @@ export default function Home() {
       ></div>
       <div className="h-[300vh] relative" ref={container}>
         <div className="sticky top-0 w-full h-[100vh] flex justify-center items-center">
-          <Button>
-            <Link href="/auth/login">Login</Link>
-          </Button>
+          <div className="h-[250px] aspect-square bg-primary rounded-full relative border border-dark-semi-light">
+            <div className="h-[85%] aspect-square bg-dark rounded-full absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-10 border border-dark-semi-light"></div>
+            <div></div>
+          </div>
+          {/* <Link href="/auth/login">
+            <Button>Login</Button>
+          </Link> */}
         </div>
       </div>
       <div>

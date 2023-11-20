@@ -1,11 +1,9 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { Sparkles, Star, Trash2 } from "lucide-react";
-import { ChannelType } from "../ChannelController";
-import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
-import axios from "@/lib/axios";
-import { KeyedMutator } from "swr";
+import { ChannelType } from "../ChannelController";
 import { useChannelChatSocket } from "../../page";
+import { Trash2 } from "lucide-react";
+
 export default function KickOut({
   channel,
   member,
@@ -13,13 +11,15 @@ export default function KickOut({
   channel: ChannelType;
   member: ChannelMemberType;
 }) {
-  let chatSocket = useChannelChatSocket();
+  const chatSocket = useChannelChatSocket();
 
   let isDisabled = true;
+
   if (channel.myRole === "ADMINISTRATOR" && member.role !== "ADMINISTRATOR")
     isDisabled = false;
   else if (channel.myRole === "MODERATOR" && member.role === "MEMBER")
     isDisabled = false;
+
   async function clickHandler() {
     chatSocket?.emit("kickUser", { channelId: channel.id, userId: member.id });
   }

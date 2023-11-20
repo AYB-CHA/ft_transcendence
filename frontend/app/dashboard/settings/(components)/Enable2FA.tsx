@@ -1,4 +1,4 @@
-import { triggerValidationToast } from "@/app/lib/Toast";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
@@ -29,11 +29,11 @@ export default function Enable2FA({ mutate }: { mutate: any }) {
       setIsOpen(false);
       mutate();
     } catch (error) {
-      triggerValidationToast(
-        createElement(Lock, { size: 18 }),
-        "Code",
-        "Verification code is invalid."
-      );
+      dispatchNotification({
+        title: "Code",
+        icon: Lock,
+        description: "Verification code is invalid.",
+      });
     }
   }
   return (

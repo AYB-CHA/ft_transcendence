@@ -1,11 +1,16 @@
 "use client";
+
+import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
+import OnlineStatus from "../../(components)/OnlineStatus";
 import Avatar from "@/components/Avatar";
+import React, { Fragment } from "react";
 import axios from "@/lib/axios";
 import Link from "next/link";
-import React, { Fragment } from "react";
 import useSWR from "swr";
-import OnlineStatus from "../../(components)/OnlineStatus";
-import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
+
+import { UserStatusType } from "../channel/[id]/(components)/ChannelMembers";
+import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 
 type ThreadType = {
   id: string;
@@ -15,6 +20,7 @@ type ThreadType = {
     fullName: string;
     id: string;
     username: string;
+    status: UserStatusType;
   };
 };
 
@@ -23,7 +29,9 @@ async function getThreads(url: string) {
 }
 
 export default function ThreadSideBar() {
-  let { data, isLoading } = useSWR("/chat/dm/threads", getThreads);
+  const { data, isLoading } = useSWR("/chat/dm/threads", getThreads);
+  const { id } = useParams();
+
   if (isLoading)
     return (
       <>
@@ -46,7 +54,11 @@ export default function ThreadSideBar() {
         data.map((thread, index) => {
           return (
             <Fragment key={thread.id}>
-              <div className="flex items-center">
+              <div className="flex items-center relative">
+                <div
+                  hidden={id !== thread.id}
+                  className="rounded-full border-4 border-primary-500 border-l-transparent border-b-transparent rotate-45 absolute top-1/2 -translate-y-1/2 -left-[calc(1rem+0.25rem)]"
+                />
                 <div className="flex gap-2 grow">
                   <div>
                     <Avatar
@@ -72,7 +84,7 @@ export default function ThreadSideBar() {
                   <div className="mb-2">
                     <span className="text-gray-500 text-xs">5:16 PM</span>
                   </div>
-                  <OnlineStatus status={true} />
+                  <OnlineStatus status={thread.user.status !== "OFFLINE"} />
                 </div>
               </div>
               {index != (data?.length ?? 0) - 1 && (

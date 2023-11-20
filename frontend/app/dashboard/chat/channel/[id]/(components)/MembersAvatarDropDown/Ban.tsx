@@ -1,11 +1,9 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { ChannelType } from "../ChannelController";
-import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
-import axios from "@/lib/axios";
-import { KeyedMutator } from "swr";
-import { BanIcon } from "lucide-react";
+import { ChannelType } from "../ChannelController";
 import { useChannelChatSocket } from "../../page";
+import { BanIcon } from "lucide-react";
+
 export default function Ban({
   channel,
   member,
@@ -13,13 +11,15 @@ export default function Ban({
   channel: ChannelType;
   member: ChannelMemberType;
 }) {
-  let chatSocket = useChannelChatSocket();
+  const chatSocket = useChannelChatSocket();
 
   let isDisabled = true;
+
   if (channel.myRole === "ADMINISTRATOR" && member.role !== "ADMINISTRATOR")
     isDisabled = false;
   else if (channel.myRole === "MODERATOR" && member.role === "MEMBER")
     isDisabled = false;
+
   async function clickHandler() {
     chatSocket?.emit("banUser", { channelId: channel.id, userId: member.id });
   }

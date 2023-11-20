@@ -246,7 +246,7 @@ export class UserService {
   }
 
   getClientIdFromSocket(client: Socket) {
-    const authHeader = Cookie.parse(client.handshake.headers.cookie);
+    const authHeader = Cookie.parse(client.handshake.headers.cookie ?? '');
     try {
       const payload = this.jwtService.verify(authHeader.access_token ?? '');
       return payload.sub as string;

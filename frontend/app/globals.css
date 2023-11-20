@@ -7,7 +7,33 @@
   @apply rounded-none border-[1.5px] border-primary/80 !important;
 }
 
+*:focus-visible {
+  @apply outline-none;
+}
+
 .no-scroll {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+:root {
+  --heroGradient: linear-gradient(
+      245.93deg,
+      transparent 80%,
+      theme("colors.dark.dim") 100.63%
+    ),
+    linear-gradient(
+      327.21deg,
+      theme("colors.dark.dim") 10%,
+      theme("colors.dark.DEFAULT") 50.32%
+    ),
+    /* linear-gradient(
+      147.6deg,
+      rgba(58, 19, 255, 1) 29.79%,
+      theme("colors.dark.semi-dim") 85.72%
+    ), */
+      theme("colors.dark.DEFAULT");
+}
+body {
+  background: var(--heroGradient);
+  /* color: ; */
 }

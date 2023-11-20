@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
@@ -29,8 +30,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/me')
-  me(@Req() request: RequestType) {
-    return this.userService.findUser(request.userPayload.sub);
+  async me(@Req() request: RequestType) {
+    try {
+      return await this.userService.findUser(request.userPayload.sub);
+    } catch {
+      throw new UnauthorizedException();
+    }
   }
 
   @Get('/search')

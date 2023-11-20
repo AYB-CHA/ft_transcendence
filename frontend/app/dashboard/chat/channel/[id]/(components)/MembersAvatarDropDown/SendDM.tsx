@@ -1,7 +1,8 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import axios from "@/lib/axios";
 import { MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+import axios from "@/lib/axios";
 import React from "react";
 
 export async function getDmId(userId: string) {
@@ -9,11 +10,12 @@ export async function getDmId(userId: string) {
 }
 
 export default function SendDM({ userId }: { userId: string }) {
-  let { push } = useRouter();
+  const { push } = useRouter();
+
   return (
     <DropdownMenuItem
       onClick={async () => {
-        let id = await getDmId(userId);
+        const id = await getDmId(userId);
         push(`/dashboard/chat/dm/${id}`);
       }}
     >

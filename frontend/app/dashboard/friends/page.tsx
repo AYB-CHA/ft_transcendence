@@ -6,7 +6,7 @@ import { useFriendRequests, useFriends } from "./(hooks)/Friends";
 import { FriendsTabContent } from "./(components)/FriendsTab";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabCard } from "./(components)/TabCard";
-import { UserPlus, Users } from "lucide-react";
+import { User, UserPlus, Users } from "lucide-react";
 import { useState } from "react";
 
 import CardHeader from "@/components/card/CardHeader";
@@ -41,7 +41,7 @@ export default function Page() {
         />
         <TabCard
           name={"friend-requests" satisfies Tabs}
-          Icon={UserPlus}
+          Icon={User}
           title="Friend Requests"
           suffix={friendRequests?.length?.toString()}
           isSelected={(tab) => tab === currentTab}

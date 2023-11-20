@@ -13,16 +13,16 @@ export default function EditAvatar({
   setSrc: Dispatch<SetStateAction<string>>;
 }) {
   const [isLoading, setLoading] = useState(false);
-  let inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   async function submitFile(e: ChangeEvent<HTMLInputElement>) {
     setLoading(true);
-    let form = new FormData();
+    const form = new FormData();
     if (!e.target.files?.length) return;
     form.append("avatar", e.target.files[0]);
     try {
-      let response = await axios.post("/upload/avatar", form);
-      setSrc(response.data);
+      const { data } = await axios.post("/upload/avatar", form);
+      setSrc(data);
     } catch (error) {
       // todo: after adding toast component.
     } finally {

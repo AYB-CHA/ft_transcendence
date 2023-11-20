@@ -1,8 +1,9 @@
 import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
-import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useEffect, useState } from "react";
 import { clearSWRCache } from "../page";
+import dayjs from "dayjs";
+
 dayjs.extend(relativeTime);
 
 export default function ChatBoxInput({
@@ -16,7 +17,7 @@ export default function ChatBoxInput({
   useEffect(() => {
     if (mutedUntil) {
       const delay = mutedUntil.getTime() - Date.now();
-      let timeOutHandler = setTimeout(() => {
+      const timeOutHandler = setTimeout(() => {
         clearSWRCache();
       }, delay);
       return () => {

@@ -1,14 +1,23 @@
 "use client";
 import EditAvatar from "@/app/(components)/EditAvatar";
-import { triggerValidationToast } from "@/app/lib/Toast";
-import Button from "@/components/Button";
-import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
+import CardBody from "@/components/card/CardBody";
+import TextArea from "@/components/input/TextArea";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
-import TextArea from "@/components/input/TextArea";
+import Button from "@/components/Button";
+import axios from "@/lib/axios";
+
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import { camelCaseToNormal } from "@/lib/string";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { mutate } from "swr";
+
 import {
   Select,
   SelectContent,
@@ -17,10 +26,6 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 
-import axios from "@/lib/axios";
-import { camelCaseToNormal } from "@/lib/string";
-import { AxiosError } from "axios";
-
 import {
   AlignRight,
   Fingerprint,
@@ -28,15 +33,12 @@ import {
   SpellCheck2,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
-import { toast } from "react-toastify";
-import { mutate } from "swr";
-
 export type ChannelVisibilityType = "PUBLIC" | "PRIVATE" | "PROTECTED";
 
 export function avatarsBaseUrl() {
-  let avatarUrl = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string);
+  const avatarUrl = new URL(
+    process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string
+  );
   avatarUrl.pathname = "public/avatars/";
   return avatarUrl.toString();
 }
@@ -51,7 +53,7 @@ export default function NewChannel({}: {}) {
   const [avatar, setAvatar] = useState("channel.jpg");
 
   const handelSumption = async () => {
-    let data: {
+    const data: {
       [key: string]: string;
     } = {
       name,
@@ -62,18 +64,18 @@ export default function NewChannel({}: {}) {
     if (visibility === "PROTECTED") data.password = password;
 
     try {
-      let response = await axios.post("chat/channel", data);
+      const response = await axios.post("chat/channel", data);
       router.push(`/dashboard/chat/channel/${response.data?.id}`);
       setOpen(false);
       mutate("/chat/channel");
       toast.dismiss();
     } catch (error) {
       if (error instanceof AxiosError)
-        triggerValidationToast(
-          <SpellCheck2 size={18} />,
-          "Validation",
-          camelCaseToNormal(error.response?.data.message[0])
-        );
+        dispatchNotification({
+          title: "Validation",
+          icon: SpellCheck2,
+          description: camelCaseToNormal(error.response?.data.message[0]),
+        });
     }
   };
 
@@ -81,7 +83,7 @@ export default function NewChannel({}: {}) {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full" variant="secondary">
+          <Button className="w-full" variant="dark">
             Create New Channel
           </Button>
         </DialogTrigger>

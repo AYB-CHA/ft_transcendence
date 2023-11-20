@@ -1,11 +1,13 @@
-import { camelCaseToNormal } from "@/lib/string";
-import rawAxios, { AxiosError, isAxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { createElement, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "@/lib/axios";
+import rawAxios from "axios";
 import useSWR from "swr";
-import { triggerValidationToast } from "@/app/lib/Toast";
+
+import { createElement, useEffect, useState } from "react";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import { AxiosError, isAxiosError } from "axios";
+import { camelCaseToNormal } from "@/lib/string";
+import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 
 export type UserType = {
@@ -39,13 +41,23 @@ export function useAuth({
     "/user/me",
     async (param) => {
       const response = await axios.get<UserType>(param);
-      console.log(response);
       return response.data;
     },
     {
       onErrorRetry: () => {},
     }
   );
+
+  useEffect(() => {
+    if (
+      isAxiosError(serverError) &&
+      serverError.response?.data.error === "TOTP_UNVERIFIED"
+    ) {
+      return push("/auth/2fa");
+    }
+    if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
+    if (middleware === "auth" && !user && serverError) logOut();
+  }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const logOut = async () => {
     try {
@@ -56,22 +68,9 @@ export function useAuth({
     push("/");
   };
 
-  useEffect(() => {
-    if (
-      isAxiosError(serverError) &&
-      serverError.response?.data.error === "TOTP_UNVERIFIED"
-    ) {
-      return push("/auth/2fa");
-    }
-    if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
-    if (middleware === "auth" && !user && serverError) {
-      // logOut();
-    }
-  }, [middleware, user, push, redirectIfAuth, serverError]);
-
   const login = async (usernameOrEmail: string, password: string) => {
     try {
-      let response = await axios.post("auth/login", {
+      const response = await axios.post("auth/login", {
         usernameOrEmail,
         password,
       });
@@ -106,11 +105,11 @@ export function useAuth({
       mutate();
       push("/dashboard");
     } catch {
-      triggerValidationToast(
-        createElement(Lock, { size: 18 }),
-        "Code",
-        "Verification code is invalid."
-      );
+      dispatchNotification({
+        title: "Code",
+        icon: Lock,
+        description: "Verification code is invalid.",
+      });
     }
   };
 

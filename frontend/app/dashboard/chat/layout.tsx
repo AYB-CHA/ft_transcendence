@@ -5,7 +5,7 @@ import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import Input from "@/components/input/Input";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tabs, TabsContent } from "@/components/ui/Tabs";
 
 import { Search } from "lucide-react";
 import NewChat from "./(components)/NewChat";
@@ -14,9 +14,11 @@ import ThreadSideBar from "./(components)/ThreadSideBar";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewChannel from "./(components)/NewChannel";
+import { twMerge } from "tailwind-merge";
+import TabSwitcher from "./(components)/TabSwitcher";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  let path = usePathname();
+  const path = usePathname();
 
   const [activeTab, setActiveTab] = useState<"channels" | "dms">(
     path.startsWith("/dashboard/chat/dm") ? "dms" : "channels"
@@ -37,16 +39,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Tabs
             value={activeTab}
             onValueChange={handleTabChange}
-            defaultValue=""
+            defaultValue="channels"
           >
             <CardHeader>
               <Input placeholder="Search" icon={<Search size={18} />} />
             </CardHeader>
-            <CardHeader>
-              <TabsList className="py-8">
-                <TabsTrigger value="channels">Channels</TabsTrigger>
-                <TabsTrigger value="dms">DMs</TabsTrigger>
-              </TabsList>
+            <CardHeader className="p-0 px-4">
+              <TabSwitcher
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+              />
             </CardHeader>
             <CardBody>
               <div>

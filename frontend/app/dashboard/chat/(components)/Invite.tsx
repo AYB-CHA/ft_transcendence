@@ -36,8 +36,9 @@ export default function Invite({
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const [users, setUsers] = useState<SearchUserInviteType[]>([]);
-  // let [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+
   useEffect(() => {
     // setLoading(true);
     open &&
@@ -61,7 +62,7 @@ export default function Invite({
 
   async function inviteUser(userId: string) {
     try {
-      let response = await axios.post<{ id: string }>(
+      const response = await axios.post<{ id: string }>(
         `/chat/channel/private/${channelId}/invite`,
         { userId }
       );

@@ -11,7 +11,7 @@ export default function Alert({
   className,
   variant = "danger",
 }: AlertPropsType) {
-  let variants = {
+  const variants = {
     danger: "border text-white border-red-500 bg-red-500",
   };
   return (

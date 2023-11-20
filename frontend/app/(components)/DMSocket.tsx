@@ -5,59 +5,52 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
-import { Socket, io } from "socket.io-client";
-import { useAuth } from "@/hooks/auth";
 import { MessageType } from "../dashboard/chat/channel/[id]/(components)/ChatBox";
+import { Socket, io } from "socket.io-client";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/auth";
+import { mutate } from "swr";
 
-let socketProvider = createContext<Socket | null>(null);
+const socketProvider = createContext<Socket | null>(null);
 
 export function useDMSocket() {
   return useContext(socketProvider);
 }
 
 export default function DMSocketProvider({ children }: PropsWithChildren) {
-  const [socket, setSocket] = useState<null | Socket>(null);
-  const { user } = useAuth();
-  const router = useRouter();
-  useEffect(() => {
-    let url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
+  // const [socket, setSocket] = useState<null | Socket>(null);
+  const socket = useMemo(() => {
+    const url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/dm";
-    let createdSocket = io(url.toString(), {
-      // extraHeaders: {
-      //   Authorization: `Bearer ${Cookies.get("access_token")}`,
-      // },
+    const socket = io(url.toString(), {
       query: {},
       withCredentials: true,
       transports: ["websocket"],
       reconnection: false,
+      autoConnect: false,
     });
-
-    createdSocket?.on("connect", () => {});
-
-    setSocket(createdSocket);
-
-    return () => {
-      createdSocket.disconnect();
-    };
+    return socket;
   }, []);
+
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      if (socket.connected) socket.disconnect();
+    };
+  }, [socket]);
 
   useEffect(() => {
     socket?.on("newMessage", (message: MessageType) => {
-      // if (message.senderId !== user?.id) {
-      //   triggerSuccessToast(
-      //     <MessageCircle size={18} />,
-      //     "New Messages",
-      //     message.text,
-      //     () => {
-      //       // router.push(`/dashboard/chat/dm/${message.th}`);
-      //     }
-      //   );
-      // }
+      mutate("/chat/dm/threads/unread-messages");
+      mutate("/chat/dm/threads");
     });
     return () => {
       socket?.off("newMessage");

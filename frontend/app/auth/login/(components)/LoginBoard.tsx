@@ -1,5 +1,5 @@
 "use client";
-import { triggerValidationToast } from "@/app/lib/Toast";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
@@ -13,16 +13,15 @@ export default function LoginBoard() {
   const { error, setError, login } = useAuth({ middleware: "guest" });
 
   useEffect(() => {
-    console.log(error);
     if (error)
-      triggerValidationToast(
-        <SpellCheck2 size={18} />,
-        "Validation",
-        error,
-        () => {
+      dispatchNotification({
+        title: "Invalid input",
+        icon: SpellCheck2,
+        description: error,
+        onClick: () => {
           setError(null);
-        }
-      );
+        },
+      });
   }, [error, setError]);
 
   return (

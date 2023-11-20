@@ -204,7 +204,7 @@ export class ChannelService {
         orderBy: {
           createdAt: 'asc',
         },
-        take: 20,
+        // take: 20,
       })
     ).map((message) => {
       return {
@@ -221,7 +221,7 @@ export class ChannelService {
         type: { not: 'PRIVATE' },
         name: { contains: query, mode: 'insensitive' },
       },
-      take: 6,
+      take: 10,
       orderBy: { createdAt: 'asc' },
       select: {
         id: true,

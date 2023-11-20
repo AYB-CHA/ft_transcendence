@@ -1,13 +1,23 @@
 "use client";
+
 import EditAvatar from "@/app/(components)/EditAvatar";
-import Button from "@/components/Button";
-import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
+import TextArea from "@/components/input/TextArea";
+import CardBody from "@/components/card/CardBody";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
-import TextArea from "@/components/input/TextArea";
+import Button from "@/components/Button";
+import axios from "@/lib/axios";
+
+import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
+import { ChannelType } from "./ChannelController";
+import { camelCaseToNormal } from "@/lib/string";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+
 import {
   Select,
   SelectContent,
@@ -24,18 +34,10 @@ import {
   SpellCheck2,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 import {
   ChannelVisibilityType,
   avatarsBaseUrl,
 } from "../../../(components)/NewChannel";
-import { ChannelType } from "./ChannelController";
-import axios from "@/lib/axios";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
-import { triggerValidationToast } from "@/app/lib/Toast";
-import { camelCaseToNormal } from "@/lib/string";
 
 export default function UpdateChannel({
   children,
@@ -54,7 +56,7 @@ export default function UpdateChannel({
   }
 
   const handelSumption = async () => {
-    let data: {
+    const data: {
       [key: string]: string;
     } = {
       name,
@@ -62,21 +64,22 @@ export default function UpdateChannel({
       type: visibility,
       topic: description,
     };
-    if (visibility === "PROTECTED" && password.length) data.password = password;
+
+    if (visibility === "PROTECTED" && password.length) {
+      data.password = password;
+    }
+
     try {
-      let response = await axios.put(
-        `chat/channel/update/${channelData.id}`,
-        data
-      );
+      await axios.put(`chat/channel/update/${channelData.id}`, data);
       toast.dismiss();
       setOpen(false);
     } catch (error) {
       if (error instanceof AxiosError)
-        triggerValidationToast(
-          <SpellCheck2 size={18} />,
-          "Validation",
-          camelCaseToNormal(error.response?.data.message[0])
-        );
+        dispatchNotification({
+          title: "Validation",
+          icon: SpellCheck2,
+          description: camelCaseToNormal(error.response?.data.message[0]),
+        });
     }
   };
 

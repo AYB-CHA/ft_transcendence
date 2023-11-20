@@ -1,13 +1,13 @@
-import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
-import MessagesBox from "./MessagesBox";
 import ChatBoxHeader from "./ChatBoxHeader";
-
-import { notFound, useParams } from "next/navigation";
-import { ChannelType, getChannelData } from "./ChannelController";
-import { useAuth } from "@/hooks/auth";
+import Card from "@/components/card/Card";
+import MessagesBox from "./MessagesBox";
 import useSWR from "swr";
+
+import { ChannelType, getChannelData } from "./ChannelController";
+import { notFound, useParams } from "next/navigation";
 import { MehIcon } from "lucide-react";
+import { useAuth } from "@/hooks/auth";
 
 export type MessageType = {
   text: string;
@@ -16,10 +16,10 @@ export type MessageType = {
 };
 
 export default function ChatBox() {
-  let { user: me } = useAuth();
-  let { id } = useParams();
+  const { user: me } = useAuth();
+  const { id } = useParams();
 
-  let { data, isLoading, error } = useSWR<ChannelType>(
+  const { data, isLoading, error } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData,
     {

@@ -1,11 +1,10 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { Sparkles } from "lucide-react";
-import { ChannelType } from "../ChannelController";
-import { UserType } from "@/hooks/auth";
 import { ChannelMemberType } from "../ChannelMembers";
-import axios from "@/lib/axios";
-import { KeyedMutator } from "swr";
+import { ChannelType } from "../ChannelController";
 import { useChannelChatSocket } from "../../page";
+import { Sparkles } from "lucide-react";
+import { UserType } from "@/hooks/auth";
+
 export default function MakeAdmin({
   channel,
   me,
@@ -16,7 +15,7 @@ export default function MakeAdmin({
   member: ChannelMemberType;
 }) {
   const chatSocket = useChannelChatSocket();
-  let isDisabled =
+  const isDisabled =
     me.id === member.id ||
     channel.myRole !== "ADMINISTRATOR" ||
     member.role === "ADMINISTRATOR";

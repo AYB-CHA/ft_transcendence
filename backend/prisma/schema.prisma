@@ -148,6 +148,9 @@ model DMMessage {
   id       Int      @id @unique @default(autoincrement())
   text     String
   senderId String
+
+  seen Boolean @default(false)
+
   sender   User     @relation(fields: [senderId], references: [id])
   threadId String
   thread   DMThread @relation(fields: [threadId], references: [id])

@@ -1,19 +1,16 @@
-import React, { PropsWithChildren, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/Dialog";
-
-import Card from "@/components/card/Card";
 import CardFooter from "@/components/card/CardFooter";
-import Button from "@/components/Button";
-import CardBody from "@/components/card/CardBody";
 import CardHeader from "@/components/card/CardHeader";
-import axios from "@/lib/axios";
+import CardBody from "@/components/card/CardBody";
 import { useRouter } from "next/navigation";
+import Button from "@/components/Button";
+import axios from "@/lib/axios";
 import { mutate } from "swr";
+
+import {
+  DialogDescription,
+  DialogContent,
+  Dialog,
+} from "@/components/ui/Dialog";
 
 export default function DeleteChannel({
   status,
@@ -24,13 +21,15 @@ export default function DeleteChannel({
   setStatus: React.Dispatch<React.SetStateAction<boolean>>;
   status: boolean;
 }) {
-  let router = useRouter();
+  const router = useRouter();
+
   async function deleteCurrentChannel() {
     await axios.delete(`/chat/channel/${id}`);
     router.push("/dashboard/chat");
     setStatus(false);
     mutate("/chat/channel");
   }
+
   return (
     <Dialog open={status} onOpenChange={setStatus}>
       <DialogContent className="max-w-md">

@@ -1,22 +1,24 @@
-import { MessageType } from "./ChatBox";
-import { useEffect, useState } from "react";
-import { useChannelChatSocket } from "../page";
-import useSWR from "swr";
-import { useParams } from "next/navigation";
-import MyMessage from "./MyMessage";
-import OtherMessage from "./OtherMessage";
 import CardFooter from "@/components/card/CardFooter";
-import ChatBoxInput from "./ChatBoxInput";
-import { UserType } from "@/hooks/auth";
-import axios from "@/lib/axios";
-import { ChannelType } from "./ChannelController";
 import Spinner from "@/components/Spinner";
+import OtherMessage from "./OtherMessage";
+import ChatBoxInput from "./ChatBoxInput";
+import MyMessage from "./MyMessage";
+import axios from "@/lib/axios";
+import useSWR from "swr";
+
+import { ChannelType } from "./ChannelController";
+import { useChannelChatSocket } from "../page";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { UserType } from "@/hooks/auth";
+import { MessageType } from "./ChatBox";
 
 async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;
 }
+
 export function formatMessages(messages: MessageType[]) {
-  let messagesGroup: MessageType[][] = [];
+  const messagesGroup: MessageType[][] = [];
   let group: MessageType[] = [];
 
   messages.forEach((message) => {
@@ -31,6 +33,7 @@ export function formatMessages(messages: MessageType[]) {
       }
     }
   });
+
   if (group.length != 0) messagesGroup.push(group);
   return messagesGroup;
 }
@@ -44,10 +47,10 @@ export default function MessagesBox({
   channel: ChannelType | undefined;
   isLoading: boolean;
 }) {
-  let { id } = useParams();
-  let socket = useChannelChatSocket();
-  let [messages, setMessages] = useState<MessageType[]>([]);
-  let { data: oldMessages } = useSWR<MessageType[]>(
+  const { id } = useParams();
+  const socket = useChannelChatSocket();
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const { data: oldMessages } = useSWR<MessageType[]>(
     `/chat/channel/messages/${id}`,
     getOldMessages,
     {

@@ -9,11 +9,12 @@ type LoginProviderType = {
 };
 
 export default async function ProvidersButtons() {
-  let githubLink = (
+  const githubLink = (
     await serverAxios.get<LoginProviderType>("/auth/login/github")
   ).data.redirectUrl;
-  let ftLink = (await serverAxios.get<LoginProviderType>("/auth/login/ft")).data
-    .redirectUrl;
+
+  const ftLink = (await serverAxios.get<LoginProviderType>("/auth/login/ft"))
+    .data.redirectUrl;
 
   return (
     <div className="grid grid-cols-2 gap-4">

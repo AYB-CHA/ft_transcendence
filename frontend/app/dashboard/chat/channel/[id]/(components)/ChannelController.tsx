@@ -1,17 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import Card from "@/components/card/Card";
 import CardHeader from "@/components/card/CardHeader";
 import CardFooter from "@/components/card/CardFooter";
-import { PenIcon, Search } from "lucide-react";
-import Input from "@/components/input/Input";
-import useSWR from "swr";
-import { notFound, useParams } from "next/navigation";
-import axios from "@/lib/axios";
 import ChannelMembers from "./ChannelMembers";
-import { useState } from "react";
+import Input from "@/components/input/Input";
 import UpdateChannel from "./UpdateChannel";
+import Card from "@/components/card/Card";
+import axios from "@/lib/axios";
+import Image from "next/image";
+import useSWR from "swr";
+
+import { notFound, useParams } from "next/navigation";
+import { PenIcon, Search } from "lucide-react";
+import { useState } from "react";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
@@ -30,10 +31,10 @@ export type ChannelType = {
 };
 
 export default function ChannelController() {
-  let { id } = useParams();
-  const [leaveConfirm, setLeaveConfirm] = useState(false);
+  const { id } = useParams();
+  const [query, setQuery] = useState("");
 
-  let { data, isLoading, error, mutate } = useSWR<ChannelType>(
+  const { data, isLoading, error, mutate } = useSWR<ChannelType>(
     `/chat/channel/${id}`,
     getChannelData
   );
@@ -43,9 +44,14 @@ export default function ChannelController() {
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        <Input placeholder="Search Members" icon={<Search size={18} />} />
+        <Input
+          onChange={({ target }) => setQuery(target.value)}
+          value={query}
+          placeholder="Search Members"
+          icon={<Search size={18} />}
+        />
       </CardHeader>
-      <div className="grow px-4">
+      <div className="flex flex-col grow">
         <div className="py-10">
           <div className="flex justify-center items-center">
             <div className="text-center flex flex-col items-center">
@@ -92,7 +98,12 @@ export default function ChannelController() {
             </div>
           </div>
         </div>
-        <div>{<ChannelMembers currentChannel={data} />}</div>
+        <div className="mb-6 px-4">
+          <span className="text-gray-500">Members:</span>
+        </div>
+        <div className="overflow-auto grow h-0 px-4">
+          {<ChannelMembers searchQuery={query} currentChannel={data} />}
+        </div>
       </div>
       <CardFooter>
         <div className="py-[7px]">

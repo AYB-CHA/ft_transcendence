@@ -1,3 +1,6 @@
+import { CircleSlash, Clock12, Clock2, Clock6, TimerOff } from "lucide-react";
+import { useChannelChatSocket } from "../../page";
+
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -10,9 +13,6 @@ import {
 
 type MuteDuration = "10M" | "30M" | "1H" | "FOREVER";
 
-import { CircleSlash, Clock12, Clock2, Clock6, TimerOff } from "lucide-react";
-import { useChannelChatSocket } from "../../page";
-
 export default function Mute({
   isDisabled = false,
   userId,
@@ -24,7 +24,8 @@ export default function Mute({
   channelId: string;
   isMuted: boolean;
 }) {
-  let socket = useChannelChatSocket();
+  const socket = useChannelChatSocket();
+
   const muteUser = (duration: MuteDuration) => {
     socket?.emit("muteUser", { channelId, userId, duration });
   };

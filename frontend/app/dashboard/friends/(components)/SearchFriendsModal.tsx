@@ -9,7 +9,6 @@ import { BasicTabCard } from "./TabCard";
 import { Search } from "lucide-react";
 
 import CardFooter from "@/components/card/CardFooter";
-import CardHeader from "@/components/card/CardHeader";
 import CardBody from "@/components/card/CardBody";
 import Input from "@/components/input/Input";
 import Button from "@/components/Button";
@@ -125,7 +124,7 @@ export function SearchFriendsModal({
             />
           </Card>
         </div>
-        <CardBody className="flex flex-col flex-1">
+        <CardBody className="flex flex-col flex-1 max-h-[60rem] overflow-auto">
           <div className="flex flex-col flex-1 divide-y divide-dark-semi-dim">
             <LoadingIndicator visible={isLoading} className="py-[110px]" />
             {data &&

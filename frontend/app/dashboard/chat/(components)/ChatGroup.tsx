@@ -22,14 +22,23 @@ import DeleteChannel from "./DeleteChannel";
 import { ChannelType } from "../channel/[id]/(components)/ChannelController";
 import Invite from "./Invite";
 
-export default function ChatGroup({ data }: { data: ChannelType }) {
+export default function ChatGroup({
+  data,
+  selectedChannelId,
+}: {
+  data: ChannelType;
+  selectedChannelId: string;
+}) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [leaveConfirm, setLeaveConfirm] = useState(false);
   const [inviteStatus, setInviteStatus] = useState(false);
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center relative">
       <div className="flex gap-2 grow">
+        {selectedChannelId === data.id && (
+          <div className="rounded-full border-4 border-primary-500 border-l-transparent border-b-transparent rotate-45 absolute top-1/2 -translate-y-1/2 -left-[calc(1rem+0.25rem)]" />
+        )}
         <div>
           <Avatar src={data.avatar} className="h-10 w-10">
             <DropdownMenuLabel>Channel</DropdownMenuLabel>

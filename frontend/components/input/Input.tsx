@@ -1,6 +1,5 @@
 "use client";
-import { Lock } from "lucide-react";
-import { InputHTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import { InputHTMLAttributes, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 type InputPropsType = InputHTMLAttributes<HTMLInputElement> & {
@@ -19,6 +18,7 @@ export default function Input({ icon, className, ...props }: InputPropsType) {
             : "placeholder:text-gray-500",
           className
         )}
+        autoComplete="off"
         {...props}
       />
       <div className="absolute top-1/2 -translate-y-1/2 right-3 text-dark-semi-light">

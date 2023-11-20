@@ -13,6 +13,18 @@ export class DirectMessageService {
     private readonly userService: UserService,
   ) {}
 
+  async getUserThreadsUnreadMessages(id: string) {
+    return {
+      count: await this.prisma.dMMessage.count({
+        where: {
+          thread: { OR: [{ initiatorId: id }, { participantId: id }] },
+          NOT: [{ senderId: id }],
+          seen: false,
+        },
+      }),
+    };
+  }
+
   async makeOnline(id: string) {
     await this.prisma.user.update({
       where: { id },
@@ -38,7 +50,7 @@ export class DirectMessageService {
     )
       throw new Error();
 
-    return this.prisma.dMMessage.create({
+    return await this.prisma.dMMessage.create({
       data: { text, senderId, threadId },
       select: {
         id: true,
@@ -80,10 +92,22 @@ export class DirectMessageService {
           select: { text: true, createdAt: true },
         },
         initiator: {
-          select: { id: true, avatar: true, fullName: true, username: true },
+          select: {
+            id: true,
+            avatar: true,
+            fullName: true,
+            username: true,
+            status: true,
+          },
         },
         participant: {
-          select: { id: true, avatar: true, fullName: true, username: true },
+          select: {
+            id: true,
+            avatar: true,
+            fullName: true,
+            username: true,
+            status: true,
+          },
         },
       },
     });
@@ -125,6 +149,13 @@ export class DirectMessageService {
         },
         select: { id: true },
       });
+      await this.prisma.dMMessage.updateMany({
+        where: {
+          threadId,
+          NOT: [{ senderId: userId }],
+        },
+        data: { seen: true },
+      });
       return await this.prisma.dMMessage.findMany({
         where: { threadId: id },
         orderBy: { createdAt: 'asc' },
@@ -137,6 +168,7 @@ export class DirectMessageService {
     } catch (error) {}
     throw new UnauthorizedException();
   }
+
   async getThreadID(initiatorId: string, userId: string) {
     try {
       const thread = await this.prisma.dMThread.findFirstOrThrow({

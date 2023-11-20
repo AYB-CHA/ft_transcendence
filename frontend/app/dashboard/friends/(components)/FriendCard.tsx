@@ -10,8 +10,8 @@ type StatisticTextProps = {
 function StatisticText({ title, value }: StatisticTextProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-[8px]">
-      <p className="font-semibold text-[20px] text-[#C2C4C0]">{value}</p>
-      <p className="font-semibold text-[14px] text-[#6B7280] uppercase">
+      <p className="font-medium text-[20px] text-[#C2C4C0]">{value}</p>
+      <p className="font-medium text-[14px] text-[#6B7280] uppercase">
         {title}
       </p>
     </div>
@@ -43,8 +43,10 @@ function BasicFriendWithStatsCard({
       <div className="flex flex-row items-center gap-[7px]">
         <Avatar src={image} className="max-w-[44px] max-h-[44px]" />
         <div className="flex flex-col">
-          <p className="text-primary text-[15px] leading-[23px]">{name}</p>
-          <p className="font-normal text-gray-500 text-[12px] leading-[19px]">
+          <p className="text-primary text-[15px] leading-[23px] line-clamp-1 text-ellipsis">
+            {name}
+          </p>
+          <p className="font-normal text-gray-500 text-[12px] leading-[19px] line-clamp-1 text-ellipsis">
             @{username}
           </p>
         </div>
@@ -78,8 +80,10 @@ export function BasicFriendCard({
       <div className="flex flex-row items-center gap-[7px] col-span-1">
         <Avatar src={image} className="max-w-[44px] max-h-[44px]" />
         <div className="flex flex-col">
-          <p className="text-primary text-[15px] leading-[23px]">{name}</p>
-          <p className="font-normal text-gray-500 text-[12px] leading-[19px]">
+          <p className="text-primary text-[15px] leading-[23px] line-clamp-1 text-ellipsis">
+            {name}
+          </p>
+          <p className="font-normal text-gray-500 text-[12px] leading-[19px] line-clamp-1 text-ellipsis">
             @{username}
           </p>
         </div>

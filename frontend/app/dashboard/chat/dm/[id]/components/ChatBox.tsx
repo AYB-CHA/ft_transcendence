@@ -1,22 +1,24 @@
 "use client";
 
-import Card from "@/components/card/Card";
+import OtherMessage from "../../../channel/[id]/(components)/OtherMessage";
+import MyMessage from "../../../channel/[id]/(components)/MyMessage";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
 import ChatBoxHeader from "./ChatBoxHeader";
 import ChatBoxInput from "./ChatBoxInput";
-import { notFound, useParams } from "next/navigation";
-import { useDMSocket } from "@/app/(components)/DMSocket";
-import { useEffect, useState } from "react";
-import { MessageType } from "../../../channel/[id]/(components)/ChatBox";
-import OtherMessage from "../../../channel/[id]/(components)/OtherMessage";
-import MyMessage from "../../../channel/[id]/(components)/MyMessage";
-import { useAuth } from "@/hooks/auth";
-import useSWR from "swr";
+import Card from "@/components/card/Card";
 import axios from "@/lib/axios";
-import { MehIcon } from "lucide-react";
-import { AxiosError } from "axios";
+
 import { formatMessages } from "../../../channel/[id]/(components)/MessagesBox";
+import { MessageType } from "../../../channel/[id]/(components)/ChatBox";
+import { useDMSocket } from "@/app/(components)/DMSocket";
+import { notFound, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { MehIcon } from "lucide-react";
+import { useAuth } from "@/hooks/auth";
+import { AxiosError } from "axios";
+
+import useSWR, { useSWRConfig } from "swr";
 
 export type OtherUserType = {
   id: string;
@@ -30,13 +32,14 @@ async function getOldMessages(url: string) {
 }
 
 export default function ChatBox() {
-  let { user: me } = useAuth();
-  let { id: chatThreadId } = useParams();
-  let socket = useDMSocket();
-  let { id } = useParams();
-  let [messages, setMessages] = useState<MessageType[]>([]);
+  const { mutate } = useSWRConfig();
+  const { user: me } = useAuth();
+  const { id: chatThreadId } = useParams();
+  const socket = useDMSocket();
+  const { id } = useParams();
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
-  let { data: oldMessages, error } = useSWR<MessageType[], AxiosError>(
+  const { data: oldMessages, error } = useSWR<MessageType[], AxiosError>(
     `/chat/dm/messages/${id}`,
     getOldMessages,
     {
@@ -48,7 +51,7 @@ export default function ChatBox() {
   useEffect(() => {
     if (error?.response?.status === 404) throw notFound();
   }, [error]);
-  let { data: otherUser, isLoading } = useSWR(
+  const { data: otherUser, isLoading } = useSWR(
     `/chat/dm/thread/other/${chatThreadId}`,
     async (url: string) => {
       return (await axios.get<OtherUserType>(url)).data;
@@ -56,7 +59,9 @@ export default function ChatBox() {
   );
 
   useEffect(() => {
-    if (oldMessages) setMessages(oldMessages);
+    if (oldMessages) {
+      setMessages(oldMessages);
+    }
   }, [oldMessages]);
 
   function onNewMessage(message: MessageType) {
@@ -69,6 +74,12 @@ export default function ChatBox() {
       socket?.off("newMessage", onNewMessage);
     };
   }, [socket]);
+
+  useEffect(() => {
+    return () => {
+      mutate("/chat/dm/threads/unread-messages");
+    };
+  }, [mutate]);
 
   function sendMessage(text: string) {
     socket?.emit("newMessage", { text, threadId: id });

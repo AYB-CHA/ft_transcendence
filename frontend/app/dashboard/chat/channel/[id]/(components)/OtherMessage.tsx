@@ -10,7 +10,7 @@ export default function OtherMessage({
 }: {
   messages: MessageType[];
 }) {
-  let { data } = useSWR<UserType>(
+  const { data } = useSWR<UserType>(
     `/user/${messages[0].senderId}`,
     async (url) => {
       return (await axios.get(url)).data;
@@ -30,7 +30,7 @@ export default function OtherMessage({
           return (
             <div
               key={message.id}
-              className="p-2 border border-gray-700 w-fit bg-dark-semi-dim rounded rounded-tr-none"
+              className="p-2 border border-dark-semi-dim w-fit bg-dark-semi-dark/30 rounded rounded-tl-none"
             >
               {message.text}
             </div>

@@ -1,9 +1,26 @@
 "use client";
+
 import EditAvatar from "@/app/(components)/EditAvatar";
-import Spinner from "@/components/Spinner";
+import CardFooter from "@/components/card/CardFooter";
+import CardBody from "@/components/card/CardBody";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
+import Spinner from "@/components/Spinner";
+import Button from "@/components/Button";
+import Enable2FA from "./Enable2FA";
+import axios from "@/lib/axios";
+
+import {
+  dispatchNotification,
+  triggerSuccessToast,
+  triggerValidationToast,
+} from "@/app/lib/Toast";
+import { avatarsBaseUrl } from "../../chat/(components)/NewChannel";
+import { camelCaseToNormal } from "@/lib/string";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/auth";
+import { AxiosError } from "axios";
+
 import {
   Check,
   Fingerprint,
@@ -23,17 +40,6 @@ import React, {
   useState,
 } from "react";
 
-import { avatarsBaseUrl } from "../../chat/(components)/NewChannel";
-import CardBody from "@/components/card/CardBody";
-import { useRouter } from "next/navigation";
-import { triggerSuccessToast, triggerValidationToast } from "@/app/lib/Toast";
-import axios from "@/lib/axios";
-import { AxiosError } from "axios";
-import { camelCaseToNormal } from "@/lib/string";
-import CardFooter from "@/components/card/CardFooter";
-import Button from "@/components/Button";
-import Enable2FA from "./Enable2FA";
-
 export default function Inputs({}: {}) {
   const { user, isLoading, mutate } = useAuth({ middleware: "auth" });
 
@@ -45,6 +51,7 @@ export default function Inputs({}: {}) {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
   useEffect(() => {
     setAvatar(user?.avatar ?? "");
     setUsername(user?.username ?? "");
@@ -56,7 +63,7 @@ export default function Inputs({}: {}) {
     setAvatar(avatarsBaseUrl() + avatarName);
   }
 
-  let handelSubmit = async (e: FormEvent) => {
+  const handelSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -70,20 +77,20 @@ export default function Inputs({}: {}) {
           ? passwordConfirmation
           : undefined,
       });
-      triggerSuccessToast(
-        <Check size={18} />,
-        "Success",
-        "Profile updated successfully"
-      );
+      dispatchNotification({
+        title: "Success",
+        icon: Check,
+        description: "Profile updated successfully",
+      });
       mutate();
       router.push("/dashboard");
     } catch (error) {
       if (error instanceof AxiosError) {
-        triggerValidationToast(
-          <SpellCheck2 size={18} />,
-          "Validation",
-          camelCaseToNormal(error.response?.data.message[0])
-        );
+        dispatchNotification({
+          title: "Validation",
+          icon: SpellCheck2,
+          description: camelCaseToNormal(error.response?.data.message[0]),
+        });
       }
     }
   };

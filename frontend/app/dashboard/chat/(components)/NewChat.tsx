@@ -23,32 +23,35 @@ type SearchChannelType = {
 
 export default function NewChat() {
   const [channels, setChannels] = useState<SearchChannelType[]>([]);
-  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
-  // let [loading, setLoading] = useState(false);
-
   useEffect(() => {
-    // setLoading(true);
+    fetchChannels();
+  }, [open]);
+
+  const fetchChannels = async (query: string = "") => {
     axios
       .get<SearchChannelType[]>("/chat/channel/discover" + `?search=${query}`)
       .then((response) => {
         setChannels(response.data);
       })
-      .finally(() => {
-        // setLoading(false);
-      });
-  }, [query, open]);
+      .finally(() => {});
+  };
 
-  const debouncedSetQuery = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  }, 200);
+  const debouncedSearch = debounce(
+    ({ target }: ChangeEvent<HTMLInputElement>) => {
+      fetchChannels(target.value);
+    },
+    200
+  );
 
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full">Enter a New Chat</Button>
+          <Button className="w-full" variant="dark">
+            Enter a New Chat
+          </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl" closeButton={false}>
           <div className="absolute -top-16 -left-px w-[calc(100%+2px)]  bg-slate-500">
@@ -57,7 +60,7 @@ export default function NewChat() {
                 className="bg-dark-dim border-0 py-4"
                 placeholder="Search"
                 icon={<Search size={16} />}
-                onChange={debouncedSetQuery}
+                onChange={debouncedSearch}
               />
             </Card>
           </div>

@@ -15,6 +15,7 @@ import { DirectMessageService } from './direct-message.service';
 @Controller('/chat/dm')
 export class DirectMessageController {
   constructor(private readonly dmService: DirectMessageService) {}
+
   @Post('/thread')
   @UseGuards(AuthGuard)
   getThreadId(
@@ -31,10 +32,17 @@ export class DirectMessageController {
   getOldMessages(@Request() req: RequestType, @Param('id') id: string) {
     return this.dmService.getOldMessages(req.userPayload.sub, id);
   }
+
   @Get('/threads')
   @UseGuards(AuthGuard)
   getUserThreads(@Request() req: RequestType) {
     return this.dmService.getUserThreads(req.userPayload.sub);
+  }
+
+  @Get('/threads/unread-messages')
+  @UseGuards(AuthGuard)
+  getUserThreadsUnreadMessages(@Request() req: RequestType) {
+    return this.dmService.getUserThreadsUnreadMessages(req.userPayload.sub);
   }
 
   @Get('/thread/other/:id')

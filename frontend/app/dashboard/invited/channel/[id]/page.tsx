@@ -1,18 +1,19 @@
 "use client";
 
-import Avatar from "@/components/Avatar";
-import Button from "@/components/Button";
-import Spinner from "@/components/Spinner";
-import Card from "@/components/card/Card";
-import CardBody from "@/components/card/CardBody";
 import CardFooter from "@/components/card/CardFooter";
 import CardHeader from "@/components/card/CardHeader";
+import CardBody from "@/components/card/CardBody";
+import Spinner from "@/components/Spinner";
+import Card from "@/components/card/Card";
+import Button from "@/components/Button";
+import Avatar from "@/components/Avatar";
 import APIClient from "@/lib/axios";
-import { AxiosError } from "axios";
-import { Unlink } from "lucide-react";
+
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import { Unlink } from "lucide-react";
+import { useSWRConfig } from "swr";
+import { AxiosError } from "axios";
 
 type InvitedChannelType = {
   id: string;

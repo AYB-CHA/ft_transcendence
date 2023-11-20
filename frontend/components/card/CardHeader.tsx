@@ -1,6 +1,14 @@
 import React, { PropsWithChildren } from "react";
-export default function CardHeader({ children }: PropsWithChildren) {
+import { twMerge } from "tailwind-merge";
+export default function CardHeader({
+  children,
+  className = "",
+}: PropsWithChildren & { className?: string }) {
   return (
-    <div className="border-b border-dark-semi-dim py-3 px-4">{children}</div>
+    <div
+      className={twMerge("border-b border-dark-semi-dim py-3 px-4", className)}
+    >
+      {children}
+    </div>
   );
 }

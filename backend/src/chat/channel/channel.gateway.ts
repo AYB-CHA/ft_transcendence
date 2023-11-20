@@ -114,6 +114,7 @@ export class ChannelSocketGateway
         data.text,
       )
     ).id;
+
     for (const client of this.clients) {
       if (
         client.channelId === data.channelId &&

@@ -5,13 +5,15 @@ import ChatGroup from "./ChatGroup";
 import React, { useEffect } from "react";
 import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
 import { ChannelType } from "../channel/[id]/(components)/ChannelController";
+import { useParams } from "next/navigation";
 
 async function getMyChannels(data: string) {
-  let response = await axios.get(data);
+  const response = await axios.get(data);
   return response.data;
 }
 export default function ChannelsSidebar() {
-  let { isLoading, data } = useSWR<ChannelType[]>(
+  const { id: selectedChannel } = useParams<{ id: string }>();
+  const { isLoading, data } = useSWR<ChannelType[]>(
     "/chat/channel",
     getMyChannels
   );
@@ -37,7 +39,7 @@ export default function ChannelsSidebar() {
   const Elements = data?.map((channel, index) => {
     return (
       <React.Fragment key={channel.id}>
-        <ChatGroup data={channel} />
+        <ChatGroup selectedChannelId={selectedChannel} data={channel} />
         {index != (data?.length ?? 0) - 1 && (
           <hr className="border-dark-semi-dim" />
         )}

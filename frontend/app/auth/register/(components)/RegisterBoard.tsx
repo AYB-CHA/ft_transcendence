@@ -1,5 +1,5 @@
 "use client";
-import { triggerValidationToast } from "@/app/lib/Toast";
+import { dispatchNotification, triggerValidationToast } from "@/app/lib/Toast";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
@@ -24,14 +24,15 @@ export default function RegisterBoard() {
 
   useEffect(() => {
     if (error)
-      triggerValidationToast(
-        <SpellCheck2 size={18} />,
-        "Validation",
-        error,
-        () => {
-          setError(null);
-        }
-      );
+      if (error)
+        dispatchNotification({
+          title: "Invalid input",
+          icon: SpellCheck2,
+          description: error,
+          onClick: () => {
+            setError(null);
+          },
+        });
   }, [error, setError]);
 
   return (

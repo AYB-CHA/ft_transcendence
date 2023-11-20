@@ -6,7 +6,6 @@ import CardHeader from "@/components/card/CardHeader";
 import CardBody from "@/components/card/CardBody";
 import Card from "@/components/card/Card";
 import Button from "@/components/Button";
-import Cookies from "js-cookie";
 import axios from "@/lib/axios";
 import NavTab from "./NavTab";
 import Link from "next/link";
@@ -44,6 +43,7 @@ import {
 } from "lucide-react";
 
 import { io } from "socket.io-client";
+import MessagesTab from "./MessagesTab";
 
 type NotificationType =
   | "CHANNEL_INVITATION"
@@ -236,14 +236,10 @@ function Notifications() {
 }
 
 export default function NavBar() {
+  const { user, logOut, isLoading } = useAuth({ middleware: "auth" });
   const pathname = usePathname();
-  let { user, logOut, isLoading } = useAuth({ middleware: "auth" });
 
-  let navLinks: { href: string; icon: React.ReactNode }[] = [
-    {
-      href: "/dashboard/chat",
-      icon: <MessageCircle strokeWidth={1} />,
-    },
+  const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
     {
       href: "/dashboard/friends",
       icon: <Users strokeWidth={1} />,
@@ -265,10 +261,12 @@ export default function NavBar() {
           <NavTab href="/dashboard" active={pathname === "/dashboard"}>
             <Activity strokeWidth={1} />
           </NavTab>
+          <MessagesTab />
           {navLinks.map((link, i) => (
             <NavTab
               href={link.href}
               active={pathname.startsWith(link.href)}
+              count={link.count}
               key={i}
             >
               {link.icon}
@@ -277,7 +275,7 @@ export default function NavBar() {
         </div>
         <div>
           <div className="flex flex-col items-center gap-6">
-            <Notifications />
+            {user && <Notifications />}
             {isLoading ? (
               <div className="h-10 w-10 rounded-full animate-pulse bg-dark-semi-dim"></div>
             ) : (

@@ -1,11 +1,9 @@
-import { DropdownMenuItem } from "@/components/ui/DropDown";
-import { Sparkles, Star, User2 } from "lucide-react";
 import { ChannelType, UserRoleOnChannel } from "../ChannelController";
-import { UserType } from "@/hooks/auth";
+import { DropdownMenuItem } from "@/components/ui/DropDown";
 import { ChannelMemberType } from "../ChannelMembers";
-import axios from "@/lib/axios";
-import { KeyedMutator } from "swr";
 import { useChannelChatSocket } from "../../page";
+import { Star, User2 } from "lucide-react";
+
 export default function MakeModerator({
   channel,
   member,
@@ -13,7 +11,7 @@ export default function MakeModerator({
   channel: ChannelType;
   member: ChannelMemberType;
 }) {
-  let chatSocket = useChannelChatSocket();
+  const chatSocket = useChannelChatSocket();
 
   let isDisabled = true;
 
