@@ -1,9 +1,5 @@
 import Axios from "axios";
 
-console.log(
-  "NEXT_PUBLIC_BACKEND_BASEURL",
-  process.env["NEXT_PUBLIC_BACKEND_BASEURL"],
-);
 const APIClient = Axios.create({
   baseURL: process.env["NEXT_PUBLIC_BACKEND_BASEURL"],
   withCredentials: true,
