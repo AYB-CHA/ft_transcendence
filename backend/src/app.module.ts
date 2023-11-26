@@ -12,6 +12,7 @@ import { ChatModule } from './chat/chat.module';
 import { UploadModule } from './upload/upload.module';
 import { FriendsModule } from './friends/friends.module';
 import { NotificationModule } from './notification/notification.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { NotificationModule } from './notification/notification.module';
     ChatModule,
     PrismaModule,
     UploadModule,
+    GameModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       global: true,
