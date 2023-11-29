@@ -42,19 +42,21 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  channels                  ChannelsOnUsers[]
-  Messages                  Messages[]
-  sentDMMessages            DMMessage[]
-  initaitedDMThreads        DMThread[]          @relation(name: "initiator_relation")
-  secondDMThreads           DMThread[]          @relation(name: "participant_relation")
-  blocked                   UserBlock[]         @relation(name: "blocker_relation")
-  wasBlocked                UserBlock[]         @relation(name: "blocked_relation")
-  sentFriendRequests        Friendship[]        @relation(name: "sentFriendRequests")
-  receivedFriendRequests    Friendship[]        @relation(name: "receivedFriendRequests")
-  sentNotifications         Notification[]      @relation(name: "sentNotifications")
-  receivedNotifications     Notification[]      @relation(name: "receivedNotifications")
+  channels                   ChannelsOnUsers[]
+  Messages                   Messages[]
+  sentDMMessages             DMMessage[]
+  initaitedDMThreads         DMThread[]           @relation(name: "initiator_relation")
+  secondDMThreads            DMThread[]           @relation(name: "participant_relation")
+  blocked                    UserBlock[]          @relation(name: "blocker_relation")
+  wasBlocked                 UserBlock[]          @relation(name: "blocked_relation")
+  sentFriendRequests         Friendship[]         @relation(name: "sentFriendRequests")
+  receivedFriendRequests     Friendship[]         @relation(name: "receivedFriendRequests")
+  sentNotifications          Notification[]       @relation(name: "sentNotifications")
+  receivedNotifications      Notification[]       @relation(name: "receivedNotifications")
   sentChannelInvitations     ChannelInvitations[] @relation(name: "sender_relation")
   receivedChannelInvitations ChannelInvitations[] @relation(name: "recipient_relation")
+  myIntiatedMatches          Match[]              @relation(name: "initiator_match_relation")
+  myForeignMatches           Match[]              @relation(name: "participant_match_relation")
 }
 
 model UserBlock {
@@ -145,7 +147,7 @@ model DMThread {
 }
 
 model DMMessage {
-  id       Int      @id @unique @default(autoincrement())
+  id       Int    @id @unique @default(autoincrement())
   text     String
   senderId String
 
@@ -179,7 +181,7 @@ enum NotificationType {
 }
 
 model ChannelInvitations {
-  id         String           @id @unique @default(uuid())
+  id String @id @unique @default(uuid())
 
   channelId String
   Channel   Channel @relation(fields: [channelId], references: [id])
@@ -189,4 +191,29 @@ model ChannelInvitations {
 
   recipientId String
   Recipient   User   @relation(fields: [recipientId], references: [id], name: "recipient_relation")
+}
+
+enum MatchStatus {
+  WAITING
+  PLAYING
+  FINISHED
+  UNFINISHED
+}
+
+model Match {
+  id            String @id @unique @default(uuid())
+  initiatorId   String
+  participantId String
+
+  initiator   User @relation(fields: [initiatorId], references: [id], name: "initiator_match_relation")
+  participant User @relation(fields: [participantId], references: [id], name: "participant_match_relation")
+
+  initiatorScore   Int
+  participantScore Int
+
+  initiatorStatus   MatchStatus @default(PLAYING)
+  participantStatus MatchStatus @default(PLAYING)
+
+  createdAt DateTime @default(now())
+  endedAt   DateTime?
 }

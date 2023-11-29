@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateGameDto } from './dto/create-game.dto';
 import { DistanceResult, Vec, add_in, between, getP } from './game.utils';
 import { GAME_CONFIG } from './config';
+import { PrismaService } from 'src/db/prisma.service';
 
 const pitch = {
   status: 0,
@@ -38,6 +39,13 @@ export function paddleCollision(
 
 @Injectable()
 export class GameService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll() {
+    const games = await this.prisma.match.findMany({});
+    return games;
+  }
+
   movePaddle(createGameDto: CreateGameDto) {
     const h2 =
       GAME_CONFIG.worldHeight / 2 -
@@ -106,9 +114,10 @@ export class GameService {
         },
       });
       await new Promise((resolve) => setTimeout(resolve, time * 1000));
+      /*
       const y1 = pitch.paddle.leftY - paddleSizeY / 2;
       const y2 = pitch.paddle.leftY + paddleSizeY / 2;
-      /* if (data.reflectNormal[0] == 1) {
+      if (data.reflectNormal[0] == 1) {
         if (!between(pitch.ball.pos.y, y1, y2)) {
           pitch.goal.right++;
           const border = pitch.ball.pos.add(pitch.ball.dir.mul(-0.1));
