@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { EMITED_MESSAGES_VALUES, SEND_MESSAGE_VALUES } from "@/types/game/ws";
-import { socket } from "./socket";
 import useSwr from "swr";
 import APIClient from "@/lib/axios";
+import { socket } from "./socket";
 
 export interface Config {
   width: number;
@@ -35,19 +35,19 @@ type UseWsOpts<T> = {
   transform?: (data: any) => T;
 };
 
-export function useWs<T>(
-  event: EMITED_MESSAGES_VALUES,
-  { defaultValue, transform = (data: T) => data }: UseWsOpts<T>,
-) {
-  const [data, setData] = useState<T>(defaultValue);
+export function useWs<T>(event: EMITED_MESSAGES_VALUES, opts: UseWsOpts<T>) {
+  const [data, setData] = useState<T>(opts.defaultValue);
   const first = useRef(true);
   useEffect(() => {
     if (!first) return;
-    console.log("subscribing to: ", event);
     first.current = false;
     socket.on(event, (data: T) => {
-      setData(transform(data));
+      if (!opts.transform) return setData(data);
+      setData(opts.transform(data));
     });
-  }, [event, transform]);
+    return () => {
+      socket.off(event);
+    };
+  }, [event, opts]);
   return data;
 }

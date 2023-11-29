@@ -1,14 +1,13 @@
 "use client";
-
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { Ball } from "./ball";
 import { Paddle } from "./paddle";
 import { KeyRecorder } from "./recorder";
 import { useWidth } from "@/hooks/width";
-import { socket } from "../socket";
 import { sendEvent, useConfig, useWs } from "../repo";
 import { Plane } from "./plane";
+
 export function Game() {
   const [down, setDown] = useState(0);
   const started = useRef(false);
@@ -27,18 +26,6 @@ export function Game() {
       count: -1,
     },
   });
-
-  useEffect(() => {
-    if (!config) return;
-    socket.connect();
-    sendEvent("START_GAME", {
-      count: 3,
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [config]);
 
   /* useEffect(() => {
     let interval: NodeJS.Timeout;

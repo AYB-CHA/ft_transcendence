@@ -1,10 +1,11 @@
+"use client";
 import dynamic from "next/dynamic";
-import { Game } from "./components";
+import { SocketProvider } from "../context/socket";
 
-/* const Game = dynamic(
+const Game = dynamic(
   () => import("./components/index").then((mod) => mod.Game),
   { ssr: false },
-); */
+);
 
 export default function Page() {
   return <Game />;
