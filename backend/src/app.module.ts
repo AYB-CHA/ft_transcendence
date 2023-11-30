@@ -12,6 +12,7 @@ import { ChatModule } from './chat/chat.module';
 import { UploadModule } from './upload/upload.module';
 import { FriendsModule } from './friends/friends.module';
 import { NotificationModule } from './notification/notification.module';
+import { AchievementsModule } from './achievements/achievements.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { NotificationModule } from './notification/notification.module';
         index: false,
       },
     }),
+    AchievementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

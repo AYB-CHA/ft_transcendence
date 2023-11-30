@@ -4,8 +4,34 @@ import ChannelFactory from '../factories/ChannelFactory';
 
 const prisma = new PrismaClient();
 
+async function seedAchievements() {
+  try {
+    const achievementsData = [
+      {
+        name: 'New player',
+        description: 'Play your first match',
+        icon: '/public/achievements/Score 7-0.png',
+        maxProgress: 1,
+      },
+      {
+        name: 'Play 20 matchs',
+        description: 'Play 20 matchs',
+        icon: '/public/achievements/Score 7-0.png',
+        maxProgress: 20,
+      },
+    ];
+    await prisma.achievement.createMany({
+      data: achievementsData,
+    });
+  } catch (error) {
+    console.log('error seeding achievements', error);
+  }
+}
+
 async function main() {
   const promises: Promise<unknown>[] = [];
+  // achievements
+  promises.push(seedAchievements());
   // users
   const userFactory = new UserFactory();
   promises.push(prisma.user.createMany({ data: userFactory.generateMany(20) }));
