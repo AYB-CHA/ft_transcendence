@@ -9,7 +9,8 @@ export const GAME_CONFIG = {
   worldWidth: 0,
   paddleSizeY: 0.15, // between 0 and 1
   paddleSizeX: 0.02,
-  ballSize: 0.2,
+  ballSize: 0.3,
+  maxScore: 5,
 };
 
 GAME_CONFIG.aspect = GAME_CONFIG.height / GAME_CONFIG.width;

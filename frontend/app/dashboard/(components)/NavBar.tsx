@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/DropDown";
 
 import {
-  MessageCircle,
   Trophy,
   Settings,
   User,
@@ -45,6 +44,7 @@ import {
 
 import { io } from "socket.io-client";
 import MessagesTab from "./MessagesTab";
+import { ROUTER } from "@/lib/ROUTER";
 
 type NotificationType =
   | "CHANNEL_INVITATION"
@@ -242,7 +242,7 @@ export default function NavBar() {
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
     {
-      href: "/dashboard/match",
+      href: ROUTER.GAMES,
       icon: <Gamepad2 strokeWidth={1} />,
     },
     {

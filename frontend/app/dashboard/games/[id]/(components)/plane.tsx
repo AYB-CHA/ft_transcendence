@@ -2,13 +2,14 @@ import { MeshStandardMaterialProps, ThreeElements } from "@react-three/fiber";
 import React from "react";
 type PlaneProps = ThreeElements["mesh"] & {
   mmaterial?: MeshStandardMaterialProps;
+  mmap: any;
 };
 
 export const Plane = React.forwardRef<THREE.Mesh, PlaneProps>(
-  ({ mmaterial, ...meshProps }, ref) => (
+  ({ mmaterial, mmap, ...meshProps }, ref) => (
     <mesh {...meshProps} ref={ref}>
-      <planeGeometry args={[1, 1]} />
-      <meshStandardMaterial {...mmaterial} />
+      <boxGeometry args={[1, 1, 0.1]} />
+      <meshStandardMaterial {...mmaterial} map={mmap} />
     </mesh>
   ),
 );

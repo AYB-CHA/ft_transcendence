@@ -8,7 +8,7 @@ type BoxProps = ThreeElements["mesh"] & {
 export const Box = React.forwardRef<THREE.Mesh, BoxProps>(
   ({ mmaterial, ...meshProps }, ref) => (
     <mesh {...meshProps} ref={ref}>
-      <boxGeometry args={[1, 1, 1]} />
+      <boxGeometry args={[1, 1, 2.5]} />
       <meshStandardMaterial {...mmaterial} />
     </mesh>
   ),

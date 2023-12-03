@@ -1,3 +1,4 @@
+import { cn } from "@/app/lib/cn";
 import Image from "next/image";
 import React from "react";
 
@@ -11,7 +12,7 @@ export default function Avatar({
   return (
     <Image
       src={src}
-      className={`rounded-full border border-primary ${className}`}
+      className={cn(`rounded-full border border-primary`, className)}
       height={60}
       width={60}
       unoptimized

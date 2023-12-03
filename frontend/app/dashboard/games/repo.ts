@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { EMITED_MESSAGES_VALUES, SEND_MESSAGE_VALUES } from "@/types/game/ws";
+import { Game } from "@/types/game/game";
 import useSwr from "swr";
 import APIClient from "@/lib/axios";
 import { socket } from "./socket";
@@ -19,11 +20,25 @@ export interface Config {
 }
 
 export async function configGet() {
-  return await APIClient.get("game/config").then<Config>((res) => res.data);
+  return await APIClient.get("games/config").then<Config>((res) => res.data);
+}
+
+export async function my_games() {
+  return APIClient.get<Game[]>(`/games`).then((res) => res.data);
 }
 
 export function useConfig() {
   return useSwr("game/config", configGet, {});
+}
+
+export function useMyGames() {
+  return useSwr("/games", my_games, {});
+}
+
+export function useGame(id: string) {
+  return useSwr(`/games/${id}`, () =>
+    APIClient.get<Game>(`/games/${id}`).then((res) => res.data),
+  );
 }
 
 export function sendEvent<T>(event: SEND_MESSAGE_VALUES, data: T) {

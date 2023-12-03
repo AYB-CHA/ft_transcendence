@@ -1,7 +1,7 @@
 import { Box } from "./box";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
-import { Config, sendEvent, useWs } from "../repo";
+import { Config, sendEvent, useWs } from "../../repo";
 
 type PaddleProps = {
   down?: number;
@@ -10,12 +10,17 @@ type PaddleProps = {
 
 export const Paddle = ({ down, config }: PaddleProps) => {
   const meshLeft = useRef<THREE.Mesh>(null!);
+  const meshRight = useRef<THREE.Mesh>(null!);
 
   const sizeX = config.worldWidth * config.paddleSizeX;
   const sizeY = config.worldHeight * config.paddleSizeY;
   const w2 = config.worldWidth / 2;
 
-  const leftPaddle = useWs("MOVE_PADDLE_LEFT", {
+  const leftPaddle = useWs("MOVE_PADDLE_INITIATOR", {
+    defaultValue: { y: 0 },
+  });
+
+  const rightPaddle = useWs("MOVE_PADDLE_PARTICIPANT", {
     defaultValue: { y: 0 },
   });
 
@@ -23,9 +28,13 @@ export const Paddle = ({ down, config }: PaddleProps) => {
     meshLeft.current.position.y = leftPaddle?.y || 0;
   }, [leftPaddle]);
 
+  useEffect(() => {
+    meshRight.current.position.y = rightPaddle?.y || 0;
+  }, [rightPaddle]);
+
   useFrame(() => {
     if (meshLeft.current && down) {
-      sendEvent("MOVE_PADDLE_LEFT", {
+      sendEvent("MOVE_PADDLE", {
         dir: down,
       });
     }
@@ -33,6 +42,7 @@ export const Paddle = ({ down, config }: PaddleProps) => {
   return (
     <>
       <Box
+        ref={meshRight}
         mmaterial={{
           color: "orange",
         }}

@@ -194,6 +194,7 @@ model ChannelInvitations {
 }
 
 enum MatchStatus {
+  READY
   WAITING
   PLAYING
   FINISHED
@@ -208,11 +209,13 @@ model Match {
   initiator   User @relation(fields: [initiatorId], references: [id], name: "initiator_match_relation")
   participant User @relation(fields: [participantId], references: [id], name: "participant_match_relation")
 
-  initiatorScore   Int
-  participantScore Int
+  initiatorScore   Int @default(0)
+  participantScore Int @default(0)
 
-  initiatorStatus   MatchStatus @default(PLAYING)
-  participantStatus MatchStatus @default(PLAYING)
+  initiatorStatus   MatchStatus @default(READY)
+  participantStatus MatchStatus @default(READY)
+
+  status MatchStatus @default(READY)
 
   createdAt DateTime @default(now())
   endedAt   DateTime?
