@@ -37,10 +37,21 @@ export class AchievementsService {
   }
 
   async getUsersAchievements(userId: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    return this.prisma.achievementProgress.findMany({
-      where: { user: user },
-    });
+    //const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    return this.prisma.achievement
+      .findMany({
+        include: {
+          users: {
+            where: { userId: userId },
+          },
+        },
+      })
+      .then((achievements) => {
+        return achievements.map(({ users, ...ach }) => ({
+          ...ach,
+          obtained: users.length > 0,
+        }));
+      });
   }
   //I guess we need to add a function to check on the progress of an achievement
 }

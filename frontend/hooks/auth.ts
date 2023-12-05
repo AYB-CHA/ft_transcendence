@@ -64,7 +64,7 @@ export function useAuth({
     } catch {}
 
     mutate(undefined, { revalidate: false });
-    push("/");
+    push("/auth/login");
   };
 
   const login = async (usernameOrEmail: string, password: string) => {

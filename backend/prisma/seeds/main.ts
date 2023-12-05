@@ -10,19 +10,41 @@ async function seedAchievements() {
       {
         name: 'New player',
         description: 'Play your first match',
-        icon: '/public/achievements/Score 7-0.png',
+        icon: 'Play first match.png',
         maxProgress: 1,
       },
       {
-        name: 'Play 20 matchs',
+        name: 'I am a player 1',
+        description: 'Score 7 goals in a match',
+        icon: 'Score 7-0.png',
+        maxProgress: 7,
+      },
+      {
+        name: 'I am a player 2',
         description: 'Play 20 matchs',
-        icon: '/public/achievements/Score 7-0.png',
+        icon: 'Play 20 matchs.png',
+        maxProgress: 20,
+      },
+      {
+        name: 'I am a winner',
+        description: 'Win 20 matchs',
+        icon: 'Win 20 matchs.png',
         maxProgress: 20,
       },
     ];
-    await prisma.achievement.createMany({
-      data: achievementsData,
-    });
+    for (const achievement of achievementsData) {
+      await prisma.achievement.upsert({
+        create: achievement,
+        update: {
+          description: achievement.description,
+          icon: achievement.icon,
+          maxProgress: achievement.maxProgress,
+        },
+        where: {
+          name: achievement.name,
+        },
+      });
+    }
   } catch (error) {
     console.log('error seeding achievements', error);
   }
@@ -96,8 +118,8 @@ main()
   .then((/* data */) => {
     // console.log('resolved', data);
   })
-  .catch((/* error */) => {
-    // console.error(error);
+  .catch((error) => {
+    console.error(error);
   })
   .finally(async () => {
     await prisma.$disconnect();
