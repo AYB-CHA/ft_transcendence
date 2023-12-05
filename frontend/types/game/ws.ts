@@ -1,16 +1,17 @@
-import { z } from "zod";
-
 export const EMITED_MESSAGES = [
-  "START_ROUND",
   "MOVE_BALL",
-  "MOVE_PADDLE_LEFT",
+  "MOVE_PADDLE_INITIATOR",
+  "MOVE_PADDLE_PARTICIPANT",
   "SCOREBOARD",
+  "PEERING",
+  "ANNOUNCE",
 ] as const;
 
 export const SEND_MESSAGE_TYPE = [
-  "MOVE_PADDLE_LEFT",
+  "MOVE_PADDLE",
   "START_GAME",
   "DEBUG",
+  "PEERING",
 ] as const;
 
 /* const wsGameSchema = z.discriminatedUnion("type", [

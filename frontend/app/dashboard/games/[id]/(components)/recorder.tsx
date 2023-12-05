@@ -1,16 +1,21 @@
-import { HTMLAttributes, useEffect, useRef } from "react";
+import { HTMLAttributes, useEffect, useRef, useState } from "react";
 
 interface KeyRecorderProps extends HTMLAttributes<HTMLDivElement> {
   handleKeyDown?: (code: string) => void;
   handleKeyUp?: (code: string) => void;
+  aspectRatio: number;
+  controls?: React.ReactNode;
 }
 
 export function KeyRecorder({
   handleKeyUp,
   handleKeyDown,
+  aspectRatio,
+  controls,
   ...props
 }: KeyRecorderProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
     const div = ref.current;
@@ -31,5 +36,23 @@ export function KeyRecorder({
     };
   }, [handleKeyUp, handleKeyDown]);
 
-  return <div ref={ref} {...props} tabIndex={0} />;
+  useEffect(() => {
+    if (!ref.current) return;
+    const width = ref.current.parentElement?.clientWidth ?? 0;
+    setWidth(width);
+  }, [ref]);
+
+  return (
+    <div ref={ref}>
+      {controls}
+      <div
+        style={{
+          width,
+          height: width * aspectRatio,
+        }}
+        {...props}
+        tabIndex={0}
+      />
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { GameService } from './game.service';
 
 @Controller('games')
@@ -13,5 +13,10 @@ export class GameController {
   @Get()
   findAll() {
     return this.gameService.findAll();
+  }
+
+  @Get('/:id')
+  getMatch(@Param('id') id: string) {
+    return this.gameService.getMatch(id);
   }
 }

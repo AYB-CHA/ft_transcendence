@@ -3,9 +3,9 @@ import {
   ThreeElements,
   useFrame,
 } from "@react-three/fiber";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Vector3 } from "three";
-import { Config, useWs } from "../repo";
+import { Config, useWs } from "../../repo";
 import { Sphere } from "./sphere";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 
