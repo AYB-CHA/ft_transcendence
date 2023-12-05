@@ -40,6 +40,7 @@ import {
   BellOff,
   MessageSquare,
   UserPlus,
+  Gamepad2,
 } from "lucide-react";
 
 import { io } from "socket.io-client";
@@ -121,7 +122,7 @@ function Notifications() {
     async (key: string) => {
       const { data } = await axios.get(key);
       return data;
-    }
+    },
   );
 
   const socket = useMemo(() => {
@@ -171,7 +172,7 @@ function Notifications() {
 
   const unreadCount = useMemo(
     () => data?.reduce((acc, item) => acc + (item.read ? 0 : 1), 0) ?? 0,
-    [data]
+    [data],
   );
 
   return (
@@ -240,6 +241,10 @@ export default function NavBar() {
   const pathname = usePathname();
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
+    {
+      href: "/dashboard/match",
+      icon: <Gamepad2 strokeWidth={1} />,
+    },
     {
       href: "/dashboard/friends",
       icon: <Users strokeWidth={1} />,
