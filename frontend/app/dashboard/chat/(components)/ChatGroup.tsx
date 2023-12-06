@@ -54,7 +54,7 @@ export default function ChatGroup({
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={
-                data.myRole !== "ADMINISTRATOR" && data.type === "PRIVATE"
+                data.myRole !== "ADMINISTRATOR" || data.type !== "PRIVATE"
               }
               onClick={() => {
                 setInviteStatus(true);

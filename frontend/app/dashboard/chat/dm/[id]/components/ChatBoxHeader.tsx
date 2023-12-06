@@ -39,7 +39,7 @@ export default function ChatBoxHeader({
         {isLoading ? (
           <div className="bg-dark-semi-dim h-4 animate-pulse w-12 mt-2"></div>
         ) : (
-          <span className="text-gray-500">5:15 pm</span>
+          <span className="text-gray-500">5:5 pm</span>
         )}
       </div>
     </div>

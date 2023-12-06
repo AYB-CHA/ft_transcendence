@@ -222,7 +222,7 @@ export class ChannelService {
         name: { contains: query, mode: 'insensitive' },
       },
       take: 10,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { users: { _count: 'desc' } },
       select: {
         id: true,
         avatar: true,
@@ -303,20 +303,15 @@ export class ChannelService {
               },
             },
           },
+          orderBy: {
+            createdAt: 'asc',
+          },
         },
       },
     });
 
     if (!userData) throw new NotFoundException();
-    // const response: any[] = [];
-    // userData.users.forEach((user) =>
-    //   response.push({
-    //     ...user.User,
-    //     role: user.role,
-    //     isMuted: user.mutedAt !== null,
-    //   }),
-    // );
-    // console.log(response);
+
     return userData.users.map((user) => {
       return {
         ...user.User,

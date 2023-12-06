@@ -5,7 +5,6 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 
-import Card from "@/components/card/Card";
 import CardFooter from "@/components/card/CardFooter";
 import Button from "@/components/Button";
 import CardBody from "@/components/card/CardBody";
@@ -29,6 +28,7 @@ export default function LeaveChannel({
     await axios.delete(`/chat/channel/${id}/leave`);
     setStatus(false);
     mutate("/chat/channel", undefined);
+    mutate("/chat/channel/discover");
   }
 
   return (

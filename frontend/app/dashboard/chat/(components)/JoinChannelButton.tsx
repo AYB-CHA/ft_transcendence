@@ -23,7 +23,7 @@ type ParamPropsType = {
   avatar: string;
   type: ChannelVisibilityType;
   topic: string;
-  setParentDialog: Dispatch<SetStateAction<boolean>>;
+  setParentDialog?: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function JoinChannelButton({
@@ -42,9 +42,10 @@ export default function JoinChannelButton({
     await axios.post(`/chat/channel/join/${id}`);
     mutate(`/chat/channel/${id}`);
     mutate("/chat/channel");
+    mutate("/chat/channel/discover");
     router.push(`/dashboard/chat/channel/${id}`);
     setOpen(false);
-    setParentDialog(false);
+    setParentDialog && setParentDialog(false);
   }
 
   async function joinProtectedChannel() {
@@ -52,9 +53,10 @@ export default function JoinChannelButton({
       await axios.post(`/chat/channel/protected/${id}/join`, { password });
       mutate(`/chat/channel/${id}`);
       mutate("/chat/channel");
+      mutate("/chat/channel/discover");
       router.push(`/dashboard/chat/channel/${id}`);
       setOpen(false);
-      setParentDialog(false);
+      setParentDialog && setParentDialog(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401)
         if (error instanceof AxiosError)
@@ -69,17 +71,13 @@ export default function JoinChannelButton({
   return (
     <>
       {type === "PUBLIC" ? (
-        <Button
-          className="w-32"
-          variant="secondary"
-          onClick={joinPublicChannel}
-        >
+        <Button className="w-32" variant="primary" onClick={joinPublicChannel}>
           Join Channel
         </Button>
       ) : (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="w-32" variant="secondary">
+            <Button className="w-32" variant="primary">
               Join Channel
             </Button>
           </DialogTrigger>

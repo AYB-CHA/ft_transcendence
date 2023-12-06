@@ -28,11 +28,11 @@ export function BasicTabCard({
         height={70}
       /> */}
       <Icon
-        className="relative z-10 mb-4 text-lg transition-colors duration-300 group-hover:text-dark"
+        className="relative z-10 mb-4 text-lg transition-colors duration-300"
         strokeWidth={1}
       />
-      <div className="absolute inset-0 translate-y-[100%] bg-gradient-to-r from-primary-500 to-primary-400 transition-transform duration-300 group-hover:translate-y-[0%]"></div>
-      <h3 className="relative text-sm z-10 font-medium text-start duration-300 group-hover:text-dark flex justify-between">
+      <div className="absolute h-[2px] -translate-x-full group-hover:translate-x-0 w-full bottom-0 left-0 bg-gradient-to-r from-primary-500 to-primary-400 transition-transform duration-300 group-hover:translate-y-[0%]"></div>
+      <h3 className="relative z-10 font-medium text-start duration-300 flex justify-between text-gray-500 text-xs">
         <p>{title}</p>
         {suffix && <p>{suffix}</p>}
       </h3>

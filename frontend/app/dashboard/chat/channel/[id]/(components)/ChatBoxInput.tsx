@@ -45,8 +45,8 @@ export default function ChatBoxInput({
       ) : (
         <>
           <div className="flex gap-3 text-gray-500">
-            <ImageIcon size={20} strokeWidth={1} />
-            <Link size={20} strokeWidth={1} />
+            {/* <ImageIcon size={20} strokeWidth={1} />
+            <Link size={20} strokeWidth={1} /> */}
             <Swords size={20} strokeWidth={1} />
           </div>
           <div className="grow">

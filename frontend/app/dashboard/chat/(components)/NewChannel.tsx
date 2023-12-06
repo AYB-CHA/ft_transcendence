@@ -29,6 +29,7 @@ import {
   AlignRight,
   Fingerprint,
   KeyRoundIcon,
+  PlusIcon,
   SpellCheck2,
 } from "lucide-react";
 
@@ -81,9 +82,11 @@ export default function NewChannel({}: {}) {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full" variant="dark">
-            Create New Channel
-          </Button>
+          <PlusIcon
+            className="hover:text-primary cursor-pointer"
+            strokeWidth={1}
+            size={20}
+          />
         </DialogTrigger>
         <DialogContent className="max-w-3xl">
           <CardHeader>New Channel</CardHeader>

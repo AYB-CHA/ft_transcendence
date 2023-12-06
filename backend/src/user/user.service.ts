@@ -242,6 +242,7 @@ export class UserService {
       WHERE u.id != ${userId}
         AND (u."fullName" ILIKE '%' || ${query} || '%'
           OR u."username" ILIKE '%' || ${query} || '%')
+      LIMIT 10
     `;
   }
 

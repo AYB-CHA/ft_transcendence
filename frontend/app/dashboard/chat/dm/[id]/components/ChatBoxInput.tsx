@@ -12,15 +12,12 @@ export default function ChatBoxInput({
       className="flex w-full py-2.5 gap-4"
       onSubmit={(e) => {
         e.preventDefault();
-
         if (!message.trim().length) return;
         handler(message);
         setMessage("");
       }}
     >
       <div className="flex gap-3 text-gray-500">
-        <ImageIcon size={20} strokeWidth={1} />
-        <Link size={20} strokeWidth={1} />
         <Swords size={20} strokeWidth={1} />
       </div>
       <div className="grow">

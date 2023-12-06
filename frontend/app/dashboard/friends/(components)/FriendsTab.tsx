@@ -26,7 +26,7 @@ export function FriendsTabContent() {
         (data.length == 0 ? (
           <EmptyState
             Icon={User}
-            description="Apparently you don't have yet any friends. Consider sending some friend requests."
+            description="You don't have any friends yet. Send some friend requests."
             fullHeight
           />
         ) : (

@@ -19,7 +19,7 @@ export default function ChannelLabel({
   type: ChannelVisibilityType;
   usersCount: number;
   topic: string;
-  setParentDialog: Dispatch<SetStateAction<boolean>>;
+  setParentDialog?: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <div className="flex justify-between items-center">

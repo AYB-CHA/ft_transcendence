@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+
 import Input from "@/components/input/Input";
 import axios from "@/lib/axios";
 import Card from "@/components/card/Card";
@@ -12,7 +12,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { ChannelVisibilityType } from "../channel/[id]/(components)/ChannelController";
 
-type SearchChannelType = {
+export type SearchChannelType = {
   id: string;
   name: string;
   avatar: string;
@@ -49,9 +49,15 @@ export default function NewChat() {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full" variant="dark">
+          <div>
+            <Input
+              placeholder="Search for channels"
+              icon={<Search size={18} />}
+            />
+          </div>
+          {/* <Button className="w-full" variant="dark">
             Enter a New Chat
-          </Button>
+          </Button> */}
         </DialogTrigger>
         <DialogContent className="max-w-2xl" closeButton={false}>
           <div className="absolute -top-16 -left-px w-[calc(100%+2px)]  bg-slate-500">
