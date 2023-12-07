@@ -6,9 +6,7 @@ import { User } from "@/types/user";
 import { cn } from "@/app/lib/cn";
 import { Game } from "@/types/game/game";
 import Stats from "./stats";
-import ReactApexChart from "react-apexcharts";
-import DonutChart from "./stats";
-// import { Canvas } from "@react-three/fiber";
+import { Swords } from "lucide-react";
 
 type MatchUserProps = User & { className?: string };
 
@@ -58,27 +56,49 @@ function MatchHistory({ match }: MatchHistoryProps) {
 
 export function History({ id }: { id: string }) {
   const { isLoading, data: history, error } = useMyGames();
-  const myWonGames = history?.filter((game) => (game.initiator.id === id && game.initiatorScore > game.participantScore) ||
-   (game.participant.id === id && game.initiatorScore < game.participantScore));
-  const myLostGames = history?.filter((game) => (game.initiator.id === id && game.initiatorScore < game.participantScore) ||
-    (game.participant.id === id && game.initiatorScore > game.participantScore));
+  const myWonGames = history?.filter(
+    (game) =>
+      (game.initiator.id === id &&
+        game.initiatorScore > game.participantScore) ||
+      (game.participant.id === id &&
+        game.initiatorScore < game.participantScore)
+  );
+  const myLostGames = history?.filter(
+    (game) =>
+      (game.initiator.id === id &&
+        game.initiatorScore < game.participantScore) ||
+      (game.participant.id === id &&
+        game.initiatorScore > game.participantScore)
+  );
   return (
     <div className="lg:flex gap-4 w-full">
       {isLoading && <Spinner />}
       {error && <Alert variant="danger">Failed to get Games</Alert>}
       {!isLoading && !error && !history?.length && <Alert>No Games</Alert>}
-      <div className="border bg-dark-dim flex w-full">
+      <div className="border bg-dark-dim flex lg:w-[70%]">
         <div className="w-full">
           <p className="border-b text-xl p-6">Match History</p>
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-4 max-h-96 overflow-auto">
             {history?.map((game) => (
               <MatchHistory key={game.id} match={game} />
             ))}
           </div>
         </div>
       </div>
-      <div className="border">
-          <Stats wonGames={myWonGames?.length} lostGames={myLostGames?.length} />
+      <div className="border lg:w-[30%]">
+          <p className="border-b text-xl p-6">Stats</p>
+          <div className="flex mt-8 items-center">
+            {/* <p>wonGames</p> */}
+            <div className=" relative m-auto left-[25%]">
+              <Swords className="w-16 h-16 m-auto" />
+              <p className="text-xl">{(myWonGames?.length ?? 0) + (myLostGames?.length ?? 0)} TOTAL GAMES</p>
+            </div>
+            <Stats
+              wonGames={myWonGames?.length}
+              lostGames={myLostGames?.length}
+            />
+            {/* <p>lostGames</p> */}
+          </div>
       </div>
     </div>
   );
