@@ -86,19 +86,22 @@ export function History({ id }: { id: string }) {
         </div>
       </div>
       <div className="border lg:w-[30%]">
-          <p className="border-b text-xl p-6">Stats</p>
-          <div className="flex mt-8 items-center">
-            {/* <p>wonGames</p> */}
-            <div className=" relative m-auto left-[25%]">
-              <Swords className="w-16 h-16 m-auto" />
-              <p className="text-xl">{(myWonGames?.length ?? 0) + (myLostGames?.length ?? 0)} TOTAL GAMES</p>
-            </div>
-            <Stats
-              wonGames={myWonGames?.length}
-              lostGames={myLostGames?.length}
-            />
-            {/* <p>lostGames</p> */}
+        <p className="border-b text-xl p-6">Stats</p>
+        <div className="flex items-center relative">
+         
+          <div className="flex flex-col items-center absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Swords className="w-10 h-10" />
+            <p className="text-xl">
+              {(myWonGames?.length ?? 0) + (myLostGames?.length ?? 0)} TOTAL
+              GAMES
+            </p>
           </div>
+          {myWonGames != undefined && myLostGames != undefined &&
+            <Stats
+            wonGames={myWonGames?.length}
+            lostGames={myLostGames?.length}
+          />}
+        </div>
       </div>
     </div>
   );

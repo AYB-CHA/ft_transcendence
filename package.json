@@ -13,5 +13,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@amcharts/amcharts5": "^5.6.2",
+    "chart.js": "^4.4.1",
+    "react-chartjs-2": "^5.2.0"
+  }
 }
