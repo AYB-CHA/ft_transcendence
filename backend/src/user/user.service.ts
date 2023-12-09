@@ -176,6 +176,7 @@ export class UserService {
         optSecret: includeSensitives,
         is2FAEnabled: true,
         authProvider: true,
+        status: true,
       },
     });
 
@@ -189,6 +190,7 @@ export class UserService {
       otpSecret: data.optSecret ?? undefined,
       passwordless: data.authProvider != null,
       is2FAEnabled: data.is2FAEnabled,
+      status: data.status,
     };
   }
 

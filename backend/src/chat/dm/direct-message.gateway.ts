@@ -29,22 +29,31 @@ export class DirectMessageGateway
     private readonly userService: UserService,
   ) {}
 
-  handleConnection(@ConnectedSocket() client: Socket) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
     const id = this.userService.getClientIdFromSocket(client);
     if (!id) {
       client.disconnect();
       return;
     }
+
     this.clients.push({ id, socket: client });
-    this.dmService.makeOnline(id);
+
+    const user = await this.userService.findUser(id);
+    const isOffline = user.status === 'OFFLINE';
+
+    if (isOffline) this.dmService.makeOnline(id);
   }
 
-  handleDisconnect(@ConnectedSocket() client: Socket) {
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
     const id = this.userService.getClientIdFromSocket(client);
+
     this.clients = this.clients.filter((c) => {
-      return c.id != id;
+      return !(c.id === id && c.socket === client);
     });
-    this.dmService.makeOffline(id);
+
+    if (!this.clients.find((e) => e.id === id)) {
+      this.dmService.makeOffline(id);
+    }
   }
 
   @SubscribeMessage('newMessage')

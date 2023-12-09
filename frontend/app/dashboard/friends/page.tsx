@@ -6,7 +6,7 @@ import { useFriendRequests, useFriends } from "./(hooks)/Friends";
 import { FriendsTabContent } from "./(components)/FriendsTab";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabCard } from "./(components)/TabCard";
-import { User, UserPlus, Users } from "lucide-react";
+import { User, Users } from "lucide-react";
 import { useState } from "react";
 
 import CardHeader from "@/components/card/CardHeader";

@@ -22,8 +22,6 @@ export default function LoginBoard() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(":OK");
-
     let timer: NodeJS.Timeout | null = null;
     if (searchParams.has("userNameOrEmailError")) {
       timer = setTimeout(() => {
