@@ -49,7 +49,6 @@ export default function ChatSocketProvider({
   useEffect(() => {
     socket.connect();
     socket.on("criticalChange", () => {
-      console.log("SHOULD RELOAD.");
       clearSWRCache();
     });
     return () => {

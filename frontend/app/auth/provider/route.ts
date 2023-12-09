@@ -15,7 +15,7 @@ export const GET = (request: NextRequest) => {
   cookieStore.set("access_token", token, {
     httpOnly: true,
     secure: false,
-    sameSite: "strict",
+    sameSite: "lax",
   });
 
   redirectUrl.pathname = request.nextUrl.searchParams.get("2fa")

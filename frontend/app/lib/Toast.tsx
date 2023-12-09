@@ -141,8 +141,6 @@ export function ToastContainer() {
 }
 
 export function dispatchServerError() {
-  console.log("NOOOOOOOOT");
-
   dispatchNotification({
     title: "Server Error.",
     description: "An error happened while processing the request.",

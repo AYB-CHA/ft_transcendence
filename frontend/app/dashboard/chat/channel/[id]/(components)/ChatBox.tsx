@@ -8,7 +8,6 @@ import { ChannelType, getChannelData } from "./ChannelController";
 import { notFound, useParams } from "next/navigation";
 import { CircleSlash, MehIcon } from "lucide-react";
 import { useAuth } from "@/hooks/auth";
-import { useEffect } from "react";
 import { AxiosError } from "axios";
 
 export type MessageType = {

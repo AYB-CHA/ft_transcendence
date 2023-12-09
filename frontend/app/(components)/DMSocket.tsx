@@ -6,7 +6,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from "react";
 
 import { MessageType } from "../dashboard/chat/channel/[id]/(components)/ChatBox";
@@ -46,13 +45,15 @@ export default function DMSocketProvider({ children }: PropsWithChildren) {
     };
   }, [socket]);
 
+  const newMessageHandler = (message: MessageType) => {
+    mutate("/chat/dm/threads/unread-messages");
+    mutate("/chat/dm/threads");
+  };
+
   useEffect(() => {
-    socket?.on("newMessage", (message: MessageType) => {
-      mutate("/chat/dm/threads/unread-messages");
-      mutate("/chat/dm/threads");
-    });
+    socket?.on("newMessage", newMessageHandler);
     return () => {
-      socket?.off("newMessage");
+      socket?.off("newMessage", newMessageHandler);
     };
   }, [user, socket, router]);
 

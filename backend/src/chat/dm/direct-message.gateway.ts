@@ -72,12 +72,13 @@ export class DirectMessageGateway
         if (
           client.id === threadData.thread.participantId ||
           client.id === threadData.thread.initiatorId
-        )
+        ) {
           client.socket.emit('newMessage', {
             text: data.text,
             senderId,
             id: threadData.id,
           });
+        }
       }
     } catch {}
   }

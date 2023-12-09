@@ -100,7 +100,6 @@ export class ChannelSocketGateway
     }
 
     if (await this.channelService.isUserMuted(senderId, data.channelId)) {
-      console.log('cant send message your muted');
       return;
     }
 
