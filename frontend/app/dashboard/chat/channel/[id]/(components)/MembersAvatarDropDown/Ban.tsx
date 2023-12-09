@@ -1,7 +1,7 @@
+import { useChannelChatSocket } from "../../providers/ChatSocketProvider";
 import { DropdownMenuItem } from "@/components/ui/DropDown";
 import { ChannelMemberType } from "../ChannelMembers";
 import { ChannelType } from "../ChannelController";
-import { useChannelChatSocket } from "../../page";
 import { BanIcon } from "lucide-react";
 
 export default function Ban({

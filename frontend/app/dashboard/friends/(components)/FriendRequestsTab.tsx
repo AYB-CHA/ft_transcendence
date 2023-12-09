@@ -4,21 +4,30 @@ import { FriendRequestCard } from "./FriendCard";
 import { EmptyState } from "../../../../components/EmptyState";
 import { UserPlus } from "lucide-react";
 import axios from "@/lib/axios";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export function FriendRequestsTabContent() {
   const { data, mutate, isLoading } = useFriendRequests();
 
   function acceptRequest(requestId: string) {
     return async () => {
-      await axios.patch(`/user/friends/requests/accept/${requestId}`);
-      mutate();
+      try {
+        await axios.patch(`/user/friends/requests/accept/${requestId}`);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   function rejectRequest(requestId: string) {
     return async () => {
-      await axios.delete(`/user/friends/requests/reject/${requestId}`);
-      mutate();
+      try {
+        await axios.delete(`/user/friends/requests/reject/${requestId}`);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 

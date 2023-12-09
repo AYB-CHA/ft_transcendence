@@ -1,8 +1,8 @@
 import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
-import { clearSWRCache } from "../page";
 import dayjs from "dayjs";
+import { clearSWRCache } from "../providers/ChatSocketProvider";
 
 dayjs.extend(relativeTime);
 

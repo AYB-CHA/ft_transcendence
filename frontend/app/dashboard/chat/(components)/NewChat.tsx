@@ -35,6 +35,7 @@ export default function NewChat() {
       .then((response) => {
         setChannels(response.data);
       })
+      .catch((e) => {})
       .finally(() => {});
   };
 

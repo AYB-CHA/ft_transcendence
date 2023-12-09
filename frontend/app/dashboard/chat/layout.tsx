@@ -1,15 +1,14 @@
 "use client";
-import Card from "@/components/card/Card";
-import CardBody from "@/components/card/CardBody";
-import CardHeader from "@/components/card/CardHeader";
-
-import { Tabs, TabsContent } from "@/components/ui/Tabs";
-
 import ChannelsSidebar from "./(components)/ChannelsSidebar";
 import ThreadSideBar from "./(components)/ThreadSideBar";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import CardHeader from "@/components/card/CardHeader";
 import TabSwitcher from "./(components)/TabSwitcher";
+import CardBody from "@/components/card/CardBody";
+import Card from "@/components/card/Card";
+
+import { Tabs, TabsContent } from "@/components/ui/Tabs";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import NewChat from "./(components)/NewChat";
 import PopularChannels from "./(components)/PopularChannels";
@@ -30,15 +29,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="my-8 grow grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 my-8 grow">
       <div className="grid grid-rows-2 gap-4">
         <Card className="flex flex-col">
-          <div className="grow grid">
+          <div className="grid grow">
             <Tabs
               value={activeTab}
               onValueChange={handleTabChange}
               defaultValue="channels"
-              className="grow flex flex-col"
+              className="flex flex-col grow"
             >
               <CardHeader>
                 <NewChat />
@@ -49,7 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   setActiveTab={handleTabChange}
                 />
               </CardHeader>
-              <CardBody className="grow h-0 overflow-auto">
+              <CardBody className="h-0 overflow-auto grow">
                 <div>
                   <TabsContent value="channels">
                     <div className="flex flex-col gap-4">

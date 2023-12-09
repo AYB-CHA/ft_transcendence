@@ -1,3 +1,4 @@
+import { dispatchServerError } from "@/app/lib/Toast";
 import { DropdownMenuItem } from "@/components/ui/DropDown";
 import axios from "@/lib/axios";
 import { UserMinus } from "lucide-react";
@@ -12,7 +13,9 @@ export default function Block({
   async function blockUser() {
     try {
       await axios.post(`/user/block/${userId}`);
-    } catch (error) {}
+    } catch {
+      dispatchServerError();
+    }
   }
 
   return (

@@ -12,6 +12,7 @@ import CardHeader from "@/components/card/CardHeader";
 import axios from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export default function LeaveChannel({
   status,
@@ -25,7 +26,12 @@ export default function LeaveChannel({
   const router = useRouter();
   async function leaveCurrentChannel() {
     router.push("/dashboard/chat");
-    await axios.delete(`/chat/channel/${id}/leave`);
+    try {
+      await axios.delete(`/chat/channel/${id}/leave`);
+    } catch {
+      dispatchServerError();
+    }
+
     setStatus(false);
     mutate("/chat/channel", undefined);
     mutate("/chat/channel/discover");

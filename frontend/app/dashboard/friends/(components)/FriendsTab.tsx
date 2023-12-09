@@ -5,14 +5,19 @@ import { FriendCard } from "./FriendCard";
 import { User } from "lucide-react";
 
 import axios from "@/lib/axios";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export function FriendsTabContent() {
   const { data, mutate, isLoading } = useFriends();
 
   function removeFriend(requestId: string) {
     return async () => {
-      await axios.delete("/user/friends/remove/" + requestId);
-      mutate();
+      try {
+        await axios.delete("/user/friends/remove/" + requestId);
+        mutate();
+      } catch (error) {
+        dispatchServerError();
+      }
     };
   }
 

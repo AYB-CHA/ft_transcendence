@@ -97,7 +97,7 @@ export class UserService {
       userData.password &&
       userData.password !== userData.passwordConfirmation
     )
-      throw new BadRequestException(['password confirmation does not match']);
+      throw new BadRequestException(['confirmation password does not match']);
     const password = userData.password
       ? hashSync(userData?.password, 10)
       : null;

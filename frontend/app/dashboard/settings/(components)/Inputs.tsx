@@ -10,7 +10,7 @@ import Button from "@/components/Button";
 import Enable2FA from "./Enable2FA";
 import axios from "@/lib/axios";
 
-import { dispatchNotification } from "@/app/lib/Toast";
+import { dispatchNotification, dispatchServerError } from "@/app/lib/Toast";
 import { avatarsBaseUrl } from "../../chat/(components)/NewChannel";
 import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";
@@ -95,13 +95,15 @@ export default function Inputs({}: {}) {
     try {
       await axios.put("/user/update/disable2FA");
       mutate();
-    } catch (error) {}
+    } catch {
+      dispatchServerError();
+    }
   }
   return (
     <form onSubmit={handelSubmit}>
-      <CardBody className="py-8">
+      <CardBody className="py-8 min-h-[320px] flex flex-col">
         {isLoading && (
-          <div className="flex justify-center my-40">
+          <div className="flex justify-center grow items-center">
             <Spinner />
           </div>
         )}
@@ -179,6 +181,7 @@ export default function Inputs({}: {}) {
       </CardBody>
       <CardFooter>
         {!isLoading &&
+          user &&
           (!user?.is2FAEnabled ? (
             <Enable2FA mutate={mutate} />
           ) : (

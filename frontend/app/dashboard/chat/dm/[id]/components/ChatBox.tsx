@@ -48,9 +48,8 @@ export default function ChatBox() {
     }
   );
 
-  useEffect(() => {
-    if (error?.response?.status === 404) throw notFound();
-  }, [error]);
+  if (error?.response?.status === 404) throw notFound();
+
   const { data: otherUser, isLoading } = useSWR(
     `/chat/dm/thread/other/${chatThreadId}`,
     async (url: string) => {
@@ -93,8 +92,10 @@ export default function ChatBox() {
         </CardHeader>
         {error ? (
           <div className="flex h-full justify-center items-center flex-col gap-4">
-            <MehIcon className="text-gray-600" size={50} strokeWidth={1} />
-            <span>{"You can't send new message."}</span>
+            <MehIcon className="text-gray-700" size={35} strokeWidth={1} />
+            <span className="text-dark-semi-light">
+              {"You can't send this use messages."}
+            </span>
           </div>
         ) : (
           <>

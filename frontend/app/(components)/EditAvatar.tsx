@@ -1,9 +1,10 @@
 "use client";
 import Spinner from "@/components/Spinner";
 import axios from "@/lib/axios";
-import { PenIcon } from "lucide-react";
+import { PenIcon, ShieldAlert } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import { dispatchNotification } from "../lib/Toast";
 
 export default function EditAvatar({
   src,
@@ -24,7 +25,11 @@ export default function EditAvatar({
       const { data } = await axios.post("/upload/avatar", form);
       setSrc(data);
     } catch (error) {
-      // todo: after adding toast component.
+      dispatchNotification({
+        title: "Cant upload Avatar.",
+        description: "An error happened while processing the request.",
+        icon: ShieldAlert,
+      });
     } finally {
       setLoading(false);
     }

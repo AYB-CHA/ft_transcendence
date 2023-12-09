@@ -1,14 +1,15 @@
-import Card from "@/components/card/Card";
+import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
 import CardHeader from "@/components/card/CardHeader";
+import CardBody from "@/components/card/CardBody";
+import ChannelLabel from "./ChannelLabel";
+import Card from "@/components/card/Card";
 import { FlameIcon } from "lucide-react";
 import NewChannel from "./NewChannel";
-import useSWR from "swr";
-import { SearchChannelType } from "./NewChat";
 import APIClient from "@/lib/axios";
-import CardBody from "@/components/card/CardBody";
-import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
 import React from "react";
-import ChannelLabel from "./ChannelLabel";
+import useSWR from "swr";
+
+import { SearchChannelType } from "./NewChat";
 
 export default function PopularChannels() {
   const { data, isLoading } = useSWR<SearchChannelType[]>(
@@ -18,12 +19,10 @@ export default function PopularChannels() {
     }
   );
 
-  console.log(data);
-
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex justify-between text-gray-500">
-        <div className="flex gap-2 items-center text-xs">
+        <div className="flex items-center gap-2 text-xs">
           <FlameIcon size={20} strokeWidth={1} />
           <span>Popular Channels</span>
         </div>
@@ -31,7 +30,7 @@ export default function PopularChannels() {
           <NewChannel />
         </div>
       </CardHeader>
-      <CardBody className="grow h-0 overflow-auto">
+      <CardBody className="h-0 overflow-auto grow">
         <div className="grid flex-1 gap-4 py-1">
           {isLoading && (
             <>

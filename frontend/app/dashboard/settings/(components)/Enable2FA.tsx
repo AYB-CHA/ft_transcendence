@@ -18,9 +18,18 @@ export default function Enable2FA({ mutate }: { mutate: any }) {
   const [verificationCode, setVerificationCode] = useState("");
 
   useEffect(() => {
-    axios.get<{ image: string }>("/user/2fa/qrcode").then((response) => {
-      setQrcode(response.data.image);
-    });
+    const controller = new AbortController();
+    axios
+      .get<{ image: string }>("/user/2fa/qrcode", {
+        signal: controller.signal,
+      })
+      .then((response) => {
+        setQrcode(response.data.image);
+      })
+      .catch(() => {});
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   async function enable2FAButtonClick() {

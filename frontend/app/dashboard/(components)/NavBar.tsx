@@ -6,6 +6,7 @@ import CardHeader from "@/components/card/CardHeader";
 import CardBody from "@/components/card/CardBody";
 import Card from "@/components/card/Card";
 import Button from "@/components/Button";
+import MessagesTab from "./MessagesTab";
 import axios from "@/lib/axios";
 import NavTab from "./NavTab";
 import Link from "next/link";
@@ -26,7 +27,6 @@ import {
 } from "@/components/ui/DropDown";
 
 import {
-  MessageCircle,
   Trophy,
   Settings,
   User,
@@ -40,10 +40,12 @@ import {
   BellOff,
   MessageSquare,
   UserPlus,
+  ShieldAlert,
 } from "lucide-react";
 
 import { io } from "socket.io-client";
-import MessagesTab from "./MessagesTab";
+import { dispatchServerError } from "@/app/lib/Toast";
+import { useRouter } from "next/navigation";
 
 type NotificationType =
   | "CHANNEL_INVITATION"
@@ -155,7 +157,11 @@ function Notifications() {
   }, [socket, user?.id, mutate]);
 
   async function clearNotifications() {
-    await axios.delete("/user/notifications");
+    try {
+      await axios.delete("/user/notifications");
+    } catch {
+      dispatchServerError();
+    }
     mutate();
   }
 
@@ -164,8 +170,12 @@ function Notifications() {
   function markAsRead(notificationId: string) {
     return async () => {
       setOpen(false);
-      await axios.patch("/user/notifications/" + notificationId);
-      mutate();
+      try {
+        await axios.patch("/user/notifications/" + notificationId);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
@@ -238,6 +248,7 @@ function Notifications() {
 export default function NavBar() {
   const { user, logOut, isLoading } = useAuth({ middleware: "auth" });
   const pathname = usePathname();
+  const router = useRouter();
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
     {
@@ -282,15 +293,19 @@ export default function NavBar() {
               <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/")}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router.push("/dashboard/friends")}
+                >
                   <Users className="mr-2 h-4 w-4" />
                   <span>Friends</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router.push("/dashboard/settings")}
+                >
                   <SettingsIcon className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
@@ -301,12 +316,6 @@ export default function NavBar() {
                 </DropdownMenuItem>
               </DropDownAvatar>
             )}
-            {/* <div className="text-sm pl-2 mt-1.5">
-              <h3 className="leading-3">{user && "@" + user?.username}</h3>
-              <span className="text-primary text leading-3">
-                {user && "lvl 7.4"}
-              </span>
-            </div> */}
           </div>
         </div>
       </div>

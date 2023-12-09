@@ -3,9 +3,10 @@ import { dispatchNotification } from "@/app/lib/Toast";
 import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
-import { useAuth } from "@/hooks/auth";
-import { Fingerprint, KeyRoundIcon, SpellCheck2, X } from "lucide-react";
+
+import { Fingerprint, KeyRoundIcon, SpellCheck2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/auth";
 
 export default function LoginBoard() {
   const [usernameOrEmail, setUserNameOrEmail] = useState("");

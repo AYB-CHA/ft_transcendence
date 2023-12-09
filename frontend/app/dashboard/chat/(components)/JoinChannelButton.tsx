@@ -10,7 +10,7 @@ import axios from "@/lib/axios";
 import { ChannelVisibilityType } from "../channel/[id]/(components)/ChannelController";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Dispatch, SetStateAction, useState } from "react";
-import { dispatchNotification } from "@/app/lib/Toast";
+import { dispatchNotification, dispatchServerError } from "@/app/lib/Toast";
 import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";
 import { Lock, LockIcon } from "lucide-react";
@@ -39,13 +39,17 @@ export default function JoinChannelButton({
   const router = useRouter();
 
   async function joinPublicChannel() {
-    await axios.post(`/chat/channel/join/${id}`);
-    mutate(`/chat/channel/${id}`);
-    mutate("/chat/channel");
-    mutate("/chat/channel/discover");
-    router.push(`/dashboard/chat/channel/${id}`);
-    setOpen(false);
-    setParentDialog && setParentDialog(false);
+    try {
+      await axios.post(`/chat/channel/join/${id}`);
+      mutate(`/chat/channel/${id}`);
+      mutate("/chat/channel");
+      mutate("/chat/channel/discover");
+      router.push(`/dashboard/chat/channel/${id}`);
+      setOpen(false);
+      setParentDialog && setParentDialog(false);
+    } catch {
+      dispatchServerError();
+    }
   }
 
   async function joinProtectedChannel() {
@@ -59,12 +63,12 @@ export default function JoinChannelButton({
       setParentDialog && setParentDialog(false);
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401)
-        if (error instanceof AxiosError)
-          dispatchNotification({
-            title: "Password",
-            icon: LockIcon,
-            description: camelCaseToNormal(error.response?.data.message[0]),
-          });
+        dispatchNotification({
+          title: "Password",
+          icon: LockIcon,
+          description: camelCaseToNormal(error.response?.data.message[0]),
+        });
+      else dispatchServerError();
     }
   }
 
@@ -84,10 +88,10 @@ export default function JoinChannelButton({
           <DialogContent className="max-w-md">
             <CardHeader>Channel Password</CardHeader>
             <CardBody>
-              <div className="flex flex-col gap-4 py-4 items-center">
+              <div className="flex flex-col items-center gap-4 py-4">
                 <Avatar src={avatar} className="w-24 h-24 border-2" />
                 <div className="text-center">
-                  <h3 className="font-medium text-base">{name}</h3>
+                  <h3 className="text-base font-medium">{name}</h3>
                   <p className="text-gray-500">{topic}</p>
                 </div>
               </div>

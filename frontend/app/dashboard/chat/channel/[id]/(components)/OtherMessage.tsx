@@ -24,13 +24,13 @@ export default function OtherMessage({
 
   return (
     <div className="flex gap-2 text-right justify-end">
-      <div className="flex flex-col gap-2 items-end">
+      <div className="flex flex-col gap-2 items-end w-1/2">
         <span className="text-gray-500 text-xs">@{data?.username}</span>
         {messages.map((message) => {
           return (
             <div
               key={message.id}
-              className="p-2 border border-dark-semi-dim w-fit bg-dark-semi-dark/30 rounded rounded-tl-none"
+              className="p-2 border border-dark-semi-dim w-fit max-w-full break-words bg-dark-semi-dark/30 rounded rounded-tl-none"
             >
               {message.text}
             </div>
