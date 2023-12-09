@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/components/Button";
-import { useMyGames } from "./repo";
+import { useGames } from "./repo";
 import Link from "next/link";
 import { ROUTER } from "@/lib/ROUTER";
 import { Loader2 } from "lucide-react";
@@ -20,7 +20,7 @@ export function NewGameButton({ className }: GameButtonProps) {
 
 export default function Games() {
   const { user } = useAuth();
-  const { data: games, isLoading } = useMyGames(user?.id);
+  const { data: games, isLoading } = useGames(user?.id);
 
   return (
     <div className="container mt-10 h-screen">

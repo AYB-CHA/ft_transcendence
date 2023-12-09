@@ -1,11 +1,11 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
-import { useGame } from "../repo";
+import { useGame, useWs } from "../repo";
 import Spinner from "@/components/Spinner";
 import Avatar from "@/components/Avatar";
 import { cn } from "@/app/lib/cn";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { Scoreboard } from "@/types/game/scoreboard";
 import { socket } from "../socket";
 import { useEffect } from "react";
@@ -49,11 +49,27 @@ function UserScore({
 function GameIndex() {
   const { id } = useParams();
   const { data: game, isLoading } = useGame(id as string);
+  const { mutate } = useSWRConfig();
 
   const { data: scoreboard } = useSWR<Scoreboard | undefined>([
     "scoreboard",
     id,
   ]);
+
+  const finished = useWs<Record<string, never> | undefined>("FINISHED", {
+    defaultValue: undefined,
+  });
+
+  useEffect(() => {
+    if (!finished) return;
+    const crowd = document.getElementById("game-crowd") as HTMLAudioElement;
+    if (crowd) crowd.pause();
+  }, [finished]);
+
+  useEffect(() => {
+    if (!finished || !game) return;
+    mutate(["match", game.id]);
+  }, [finished, game, mutate]);
 
   console.log(scoreboard, "scoreboard");
 
@@ -82,7 +98,7 @@ function GameIndex() {
         <p className="text-4xl min-w-full sm:min-w-[100px] text-center">vs</p>
         <UserScore
           score={
-            scoreboard === undefined ? game.initiatorScore : scoreboard.right
+            scoreboard === undefined ? game.participantScore : scoreboard.right
           }
           username={game.participant.username}
           avatar={game.participant.avatar}
@@ -91,7 +107,7 @@ function GameIndex() {
         />
       </div>
 
-      {<Game status={game.status} id={game.id} />}
+      {<Game status={finished ? "FINISHED" : game.status} id={game.id} />}
     </div>
   );
 }

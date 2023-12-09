@@ -3,7 +3,7 @@ import { DistanceResult, Vec, add_in, between, getP } from './game.utils';
 import { GAME_CONFIG } from './config';
 import { PrismaService } from 'src/db/prisma.service';
 import * as Cookie from 'cookie';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { Match } from '@prisma/client';
 import { GameQueue } from './queue.game';
@@ -141,7 +141,7 @@ export class GameService {
   movePaddle(clientId: string, dir: number) {
     const userId = GameService.findUser(clientId);
     const match = GameService.user2match.get(userId);
-    if (!match) throw new Error('match not found');
+    if (!match) return;
     if (match.status !== 'PLAYING') return;
     const user =
       match.initiator.id === userId ? match.initiator : match.participant;
@@ -204,17 +204,28 @@ export class GameService {
   }
 
   async saveMatch(match: Pitch, disconnectedUserId: string[]) {
-    const initStatus = disconnectedUserId.includes(match.initiator.id);
-    const partStatus = disconnectedUserId.includes(match.participant.id);
+    const initWithdrawl = disconnectedUserId.includes(match.initiator.id);
+    const partWithdrawl = disconnectedUserId.includes(match.participant.id);
+
+    let initscore = match.initiator.score;
+    let partscore = match.participant.score;
+
+    if (initWithdrawl && !partWithdrawl) {
+      initscore = 0;
+      partscore = 3;
+    } else if (!initWithdrawl && partWithdrawl) {
+      initscore = 3;
+      partscore = 0;
+    }
 
     await this.prisma.match.update({
       where: { id: match.id },
       data: {
         status: 'FINISHED',
-        participantStatus: partStatus ? 'UNFINISHED' : 'FINISHED',
-        initiatorStatus: initStatus ? 'UNFINISHED' : 'FINISHED',
-        initiatorScore: match.initiator.score,
-        participantScore: match.participant.score,
+        initiatorStatus: initWithdrawl ? 'UNFINISHED' : 'FINISHED',
+        initiatorScore: initscore,
+        participantStatus: partWithdrawl ? 'UNFINISHED' : 'FINISHED',
+        participantScore: partscore,
       },
     });
   }
@@ -253,8 +264,7 @@ export class GameService {
     const br = GAME_CONFIG.ballSize / 2;
     const h2 = GAME_CONFIG.worldHeight / 2 - br;
     const w2 = GAME_CONFIG.worldWidth / 2 - br - paddleSizeX;
-    // @ts-expect-error ts is broken
-    while (match.status !== 'FINISHED') {
+    while (GameService.user2match.has(userId)) {
       if (match.status !== 'PLAYING') {
         await new Promise((resolve) => setTimeout(resolve, 50));
         continue;
@@ -280,7 +290,7 @@ export class GameService {
         // end game
         break;
       }
-      const speed = 7;
+      const speed = 20;
       const time = data.dis / speed;
       const to = match.ball.pos.add(match.ball.dir.mul(data.dis));
       update({
@@ -350,11 +360,19 @@ export class GameService {
             GameService.user2client[match.participant.id],
           ],
         });
+
+        this.cleanMatch(match.initiator.id);
+        this.cleanMatch(match.participant.id);
+
         return;
       }
 
       await this.startRound(match, update);
     }
+  }
+
+  cleanMatch(userId: string) {
+    GameService.user2match.delete(userId);
   }
 
   getMatch(id: string) {
@@ -390,7 +408,7 @@ export class GameService {
     GameService.user2client.delete(userId);
   }
 
-  removeClient(clientId: string) {
+  removeClient(clientId: string, server: Server) {
     const userId = GameService.findUser(clientId);
     const match = GameService.user2match.get(userId);
     this.gameQueue.pop(userId);
@@ -398,9 +416,12 @@ export class GameService {
     if (!match || match.status === 'INIT') return;
     match.status = 'FINISHED';
     const user =
-      match.initiator.id === userId ? match.initiator : match.participant;
-    user.disconnect = true;
+      match.initiator.id === userId ? match.participant : match.initiator;
+    this.cleanMatch(userId);
+    this.cleanMatch(user.id);
     this.saveMatch(match, [userId]);
+    console.log('user disconnected', userId);
+    server.to(GameService.user2client[user.id]).emit('FINISHED', {});
   }
 
   getClientIdFromSocket(client: Socket) {
@@ -414,12 +435,12 @@ export class GameService {
 
   async getState() {
     const map2str = (map: Map<string, any>) =>
-      JSON.stringify(map, (key, value) =>
+      JSON.stringify(map, (_, value) =>
         value instanceof Map ? [...value] : value,
       );
 
     return {
-      matches: map2str(GameService.user2match),
+      matches: JSON.parse(map2str(GameService.user2match)),
       waiting: Array.from(this.gameQueue.players).join(', '),
     };
   }

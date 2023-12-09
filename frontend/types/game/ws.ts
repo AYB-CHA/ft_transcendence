@@ -6,6 +6,7 @@ export const EMITED_MESSAGES = [
   "PEERING",
   "LAUNCH_GAME",
   "ANNOUNCE",
+  "FINISHED",
 ] as const;
 
 export const SEND_MESSAGE_TYPE = [

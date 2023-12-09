@@ -38,7 +38,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    this.gameService.removeClient(client.id);
+    this.gameService.removeClient(client.id, this.server);
   }
 
   @SubscribeMessage('MOVE_PADDLE')

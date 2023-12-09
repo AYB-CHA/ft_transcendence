@@ -4,20 +4,7 @@ import { Game } from "@/types/game/game";
 import useSwr from "swr";
 import APIClient from "@/lib/axios";
 import { socket } from "./socket";
-
-export interface Config {
-  width: number;
-  height: number;
-  fov: number;
-  near: number;
-  cameraPosition: [number, number, number];
-  aspect: number;
-  worldHeight: number;
-  worldWidth: number;
-  paddleSizeX: number;
-  paddleSizeY: number;
-  ballSize: number;
-}
+import { Config } from "@/types/game/config";
 
 export async function configGet() {
   return await APIClient.get("games/config").then<Config>((res) => res.data);
@@ -34,12 +21,12 @@ export function useConfig() {
   return useSwr("game/config", configGet, {});
 }
 
-export function useMyGames(id: string | undefined) {
+export function useGames(id: string | undefined) {
   return useSwr(["/games", id], id ? my_games : null, {});
 }
 
 export function useGame(id: string) {
-  return useSwr(`/games/${id}`, () =>
+  return useSwr(["match", id], () =>
     APIClient.get<Game>(`/games/${id}`).then((res) => res.data),
   );
 }

@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
-import { useMyGames } from "../../games/repo";
+import { useGames } from "../../games/repo";
 import Alert from "@/components/Alert";
 import Avatar from "@/components/Avatar";
 import { User } from "@/types/user";
@@ -7,7 +7,6 @@ import { cn } from "@/app/lib/cn";
 import { Game } from "@/types/game/game";
 import Stats from "./stats";
 import { Swords } from "lucide-react";
-import { useAuth } from "@/hooks/auth";
 import { useMemo } from "react";
 
 type MatchUserProps = User & { className?: string };
@@ -61,7 +60,7 @@ interface HistoryProps {
 }
 
 export function History({ id }: HistoryProps) {
-  const { isLoading, data: history, error } = useMyGames(id);
+  const { isLoading, data: history, error } = useGames(id);
   const myWonGames = useMemo(
     () =>
       history?.filter(

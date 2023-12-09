@@ -1,5 +1,5 @@
 "use client";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { Ball } from "./ball";
 import { Paddle } from "./paddle";
@@ -8,11 +8,12 @@ import { sendEvent, useConfig, useWs } from "../../repo";
 import { Plane } from "./plane";
 import { Whisle } from "./whisle";
 import { GameOver } from "./over";
-import { TextureLoader, Vector3 } from "three";
+import { TextureLoader } from "three";
 import { OrbitControls } from "@react-three/drei";
 import { useSWRConfig } from "swr";
 import { socket } from "../../socket";
 import { Scoreboard } from "@/types/game/scoreboard";
+import { Camera } from "./camera";
 
 interface GameProps {
   status: "READY" | "FINISHED";
@@ -118,10 +119,9 @@ export function Game({ status, id }: GameProps) {
         camera={{
           fov: config.fov,
           near: config.near,
-          position: isFinished ? [0, -30, 2] : config.cameraPosition,
-          up: isFinished ? new Vector3(0, 0, 1) : undefined,
         }}
       >
+        <Camera config={config} isFinished={isFinished} />
         <ambientLight />
         <spotLight intensity={1} color="#fff" position={[0, 0, 3]} />
 
