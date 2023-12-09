@@ -88,6 +88,7 @@ export default function Invite({
                 className="bg-dark-dim border-0 py-4"
                 placeholder="Search"
                 icon={<Search size={16} />}
+                name="search"
                 onChange={debouncedSetQuery}
               />
             </Card>

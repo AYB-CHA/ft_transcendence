@@ -12,7 +12,11 @@ export const GET = (request: NextRequest) => {
   }
 
   const cookieStore = cookies();
-  cookieStore.set("access_token", token, { httpOnly: true, secure: false });
+  cookieStore.set("access_token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+  });
 
   redirectUrl.pathname = request.nextUrl.searchParams.get("2fa")
     ? "/auth/2fa"

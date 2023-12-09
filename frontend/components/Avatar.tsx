@@ -15,6 +15,7 @@ export default function Avatar({
       height={60}
       width={60}
       unoptimized
+      priority
       alt="avatar"
     />
   );

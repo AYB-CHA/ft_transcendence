@@ -100,6 +100,7 @@ export default function JoinChannelButton({
                 <Input
                   placeholder="password"
                   onChange={(e) => setPassword(e.target.value)}
+                  name="password"
                   type="password"
                 />
               </div>

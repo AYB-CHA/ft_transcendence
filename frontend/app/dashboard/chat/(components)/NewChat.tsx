@@ -53,12 +53,10 @@ export default function NewChat() {
           <div>
             <Input
               placeholder="Search for channels"
+              name="searchChannels"
               icon={<Search size={18} />}
             />
           </div>
-          {/* <Button className="w-full" variant="dark">
-            Enter a New Chat
-          </Button> */}
         </DialogTrigger>
         <DialogContent className="max-w-2xl" closeButton={false}>
           <div className="absolute -top-16 -left-px w-[calc(100%+2px)]  bg-slate-500">
@@ -66,6 +64,7 @@ export default function NewChat() {
               <Input
                 className="bg-dark-dim border-0 py-4"
                 placeholder="Search"
+                name="search"
                 icon={<Search size={16} />}
                 onChange={debouncedSearch}
               />

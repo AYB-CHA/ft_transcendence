@@ -141,6 +141,7 @@ export function SearchFriendsModal({
               className="bg-dark-dim border-0 py-4"
               placeholder="Search"
               icon={<Search size={16} />}
+              name="searchInput"
               onChange={(event) => setQuery(event.target.value)}
             />
           </Card>

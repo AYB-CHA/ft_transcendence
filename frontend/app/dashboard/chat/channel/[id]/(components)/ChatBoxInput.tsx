@@ -55,6 +55,7 @@ export default function ChatBoxInput({
               type="text"
               placeholder="Start new message"
               value={message}
+              name="message"
               onChange={(e) => {
                 setMessage(e.target.value);
               }}

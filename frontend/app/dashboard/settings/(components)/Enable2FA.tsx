@@ -66,6 +66,7 @@ export default function Enable2FA({ mutate }: { mutate: any }) {
                   src={qrcode}
                   alt="QrCode"
                   unoptimized
+                  priority
                   width={150}
                   height={150}
                 />

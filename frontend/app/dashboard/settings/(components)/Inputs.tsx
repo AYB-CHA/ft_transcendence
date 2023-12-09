@@ -117,6 +117,7 @@ export default function Inputs({}: {}) {
                     placeholder="Full Name"
                     icon={<User size={17} />}
                     value={fullName}
+                    name="fullName"
                     onChange={(e) => setFullName(e.target.value)}
                   />
                 </div>
@@ -126,6 +127,7 @@ export default function Inputs({}: {}) {
                     placeholder="Username"
                     icon={<Fingerprint size={17} />}
                     value={username}
+                    name="username"
                     onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
@@ -135,6 +137,7 @@ export default function Inputs({}: {}) {
                     placeholder="Email"
                     icon={<Mail size={17} />}
                     value={email}
+                    name="email"
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
                   />
@@ -151,6 +154,7 @@ export default function Inputs({}: {}) {
                     placeholder="Password"
                     icon={<KeyRoundIcon size={17} type="password" />}
                     type="password"
+                    name="password"
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
                   />
@@ -162,6 +166,7 @@ export default function Inputs({}: {}) {
                     placeholder="Password confirmation"
                     icon={<Repeat size={17} type="password" />}
                     type="password"
+                    name="passwordConfirmation"
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
                     value={passwordConfirmation}
                   />

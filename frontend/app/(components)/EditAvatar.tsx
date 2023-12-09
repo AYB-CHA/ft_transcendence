@@ -48,6 +48,7 @@ export default function EditAvatar({
         accept="image/*"
         ref={inputRef}
         hidden
+        name="avatar"
         onChange={submitFile}
       />
       <div className="border-2 border-primary h-32 w-32 rounded-full overflow-hidden">
@@ -63,6 +64,7 @@ export default function EditAvatar({
             alt="Avatar"
             width={128}
             height={128}
+            priority
             unoptimized
           />
         </div>

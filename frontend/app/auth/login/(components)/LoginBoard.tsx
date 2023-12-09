@@ -56,6 +56,7 @@ export default function LoginBoard() {
           placeholder="username or email"
           icon={<Fingerprint size={17} />}
           value={usernameOrEmail}
+          name="usernameOrEmail"
           onChange={(e) => setUserNameOrEmail(e.target.value)}
         />
       </div>
@@ -66,6 +67,7 @@ export default function LoginBoard() {
           icon={<KeyRoundIcon size={17} type="password" />}
           type="password"
           value={password}
+          name="password"
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>

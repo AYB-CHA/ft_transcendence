@@ -8,7 +8,6 @@ import {
 } from "./ui/DropDown";
 
 import { PropsWithChildren } from "react";
-import Avatar from "./Avatar";
 
 export default function DropDownAvatar({
   src = null,
@@ -29,6 +28,7 @@ export default function DropDownAvatar({
               height={60}
               width={60}
               unoptimized
+              priority
               alt="avatar"
             />
           )}

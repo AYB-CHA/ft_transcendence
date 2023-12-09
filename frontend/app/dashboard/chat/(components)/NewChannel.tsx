@@ -99,6 +99,7 @@ export default function NewChannel({}: {}) {
                     placeholder="Channel Name"
                     icon={<Fingerprint size={17} />}
                     onChange={(e) => setName(e.target.value)}
+                    name="channelName"
                     maxLength={40}
                   />
                 </div>
@@ -126,6 +127,7 @@ export default function NewChannel({}: {}) {
                     <Input
                       type="password"
                       placeholder="Password"
+                      name="password"
                       onChange={(e) => setPassword(e.target.value)}
                       icon={<KeyRoundIcon size={17} />}
                     />

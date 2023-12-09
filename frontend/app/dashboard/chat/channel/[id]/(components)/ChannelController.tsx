@@ -48,6 +48,7 @@ export default function ChannelController() {
           onChange={({ target }) => setQuery(target.value)}
           value={query}
           placeholder="Search Members"
+          name="searchMembers"
           icon={<Search size={18} />}
         />
       </CardHeader>
@@ -71,6 +72,7 @@ export default function ChannelController() {
                         alt="Avatar"
                         width={128}
                         height={128}
+                        priority
                         unoptimized
                       />
                       {data?.myRole === "ADMINISTRATOR" && (
