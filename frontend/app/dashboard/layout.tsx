@@ -7,8 +7,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex">
         <NavBar />
       </div>
-      <div className="grow">
-        <div className="container h-full flex flex-col px-4">
+      <div className="flex flex-col flex-1 overflow-auto py-8">
+        <div className="flex flex-col flex-1 container px-4">
           <DMSocketProvider>{children}</DMSocketProvider>
         </div>
       </div>

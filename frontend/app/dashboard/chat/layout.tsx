@@ -29,10 +29,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4 my-8 grow">
+    <div className="grid grid-cols-4 gap-4 my-8 h-full">
       <div className="grid grid-rows-2 gap-4">
-        <Card className="flex flex-col">
-          <div className="grid grow">
+        <Card className="flex flex-col min-h-[300px]">
+          <div className="grid flex-1">
             <Tabs
               value={activeTab}
               onValueChange={handleTabChange}

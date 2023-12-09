@@ -267,8 +267,8 @@ export default function NavBar() {
 
   return (
     <div>
-      <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between">
-        <div className="flex flex-col gap-6">
+      <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between gap-4">
+        <div className="flex flex-col gap-6 overflow-auto">
           <NavTab href="/dashboard" active={pathname === "/dashboard"}>
             <Activity strokeWidth={1} />
           </NavTab>

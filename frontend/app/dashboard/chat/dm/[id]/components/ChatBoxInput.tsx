@@ -24,6 +24,7 @@ export default function ChatBoxInput({
         <input
           className="bg-transparent w-full focus:outline-none placeholder:text-gray-500"
           type="text"
+          autoComplete="off"
           placeholder="Start new message"
           value={message}
           name="message"

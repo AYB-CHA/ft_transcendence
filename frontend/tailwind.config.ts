@@ -39,6 +39,13 @@ const config: Config = {
           "semi-light": "#4B5563",
         },
       },
+      screens: {
+        "sm-h": { raw: "(min-height: 600px)" },
+        "md-h": { raw: "(min-height: 728px)" },
+        "lg-h": { raw: "(min-height: 984px)" },
+        "xl-h": { raw: "(min-height: 1440px)" },
+        "2xl-h": { raw: "(min-height: 1896px)" },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

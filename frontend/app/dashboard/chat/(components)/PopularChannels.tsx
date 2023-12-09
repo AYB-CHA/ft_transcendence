@@ -20,7 +20,7 @@ export default function PopularChannels() {
   );
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col min-h-[300px]">
       <CardHeader className="flex justify-between text-gray-500">
         <div className="flex items-center gap-2 text-xs">
           <FlameIcon size={20} strokeWidth={1} />

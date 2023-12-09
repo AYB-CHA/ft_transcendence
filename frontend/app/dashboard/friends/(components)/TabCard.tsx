@@ -21,12 +21,6 @@ export function BasicTabCard({
       onClick={onClick}
       className="group relative block overflow-hidden border-[1px] border-dark-semi-dim bg-dark-dim p-4 w-[200px]"
     >
-      {/* <Icon
-        className="absolute -right-7 -top-6 z-10 text-primary-800/20 transition-transform duration-300 group-hover:rotate-12 group-hover:text-dark-semi-light/30"
-        strokeWidth={1}
-        width={70}
-        height={70}
-      /> */}
       <Icon
         className="relative z-10 mb-4 text-lg transition-colors duration-300"
         strokeWidth={1}
