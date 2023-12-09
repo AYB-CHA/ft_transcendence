@@ -4,16 +4,38 @@ import Button from "@/components/Button";
 import Input from "@/components/input/Input";
 import Label from "@/components/input/Label";
 
-import { Fingerprint, KeyRoundIcon, SpellCheck2 } from "lucide-react";
+import {
+  Fingerprint,
+  FingerprintIcon,
+  KeyRoundIcon,
+  SpellCheck2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/auth";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginBoard() {
   const [usernameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const { error, setError, login } = useAuth({ middleware: "guest" });
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
+    console.log(":OK");
+
+    let timer: NodeJS.Timeout | null = null;
+    if (searchParams.has("userNameOrEmailError")) {
+      timer = setTimeout(() => {
+        dispatchNotification({
+          title: "Email or username",
+          icon: FingerprintIcon,
+          description:
+            "A user with the same email or username already registered",
+        });
+      }, 100);
+      router.replace("/auth/login");
+    }
     if (error)
       dispatchNotification({
         title: "Invalid input",
@@ -23,7 +45,10 @@ export default function LoginBoard() {
           setError(null);
         },
       });
-  }, [error, setError]);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [error, setError, router, searchParams]);
 
   return (
     <div>

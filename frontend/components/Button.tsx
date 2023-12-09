@@ -20,7 +20,7 @@ export default forwardRef<HTMLButtonElement, ButtonPropsType>(function Button(
     primary: "bg-primary hover:bg-primary-400",
     secondary: "bg-gray-100 hover:bg-gray-100/80",
     danger: "bg-red-500 hover:bg-gray-red-600 text-gray-100",
-    dark: "bg-dark border border-dark-semi-dim text-gray-200",
+    dark: "bg-dark-dim border border-dark-semi-dim/80 text-gray-200",
   };
   return (
     <button

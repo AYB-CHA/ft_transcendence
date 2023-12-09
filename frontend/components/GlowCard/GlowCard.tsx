@@ -8,11 +8,10 @@ export default function GlowCard({
   className,
 }: PropsWithChildren & { className?: string }) {
   const borderRef = useRef<HTMLDivElement | null>(null);
-  const blobRef = useRef<HTMLDivElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const listener = (ev: MouseEvent) => {
-      if (!borderRef.current || !cardRef.current || !blobRef.current) return;
+      if (!borderRef.current || !cardRef.current) return;
 
       const borderRec = borderRef.current.getBoundingClientRect();
       const cardRec = cardRef.current.getBoundingClientRect();
@@ -31,7 +30,6 @@ export default function GlowCard({
       };
 
       borderRef.current.animate(animationKeyframes, animationParams);
-      blobRef.current.animate(animationKeyframes, animationParams);
     };
 
     window.addEventListener("mousemove", listener);
@@ -71,10 +69,6 @@ export default function GlowCard({
             ease: "linear",
           },
         }}
-      />
-      <div
-        ref={blobRef}
-        className="absolute blur-2xl -top-full -left-full h-[250px] aspect-square rounded-full bg-gray-500/5 pointer-events-none"
       />
       {children}
     </div>

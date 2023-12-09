@@ -8,7 +8,7 @@ const transitionParams = {
 
 export default function IntroGame() {
   return (
-    <div className="col-span-1 border-r border-r-dark-semi-dim relative">
+    <div className="col-span-1 relative">
       <motion.div
         className="w-5 h-5 bg-primary rounded-full absolute top-1/2 left-3"
         animate={{
