@@ -13,3 +13,9 @@ export interface Game {
   initiatorStatus: MatchStatus;
   participantStatus: MatchStatus;
 }
+
+export interface GameLaunch {
+  matchId: string;
+  opponent: User;
+  isInitiator: boolean;
+}

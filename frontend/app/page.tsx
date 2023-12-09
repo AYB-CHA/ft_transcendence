@@ -4,6 +4,9 @@ import { useScroll } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import Lenis from "@studio-freight/lenis";
+import Button from "@/components/Button";
+import Link from "next/link";
+import { ROUTER } from "@/lib/ROUTER";
 
 export default function Home() {
   const progressRef = useRef<HTMLDivElement | null>(null);
@@ -40,9 +43,9 @@ export default function Home() {
             <div className="h-[85%] aspect-square bg-dark rounded-full absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-10 border border-dark-semi-light"></div>
             <div></div>
           </div>
-          {/* <Link href="/auth/login">
+          <Link href={ROUTER.DASHBOARD}>
             <Button>Login</Button>
-          </Link> */}
+          </Link>
         </div>
       </div>
       <div>

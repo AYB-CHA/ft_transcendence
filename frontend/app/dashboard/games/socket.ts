@@ -9,4 +9,6 @@ console.log(url.toString());
 export const socket = io(url.toString(), {
   transports: ["websocket"],
   withCredentials: true,
+  autoConnect: false,
+  forceNew: true,
 });

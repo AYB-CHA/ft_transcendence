@@ -11,6 +11,8 @@ import { GameOver } from "./over";
 import { TextureLoader, Vector3 } from "three";
 import { OrbitControls } from "@react-three/drei";
 import { useSWRConfig } from "swr";
+import { socket } from "../../socket";
+import { Scoreboard } from "@/types/game/scoreboard";
 
 interface GameProps {
   status: "READY" | "FINISHED";
@@ -25,17 +27,16 @@ export function Game({ status, id }: GameProps) {
 
   const { data: config, isLoading, error } = useConfig();
 
-  const scoreboard = useWs("SCOREBOARD", {
-    defaultValue: {
-      left: 0,
-      right: 0,
-    },
-  });
-
-  /* useEffect(() => {
+  useEffect(() => {
     if (isFinished) return;
-    mutate(`match-${id}-scoreboard`, scoreboard);
-  }, [scoreboard, id, isFinished, mutate]); */
+    socket.on("SCOREBOARD", (data: Scoreboard) => {
+      mutate(["scoreboard", id], data);
+    });
+
+    return () => {
+      socket.off("SCOREBOARD");
+    };
+  }, [id, isFinished, mutate]);
 
   const round = useWs("ANNOUNCE", {
     defaultValue: {

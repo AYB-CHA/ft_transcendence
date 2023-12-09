@@ -23,16 +23,19 @@ export async function configGet() {
   return await APIClient.get("games/config").then<Config>((res) => res.data);
 }
 
-export async function my_games() {
-  return APIClient.get<Game[]>(`/games`).then((res) => res.data);
+export async function my_games(keys: [string, string]) {
+  console.log(keys);
+  return APIClient.get<Game[]>(`/games/user/${keys[1]}`).then(
+    (res) => res.data,
+  );
 }
 
 export function useConfig() {
   return useSwr("game/config", configGet, {});
 }
 
-export function useMyGames() {
-  return useSwr("/games", my_games, {});
+export function useMyGames(id: string | undefined) {
+  return useSwr(["/games", id], id ? my_games : null, {});
 }
 
 export function useGame(id: string) {

@@ -68,8 +68,11 @@ export class GameService {
     private readonly gameQueue: GameQueue,
   ) {}
 
-  async findAll() {
+  async findAll(userId: string) {
     const games = await this.prisma.match.findMany({
+      where: {
+        OR: [{ initiatorId: userId }, { participantId: userId }],
+      },
       include: {
         initiator: true,
         participant: true,
@@ -87,11 +90,11 @@ export class GameService {
     if (!this.gameQueue.addPlayer(userId)) return;
     while (true) {
       if (client.disconnected) return;
-      if (GameService.user2match.has(userId)) {
-        this.gameQueue.pop(userId);
+      {
         const match = GameService.user2match.get(userId);
-        match.initiator.clientId = client.id;
-        return match;
+        if (match && match.status === 'INIT') {
+          return match;
+        }
       }
       if (!(opponent = this.gameQueue.hasEnoughPlayers(userId))) {
         console.log('waiting for opponent', userId);
@@ -102,11 +105,14 @@ export class GameService {
       if (!initiator || !opponent)
         throw new Error('initiator or opponent is null');
 
+      this.gameQueue.pop(opponent);
+      this.gameQueue.pop(initiator);
+
       const match = await this.matchService.create(initiator, opponent);
       const _match = defaultMatch(match, initiator);
       GameService.user2match.set(initiator, _match);
       GameService.user2match.set(opponent, _match);
-      return match;
+      return _match;
     }
   }
 
@@ -377,16 +383,23 @@ export class GameService {
     return GameService.client2user[clientId];
   }
 
+  removeUser(userId: string | undefined) {
+    if (!userId) return;
+    const clientId = GameService.user2client[userId];
+    GameService.client2user.delete(clientId);
+    GameService.user2client.delete(userId);
+  }
+
   removeClient(clientId: string) {
     const userId = GameService.findUser(clientId);
     const match = GameService.user2match.get(userId);
-    if (!match) return;
+    this.gameQueue.pop(userId);
+    this.removeUser(userId);
+    if (!match || match.status === 'INIT') return;
     match.status = 'FINISHED';
     const user =
       match.initiator.id === userId ? match.initiator : match.participant;
     user.disconnect = true;
-    GameService.client2user.delete(clientId);
-    GameService.user2client.delete(userId);
     this.saveMatch(match, [userId]);
   }
 
@@ -397,5 +410,17 @@ export class GameService {
       return payload.sub as string;
     } catch {}
     return null;
+  }
+
+  async getState() {
+    const map2str = (map: Map<string, any>) =>
+      JSON.stringify(map, (key, value) =>
+        value instanceof Map ? [...value] : value,
+      );
+
+    return {
+      matches: map2str(GameService.user2match),
+      waiting: Array.from(this.gameQueue.players).join(', '),
+    };
   }
 }

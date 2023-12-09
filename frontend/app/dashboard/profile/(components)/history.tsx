@@ -7,6 +7,8 @@ import { cn } from "@/app/lib/cn";
 import { Game } from "@/types/game/game";
 import Stats from "./stats";
 import { Swords } from "lucide-react";
+import { useAuth } from "@/hooks/auth";
+import { useMemo } from "react";
 
 type MatchUserProps = User & { className?: string };
 
@@ -54,21 +56,34 @@ function MatchHistory({ match }: MatchHistoryProps) {
   );
 }
 
-export function History({ id }: { id: string }) {
-  const { isLoading, data: history, error } = useMyGames();
-  const myWonGames = history?.filter(
-    (game) =>
-      (game.initiator.id === id &&
-        game.initiatorScore > game.participantScore) ||
-      (game.participant.id === id &&
-        game.initiatorScore < game.participantScore)
+interface HistoryProps {
+  id: string;
+}
+
+export function History({ id }: HistoryProps) {
+  const { isLoading, data: history, error } = useMyGames(id);
+  const myWonGames = useMemo(
+    () =>
+      history?.filter(
+        (game) =>
+          (game.initiator.id === id &&
+            game.initiatorScore > game.participantScore) ||
+          (game.participant.id === id &&
+            game.initiatorScore < game.participantScore),
+      ),
+    [history, id],
   );
-  const myLostGames = history?.filter(
-    (game) =>
-      (game.initiator.id === id &&
-        game.initiatorScore < game.participantScore) ||
-      (game.participant.id === id &&
-        game.initiatorScore > game.participantScore)
+
+  const myLostGames = useMemo(
+    () =>
+      history?.filter(
+        (game) =>
+          (game.initiator.id === id &&
+            game.initiatorScore < game.participantScore) ||
+          (game.participant.id === id &&
+            game.initiatorScore > game.participantScore),
+      ),
+    [history, id],
   );
   return (
     <div className="lg:flex gap-4 w-full">
@@ -88,7 +103,6 @@ export function History({ id }: { id: string }) {
       <div className="border lg:w-[30%]">
         <p className="border-b text-xl p-6">Stats</p>
         <div className="flex items-center relative">
-         
           <div className="flex flex-col items-center absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <Swords className="w-10 h-10" />
             <p className="text-xl">
@@ -96,11 +110,12 @@ export function History({ id }: { id: string }) {
               GAMES
             </p>
           </div>
-          {myWonGames != undefined && myLostGames != undefined &&
+          {myWonGames != undefined && myLostGames != undefined && (
             <Stats
-            wonGames={myWonGames?.length}
-            lostGames={myLostGames?.length}
-          />}
+              wonGames={myWonGames?.length}
+              lostGames={myLostGames?.length}
+            />
+          )}
         </div>
       </div>
     </div>

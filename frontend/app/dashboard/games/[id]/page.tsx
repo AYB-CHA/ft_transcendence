@@ -7,6 +7,8 @@ import Avatar from "@/components/Avatar";
 import { cn } from "@/app/lib/cn";
 import useSWR from "swr";
 import { Scoreboard } from "@/types/game/scoreboard";
+import { socket } from "../socket";
+import { useEffect } from "react";
 
 const status2title = {
   FINISHED: "Finished",
@@ -48,10 +50,19 @@ function GameIndex() {
   const { id } = useParams();
   const { data: game, isLoading } = useGame(id as string);
 
-  const { data: scoreboard } = useSWR<Scoreboard | undefined>(
-    `match-${id}-scoreboard`,
-    () => undefined,
-  );
+  const { data: scoreboard } = useSWR<Scoreboard | undefined>([
+    "scoreboard",
+    id,
+  ]);
+
+  console.log(scoreboard, "scoreboard");
+
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   if (isLoading) return <Spinner />;
   if (!game) return <div>Game not found</div>;
@@ -60,7 +71,9 @@ function GameIndex() {
     <div>
       <div className="flex gap-2 items-center flex-wrap justify-between font-bold w-full ">
         <UserScore
-          score={scoreboard?.left ?? game.initiatorScore}
+          score={
+            scoreboard === undefined ? game.initiatorScore : scoreboard.left
+          }
           username={game.initiator.username}
           avatar={game.initiator.avatar}
           status={game.initiatorStatus}
@@ -68,7 +81,9 @@ function GameIndex() {
 
         <p className="text-4xl min-w-full sm:min-w-[100px] text-center">vs</p>
         <UserScore
-          score={scoreboard?.right ?? game.participantScore}
+          score={
+            scoreboard === undefined ? game.initiatorScore : scoreboard.right
+          }
           username={game.participant.username}
           avatar={game.participant.avatar}
           status={game.participantStatus}

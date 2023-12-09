@@ -4,6 +4,7 @@ export const EMITED_MESSAGES = [
   "MOVE_PADDLE_PARTICIPANT",
   "SCOREBOARD",
   "PEERING",
+  "LAUNCH_GAME",
   "ANNOUNCE",
 ] as const;
 
