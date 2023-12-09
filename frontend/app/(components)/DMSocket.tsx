@@ -22,7 +22,6 @@ export function useDMSocket() {
 }
 
 export default function DMSocketProvider({ children }: PropsWithChildren) {
-  // const [socket, setSocket] = useState<null | Socket>(null);
   const socket = useMemo(() => {
     const url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
