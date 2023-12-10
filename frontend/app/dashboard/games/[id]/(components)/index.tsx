@@ -11,16 +11,18 @@ import { GameOver } from "./over";
 import { TextureLoader } from "three";
 import { OrbitControls } from "@react-three/drei";
 import { useSWRConfig } from "swr";
-import { socket } from "../../socket";
+// import { socket } from "../../socket";
 import { Scoreboard } from "@/types/game/scoreboard";
 import { Camera } from "./camera";
+import { Socket } from "socket.io-client";
 
 interface GameProps {
   status: "READY" | "FINISHED";
+  socket: Socket;
   id: string;
 }
 
-export function Game({ status, id }: GameProps) {
+export function Game({ status, id, socket }: GameProps) {
   const [down, setDown] = useState(0);
   const started = useRef(false);
   const isFinished = status === "FINISHED";
@@ -39,7 +41,7 @@ export function Game({ status, id }: GameProps) {
     };
   }, [id, isFinished, mutate]);
 
-  const round = useWs("ANNOUNCE", {
+  const round = useWs(socket, "ANNOUNCE", {
     defaultValue: {
       count: "",
     },
@@ -48,7 +50,7 @@ export function Game({ status, id }: GameProps) {
   useEffect(() => {
     if (isFinished || started.current) return;
     started.current = true;
-    sendEvent("START_GAME", {});
+    sendEvent(socket, "START_GAME", {});
   }, [isFinished]);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Game({ status, id }: GameProps) {
   useEffect(() => {
     if (round.count === "GO") {
       const whistle = document.getElementById(
-        "game-whistle",
+        "game-whistle"
       ) as HTMLAudioElement;
       whistle.play();
     }
@@ -92,7 +94,7 @@ export function Game({ status, id }: GameProps) {
             setDown(1);
             break;
           case "KeyD":
-            sendEvent("DEBUG", {});
+            sendEvent(socket, "DEBUG", {});
             break;
         }
       }}

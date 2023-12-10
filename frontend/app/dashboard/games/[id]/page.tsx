@@ -7,8 +7,10 @@ import Avatar from "@/components/Avatar";
 import { cn } from "@/app/lib/cn";
 import useSWR, { useSWRConfig } from "swr";
 import { Scoreboard } from "@/types/game/scoreboard";
-import { socket } from "../socket";
-import { useEffect } from "react";
+// import { socket } from "../socket";
+import { useEffect, useMemo } from "react";
+import { io } from "socket.io-client";
+import { useGameSocket } from "../socket";
 
 const status2title = {
   FINISHED: "Finished",
@@ -17,7 +19,7 @@ const status2title = {
 
 const Game = dynamic(
   () => import("./(components)/index").then((mod) => mod.Game),
-  { ssr: false },
+  { ssr: false }
 );
 
 interface UserScoreProps {
@@ -56,9 +58,13 @@ function GameIndex() {
     id,
   ]);
 
-  const finished = useWs<Record<string, never> | undefined>("FINISHED", {
-    defaultValue: undefined,
-  });
+  const socket = useGameSocket();
+
+  const finished = useWs<Record<string, never> | undefined>(
+    socket,
+    "FINISHED",
+    { defaultValue: undefined }
+  );
 
   useEffect(() => {
     if (!finished) return;
@@ -72,13 +78,6 @@ function GameIndex() {
   }, [finished, game, mutate]);
 
   console.log(scoreboard, "scoreboard");
-
-  useEffect(() => {
-    socket.connect();
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   if (isLoading) return <Spinner />;
   if (!game) return <div>Game not found</div>;
@@ -107,7 +106,13 @@ function GameIndex() {
         />
       </div>
 
-      {<Game status={finished ? "FINISHED" : game.status} id={game.id} />}
+      {
+        <Game
+          status={finished ? "FINISHED" : game.status}
+          socket={socket}
+          id={game.id}
+        />
+      }
     </div>
   );
 }

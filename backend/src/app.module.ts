@@ -12,8 +12,6 @@ import { FriendsModule } from './friends/friends.module';
 import { NotificationModule } from './notification/notification.module';
 import { GameModule } from './game/game.module';
 import { AchievementsModule } from './achievements/achievements.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -30,15 +28,6 @@ import { join } from 'path';
       global: true,
       secret: new ConfigService().get<string>('JWT_SECRET_TOKE'),
       signOptions: { expiresIn: '1d' },
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'public'),
-      serveRoot: '/public',
-      renderPath: '/',
-      serveStaticOptions: {
-        // this is not working, open an issue in github.
-        index: false,
-      },
     }),
     AchievementsModule,
   ],

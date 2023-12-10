@@ -14,7 +14,7 @@ import { UserService } from 'src/user/user.service';
 
 @WebSocketGateway({
   namespace: 'game',
-  cors: { origin: process.env.FRONTEND_URL },
+  cors: { origin: process.env['FRONTEND_BASEURL'] },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -76,6 +76,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('PEERING')
   async peer(@ConnectedSocket() client: Socket) {
+    console.log('peering w/', client.id);
     client.emit('PEERING', 'PENDING');
     const userId = GameService.findUser(client.id);
     if (!userId) {

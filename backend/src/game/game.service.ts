@@ -426,10 +426,13 @@ export class GameService {
 
   getClientIdFromSocket(client: Socket) {
     const authHeader = Cookie.parse(client.handshake.headers.cookie ?? '');
+    console.log(client.handshake.headers);
     try {
       const payload = this.jwtService.verify(authHeader.access_token ?? '');
       return payload.sub as string;
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
     return null;
   }
 

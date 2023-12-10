@@ -6,10 +6,12 @@ import { sendEvent, useWs } from "../repo";
 import { Swords } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { socket } from "../socket";
+// import { socket } from "../socket";
 import Link from "next/link";
 import { GameLaunch } from "@/types/game/game";
 import { useAuth } from "@/hooks/auth";
+import { Socket } from "socket.io-client";
+import { useGameSocket } from "../socket";
 
 interface CompititorProps {
   className?: string;
@@ -37,13 +39,15 @@ export function Compititor({
 }
 
 export default function NewGame() {
+  const socket = useGameSocket();
   const router = useRouter();
   const { user } = useAuth();
-  const status = useWs<"PENDING" | "CONNECTING">("PEERING", {
+
+  const status = useWs<"PENDING" | "CONNECTING">(socket, "PEERING", {
     defaultValue: "CONNECTING",
   });
 
-  const lanuchGame = useWs<GameLaunch | undefined>("LAUNCH_GAME", {
+  const lanuchGame = useWs<GameLaunch | undefined>(socket, "LAUNCH_GAME", {
     defaultValue: undefined,
   });
 
@@ -83,14 +87,14 @@ export default function NewGame() {
     console.log(socket.connected);
     socket.on("connect", () => {
       console.log("connected");
-      sendEvent("PEERING", {});
+      sendEvent(socket, "PEERING", {});
     });
     return () => {
       socket.off("connect");
-      socket.disconnect();
+      // socket.disconnect();
       clearInterval(i);
     };
-  }, []);
+  }, [socket]);
 
   let initiator = {
     fullName: arr[count],
