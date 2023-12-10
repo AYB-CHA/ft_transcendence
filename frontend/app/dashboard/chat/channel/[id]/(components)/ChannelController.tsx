@@ -12,7 +12,7 @@ import useSWR from "swr";
 
 import { notFound, useParams } from "next/navigation";
 import { PenIcon, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type UserRoleOnChannel = "MEMBER" | "ADMINISTRATOR" | "MODERATOR";
 export type ChannelVisibilityType = "PRIVATE" | "PUBLIC" | "PROTECTED";
@@ -39,7 +39,7 @@ export default function ChannelController() {
     getChannelData
   );
 
-  if (error) throw notFound();
+  if (error?.response?.status === 404) throw notFound();
 
   return (
     <Card className="flex flex-col">
@@ -48,6 +48,7 @@ export default function ChannelController() {
           onChange={({ target }) => setQuery(target.value)}
           value={query}
           placeholder="Search Members"
+          name="searchMembers"
           icon={<Search size={18} />}
         />
       </CardHeader>
@@ -61,7 +62,7 @@ export default function ChannelController() {
                     !isLoading ? "border-primary" : "border-dark-dim"
                   }`}
                 >
-                  {isLoading ? (
+                  {isLoading || error ? (
                     <div className="h-full w-full bg-dark-semi-dim animate-pulse"></div>
                   ) : (
                     <>
@@ -71,6 +72,7 @@ export default function ChannelController() {
                         alt="Avatar"
                         width={128}
                         height={128}
+                        priority
                         unoptimized
                       />
                       {data?.myRole === "ADMINISTRATOR" && (

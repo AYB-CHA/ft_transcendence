@@ -1,5 +1,5 @@
 import { CircleSlash, Clock12, Clock2, Clock6, TimerOff } from "lucide-react";
-import { useChannelChatSocket } from "../../page";
+import { useChannelChatSocket } from "../../providers/ChatSocketProvider";
 
 import {
   DropdownMenuGroup,

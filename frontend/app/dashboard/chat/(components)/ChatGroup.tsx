@@ -54,7 +54,7 @@ export default function ChatGroup({
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={
-                data.myRole !== "ADMINISTRATOR" && data.type === "PRIVATE"
+                data.myRole !== "ADMINISTRATOR" || data.type !== "PRIVATE"
               }
               onClick={() => {
                 setInviteStatus(true);
@@ -78,15 +78,14 @@ export default function ChatGroup({
           className="block grow"
         >
           <div>
-            <h4>{data.name}</h4>
-            <h5 className="text-gray-500 text-xs">{data.topic}.</h5>
+            <h4 className="line-clamp-1 text-ellipsis">{data.name}</h4>
+            <h5 className="line-clamp-1 text-ellipsis text-gray-500 text-xs">
+              {data.topic}.
+            </h5>
           </div>
         </Link>
       </div>
       <div>
-        <div className="mb-2">
-          <span className="text-gray-500 text-xs">5:16 PM</span>
-        </div>
         {data.type === "PROTECTED" && (
           <LockIcon size={11} className="text-gray-500 ml-auto" />
         )}

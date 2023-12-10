@@ -1,9 +1,9 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
 import { ChannelMemberType } from "../ChannelMembers";
 import { ChannelType } from "../ChannelController";
-import { useChannelChatSocket } from "../../page";
 import { Sparkles } from "lucide-react";
 import { UserType } from "@/hooks/auth";
+import { useChannelChatSocket } from "../../providers/ChatSocketProvider";
 
 export default function MakeAdmin({
   channel,

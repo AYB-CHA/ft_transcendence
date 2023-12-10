@@ -17,6 +17,7 @@ import React, {
 import { AxiosError } from "axios";
 import { BasicFriendCard } from "../../friends/(components)/FriendCard";
 import Button from "@/components/Button";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 type SearchUserInviteType = {
   id: string;
@@ -62,7 +63,7 @@ export default function Invite({
 
   async function inviteUser(userId: string) {
     try {
-      const response = await axios.post<{ id: string }>(
+      await axios.post<{ id: string }>(
         `/chat/channel/private/${channelId}/invite`,
         { userId }
       );
@@ -72,7 +73,9 @@ export default function Invite({
           return user;
         });
       });
-    } catch (error) {}
+    } catch {
+      dispatchServerError();
+    }
   }
 
   return (
@@ -85,6 +88,7 @@ export default function Invite({
                 className="bg-dark-dim border-0 py-4"
                 placeholder="Search"
                 icon={<Search size={16} />}
+                name="search"
                 onChange={debouncedSetQuery}
               />
             </Card>

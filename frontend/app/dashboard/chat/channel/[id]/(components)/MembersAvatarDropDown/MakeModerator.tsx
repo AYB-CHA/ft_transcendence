@@ -1,8 +1,8 @@
 import { ChannelType, UserRoleOnChannel } from "../ChannelController";
 import { DropdownMenuItem } from "@/components/ui/DropDown";
 import { ChannelMemberType } from "../ChannelMembers";
-import { useChannelChatSocket } from "../../page";
 import { Star, User2 } from "lucide-react";
+import { useChannelChatSocket } from "../../providers/ChatSocketProvider";
 
 export default function MakeModerator({
   channel,

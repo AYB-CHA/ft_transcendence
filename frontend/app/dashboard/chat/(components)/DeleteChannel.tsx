@@ -11,6 +11,7 @@ import {
   DialogContent,
   Dialog,
 } from "@/components/ui/Dialog";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export default function DeleteChannel({
   status,
@@ -24,7 +25,11 @@ export default function DeleteChannel({
   const router = useRouter();
 
   async function deleteCurrentChannel() {
-    await axios.delete(`/chat/channel/${id}`);
+    try {
+      await axios.delete(`/chat/channel/${id}`);
+    } catch {
+      dispatchServerError();
+    }
     router.push("/dashboard/chat");
     setStatus(false);
     mutate("/chat/channel");

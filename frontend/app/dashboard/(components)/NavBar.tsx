@@ -6,6 +6,7 @@ import CardHeader from "@/components/card/CardHeader";
 import CardBody from "@/components/card/CardBody";
 import Card from "@/components/card/Card";
 import Button from "@/components/Button";
+import MessagesTab from "./MessagesTab";
 import axios from "@/lib/axios";
 import NavTab from "./NavTab";
 import Link from "next/link";
@@ -39,11 +40,13 @@ import {
   BellOff,
   MessageSquare,
   UserPlus,
+  ShieldAlert,
   Gamepad2,
 } from "lucide-react";
 
 import { io } from "socket.io-client";
-import MessagesTab from "./MessagesTab";
+import { dispatchServerError } from "@/app/lib/Toast";
+import { useRouter } from "next/navigation";
 import { ROUTER } from "@/lib/ROUTER";
 
 type NotificationType =
@@ -122,7 +125,7 @@ function Notifications() {
     async (key: string) => {
       const { data } = await axios.get(key);
       return data;
-    },
+    }
   );
 
   const socket = useMemo(() => {
@@ -156,7 +159,11 @@ function Notifications() {
   }, [socket, user?.id, mutate]);
 
   async function clearNotifications() {
-    await axios.delete("/user/notifications");
+    try {
+      await axios.delete("/user/notifications");
+    } catch {
+      dispatchServerError();
+    }
     mutate();
   }
 
@@ -165,14 +172,18 @@ function Notifications() {
   function markAsRead(notificationId: string) {
     return async () => {
       setOpen(false);
-      await axios.patch("/user/notifications/" + notificationId);
-      mutate();
+      try {
+        await axios.patch("/user/notifications/" + notificationId);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   const unreadCount = useMemo(
     () => data?.reduce((acc, item) => acc + (item.read ? 0 : 1), 0) ?? 0,
-    [data],
+    [data]
   );
 
   return (
@@ -239,6 +250,7 @@ function Notifications() {
 export default function NavBar() {
   const { user, logOut, isLoading } = useAuth({ middleware: "auth" });
   const pathname = usePathname();
+  const router = useRouter();
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
     {
@@ -261,8 +273,8 @@ export default function NavBar() {
 
   return (
     <div>
-      <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between">
-        <div className="flex flex-col gap-6">
+      <div className="flex h-full flex-col items-center border-r border-dark-semi-dim py-4 justify-between gap-4">
+        <div className="flex flex-col gap-6 overflow-auto">
           <NavTab href="/dashboard" active={pathname === "/dashboard"}>
             <Activity strokeWidth={1} />
           </NavTab>
@@ -287,37 +299,29 @@ export default function NavBar() {
               <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link href="/dashboard/profile">
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/dashboard/friends">
-                  <DropdownMenuItem>
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>Friends</span>
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/dashboard/settings">
-                  <DropdownMenuItem>
-                    <SettingsIcon className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/")}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router.push("/dashboard/friends")}
+                >
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Friends</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => router.push("/dashboard/settings")}
+                >
+                  <SettingsIcon className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logOut}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Logout</span>
-                  </DropdownMenuItem>
+                <DropdownMenuItem onClick={logOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
               </DropDownAvatar>
             )}
-            {/* <div className="text-sm pl-2 mt-1.5">
-              <h3 className="leading-3">{user && "@" + user?.username}</h3>
-              <span className="text-primary text leading-3">
-                {user && "lvl 7.4"}
-              </span>
-            </div> */}
           </div>
         </div>
       </div>

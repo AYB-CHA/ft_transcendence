@@ -5,6 +5,7 @@ export const POST = () => {
   const cookieStore = cookies();
   cookieStore.set("access_token", "", {
     httpOnly: true,
+    sameSite: "strict",
     secure: false,
     expires: new Date(),
   });

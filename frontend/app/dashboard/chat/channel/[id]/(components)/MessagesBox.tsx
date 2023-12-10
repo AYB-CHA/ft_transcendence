@@ -7,11 +7,11 @@ import axios from "@/lib/axios";
 import useSWR from "swr";
 
 import { ChannelType } from "./ChannelController";
-import { useChannelChatSocket } from "../page";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserType } from "@/hooks/auth";
 import { MessageType } from "./ChatBox";
+import { useChannelChatSocket } from "../providers/ChatSocketProvider";
 
 async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;

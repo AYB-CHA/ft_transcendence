@@ -45,7 +45,6 @@ export default class UpdateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsStrongPassword()
   @IsOptional()
   passwordConfirmation?: string;
 }

@@ -1,8 +1,8 @@
 import { DropdownMenuItem } from "@/components/ui/DropDown";
 import { ChannelMemberType } from "../ChannelMembers";
 import { ChannelType } from "../ChannelController";
-import { useChannelChatSocket } from "../../page";
 import { Trash2 } from "lucide-react";
+import { useChannelChatSocket } from "../../providers/ChatSocketProvider";
 
 export default function KickOut({
   channel,
