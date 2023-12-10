@@ -1,52 +1,14 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { RequestType } from 'src/types';
-import * as Cookie from 'cookie';
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthGuard as PassportGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+export class AuthGuard extends PassportGuard('jwtAuth') {
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: RequestType = context.switchToHttp().getRequest();
-    const token = AuthGuard.extractTokenFromCookie(request);
-
-    if (!token) {
-      throw new UnauthorizedException();
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+        const request = context.switchToHttp().getRequest();
+        // console.log(request);
+        // console.log(this.getRequest(context));
+        return super.canActivate(context);
     }
-    try {
-      const payload = await this.jwtService.verifyAsync(token);
-      if (payload.TOTPUnverified === true) {
-        throw new HttpException(
-          {
-            error: 'TOTP_UNVERIFIED',
-            message: 'TOTP needs verification',
-          },
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
-
-      request['userPayload'] = payload;
-    } catch (e) {
-      if (e instanceof HttpException) throw e;
-      throw new UnauthorizedException();
-    }
-    return true;
-  }
-  // DEPRECATED !!
-  private extractTokenFromHeader(request: Request): string {
-    return request.headers.authorization?.replace('Bearer ', '');
-  }
-  static extractTokenFromCookie(request: Request): string {
-    return Cookie.parse(request.headers.cookie ?? '').access_token ?? '';
-  }
 }

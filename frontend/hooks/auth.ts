@@ -60,7 +60,7 @@ export function useAuth({
 
   const logOut = async () => {
     try {
-      await rawAxios.post("/auth/logout");
+      await rawAxios.post("api/auth/logout");
     } catch {}
 
     mutate(undefined, { revalidate: false });
@@ -69,7 +69,7 @@ export function useAuth({
 
   const login = async (usernameOrEmail: string, password: string) => {
     try {
-      const response = await axios.post("auth/login", {
+      const response = await axios.post("api/auth/login", {
         usernameOrEmail,
         password,
       });
@@ -96,8 +96,8 @@ export function useAuth({
 
   const verify2FA = async (verificationCode: string) => {
     try {
-      await axios.post("/auth/verify/2fa", {
-        verificationCode,
+      await axios.post("auth/verify/2fa", {
+        code: verificationCode,
       });
       console.log("ok");
       mutate();

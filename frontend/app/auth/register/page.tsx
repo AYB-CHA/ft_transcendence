@@ -1,5 +1,4 @@
 import ProvidersButtons from "../(components)/ProvidersButtons";
-import Link from "next/link";
 import RegisterBoard from "./(components)/RegisterBoard";
 
 export default function page() {
@@ -13,12 +12,6 @@ export default function page() {
       </div>
       <div className="mb-6">
         <ProvidersButtons />
-      </div>
-      <div className="text-center">
-        <span className="text-gray-500">You have an account? </span>
-        <Link href={"/auth/login"}>
-          <span className="text-primary font-medium"> Login</span>
-        </Link>
       </div>
     </div>
   );

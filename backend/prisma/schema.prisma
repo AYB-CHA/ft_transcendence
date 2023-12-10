@@ -29,10 +29,10 @@ model User {
   password String?
   avatar   String
 
-  authProvider AuthProvider?
+  // authProvider AuthProvider?
 
-  ftId     Int?
-  githubId Int?
+  // ftId     Int?
+  // githubId Int?
 
   optSecret    String
   is2FAEnabled Boolean @default(false)

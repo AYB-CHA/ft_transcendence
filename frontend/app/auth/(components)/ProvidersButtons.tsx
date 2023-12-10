@@ -1,7 +1,5 @@
 import Button from "@/components/Button";
 import Ft from "@/components/icons/Ft";
-import Github from "@/components/icons/Github";
-import serverAxios from "@/lib/serverAxios";
 import Link from "next/link";
 
 type LoginProviderType = {
@@ -9,22 +7,11 @@ type LoginProviderType = {
 };
 
 export default async function ProvidersButtons() {
-  const githubLink = (
-    await serverAxios.get<LoginProviderType>("/auth/login/github")
-  ).data.redirectUrl;
-
-  const ftLink = (await serverAxios.get<LoginProviderType>("/auth/login/ft"))
-    .data.redirectUrl;
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Link href={githubLink} className="flex">
-        <Button variant="dark" className="w-full">
-          <Github />
-        </Button>
-      </Link>
 
-      <Link href={ftLink}>
+      <Link href={process.env["NEXT_PUBLIC_BACKEND_BASEURL"] + "auth/login"}>
         <Button variant="dark" className="w-full">
           <Ft />
         </Button>

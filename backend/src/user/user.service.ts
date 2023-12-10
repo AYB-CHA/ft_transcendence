@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { UserSearchEntity } from './types.d';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
-
 import * as Cookie from 'cookie';
 import * as se from 'speakeasy';
 
@@ -14,6 +13,7 @@ import {
   UpdateUserPasswordType,
   UpdateUserType,
 } from 'src/types';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -113,15 +113,17 @@ export class UserService {
     });
   }
 
-  async createUser(userData: RegisterUserType) {
+  // async createMyUser()
+
+  async createUser(userData: RegisterUserType) :Promise<User> {
     // bcrypt
-    const password = userData.password
-      ? hashSync(userData?.password, 10)
-      : null;
+    // const password = userData.password
+    //   ? hashSync(userData?.password, 10)
+    //   : null;
 
-    const avatar = new URL(this.config.get('BACKEND_BASEURL'));
+    // const avatar = new URL(this.config.get('BACKEND_BASEURL'));
 
-    avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
+    // avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
 
     const secret = se.generateSecret({});
 
@@ -131,22 +133,23 @@ export class UserService {
           fullName: userData.fullName,
           email: userData.email,
           username: userData.username,
-          password,
-          avatar: avatar.toString(),
+          // password,
+          avatar: userData.avatar,
+          // avatar.toString(),
           optSecret: secret.hex,
-          authProvider: userData.authProvider,
-          githubId:
-            userData.authProvider === 'GITHUB'
-              ? userData.providerId
-              : undefined,
-          ftId:
-            userData.authProvider === 'FT' ? userData.providerId : undefined,
+          // authProvider: userData.authProvider,
+          // githubId:
+          //   userData.authProvider === 'GITHUB'
+          //     ? userData.providerId
+          //     : undefined,
+          // ftId:
+          //   userData.authProvider === 'FT' ? userData.providerId : undefined,
         },
-        select: {
-          id: true,
-        },
+        // select: {
+        //   id: true,
+        // },
       })
-    ).id;
+    );
   }
 
   async updatePassword(userPasswords: UpdateUserPasswordType, id: string) {
@@ -218,6 +221,16 @@ export class UserService {
     return this.prisma.user.findFirstOrThrow({ where: { email } });
   }
 
+  async findOneByEmail(email: string): Promise<User | null> {
+    const user: User | null = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
+
   findUsers(
     userId: string,
     query: string | undefined = '',
@@ -252,5 +265,17 @@ export class UserService {
       return payload.sub as string;
     } catch {}
     return null;
+  }
+  async check2FA(id: string, tfaCode: string) {
+    const user = await this.findUser(id, true);
+
+    console.log(user.otpSecret, tfaCode, "check2FA");
+    if(!se.totp.verify({
+      secret: user.otpSecret,
+      token: tfaCode,
+      encoding: 'hex',
+    })) {
+      throw new BadRequestException(['invalid 2FA code']);
+    }
   }
 }

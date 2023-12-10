@@ -1,85 +1,77 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { LoginUserType, RegisterUserType } from 'src/types';
 import { UserService } from 'src/user/user.service';
-import { compareSync } from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private userService: UserService,
   ) {}
 
-  async registerNewUser(userData: RegisterUserType) {
-    await this.userService.validateUniquenessOfEmailAndUsername(
-      userData.username,
-      userData.email,
-    );
-    const userId = await this.userService.createUser(userData);
-    return this.generateJwtResponse(userId);
-  }
-
-  async loginUser(userData: LoginUserType) {
-    try {
-      const user = await this.userService.findUserByEmailOrUsername(
-        userData.usernameOrEmail,
-      );
-
-      if (compareSync(userData.password, user.password)) {
-        return this.generateJwtResponse(
-          user.id,
-          user.is2FAEnabled ? true : undefined,
-        );
-      }
-    } catch {}
-    throw new UnauthorizedException(['username or password is wrong']);
-  }
-
-  async logInUserOAuth(
-    userData: RegisterUserType,
-    authProvider: 'FT' | 'GITHUB',
-  ) {
-    let userId: string;
-    let totp = undefined;
-    const redirectUrl = new URL(this.configService.get('FRONTEND_BASEURL'));
-    redirectUrl.pathname = '/auth/provider';
-
-    try {
-      const user = await this.userService.findUserByProviderId(
-        userData.providerId,
-        authProvider,
-      );
-      userId = user.id;
-      totp = user.is2FAEnabled ? true : undefined;
-    } catch {
-      userId = await this.userService.createUser({ ...userData, authProvider });
+  async localValidation(email: string, password: string) {
+    const user = await this.userService.findUserByEmail(email);
+    if (!user) {
+      throw new Error(`User with email ${email} not found`);
     }
+    if (password !== user.password) {
+      return null;
+    }
+    return user;
+  }
 
-    redirectUrl.searchParams.append(
-      'access_token',
-      (await this.generateJwtResponse(userId, totp)).jwtToken,
-    );
+  async _42Validation(payload: any) {
+    let user = await this.userService.findOneByEmail(payload.email);
+    if (!user) {
+      user = await this.userService.createUser({
+        fullName: payload.displayName,
+        email: payload.email,
+        username: payload.login,
+        avatar: payload.image_url,
+      });
+    }
+    return user;
+  }
 
-    if (totp) redirectUrl.searchParams.append('2fa', 'true');
+  async login(res: Response, user: User) {
+    //sign the token that we have before the tfa
+    this.sign(res, { id: user.id, isLogged: !user.is2FAEnabled });
+    res.redirect(user.is2FAEnabled ? '/auth/2fa' : '/');
+  }
 
+  async jwtValidation(payload: any) {
+    const user = await this.userService.findUser(payload.id);
+    if (!user) {
+      throw new Error('User not found');
+    }
     return {
-      url: redirectUrl.toString(),
+      ...user,
     };
   }
 
-  async generateJwtResponse(
-    sub: string,
-    TOTPUnverified: boolean | undefined = undefined,
-  ) {
-    const jwtToken = await this.jwtService.signAsync({
-      sub,
-      TOTPUnverified,
-    });
-    return {
-      jwtToken,
-    };
+  async login2FA(res: Response, user: User, tfaCode: string) {
+    await this.userService.check2FA(user.id, tfaCode);
+    this.sign(res, { id: user.id, isLogged: true });
+    res.redirect("/");
+  }
+
+  sign(res: Response,payload: any) {
+    const tk =  this.jwtService.sign(payload);
+    res
+      .cookie('accessToken', tk, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 24 * 3600000,
+      })
+  }
+
+  loginAssert() {
+    return 'login success';
+  }
+
+  logout(res: Response) {
+    res.clearCookie('accessToken')
   }
 }

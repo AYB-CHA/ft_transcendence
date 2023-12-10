@@ -30,9 +30,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/me')
-  async me(@Req() request: RequestType) {
+  async me(@Req() request: any) {
     try {
-      return await this.userService.findUser(request.userPayload.sub);
+      return await this.userService.findUser(request.user.id);
     } catch {
       throw new UnauthorizedException();
     }
@@ -43,7 +43,7 @@ export class UserController {
     @Req() request: RequestType,
     @Query('q') query: string | undefined,
   ) {
-    return this.userService.findUsers(request.userPayload.sub, query);
+    return this.userService.findUsers(request.user.id, query);
   }
 
   @Get('/:id')
@@ -53,7 +53,7 @@ export class UserController {
 
   @Post('block/:id')
   blockUser(@Req() request: RequestType, @Param('id') id: string) {
-    return this.userService.blockUser(request.userPayload.sub, id);
+    return this.userService.blockUser(request.user.id, id);
   }
 
   @Put('/update')
@@ -61,9 +61,9 @@ export class UserController {
     await this.userService.validateUniquenessOfEmailAndUsername(
       body.username,
       body.email,
-      request.userPayload.sub,
+      request.user.id,
     );
-    const user = await this.userService.updateUser(request.userPayload.sub, {
+    const user = await this.userService.updateUser(request.user.id, {
       avatar: body.avatar,
       email: body.email,
       fullName: body.fullName,
@@ -84,7 +84,7 @@ export class UserController {
         newPassword: body.newPassword,
         oldPassword: body.oldPassword,
       },
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
@@ -95,11 +95,12 @@ export class UserController {
   ) {
     try {
       const user = await this.userService.findUser(
-        request.userPayload.sub,
+        request.user.id,
         true,
       );
       if (!verificationCode || user.is2FAEnabled)
         throw new BadRequestException();
+      console.log(user.otpSecret, verificationCode)
       if (
         !se.totp.verify({
           secret: user.otpSecret,
@@ -108,7 +109,7 @@ export class UserController {
         })
       )
         throw new BadRequestException(['verification code is invalid']);
-      await this.userService.enable2FA(request.userPayload.sub);
+      await this.userService.enable2FA(request.user.id);
       return;
     } catch (e) {
       if (e instanceof HttpException) throw e;
@@ -118,7 +119,7 @@ export class UserController {
 
   @Get('/2fa/qrcode')
   async qrcode(@Req() request: RequestType) {
-    const user = await this.userService.findUser(request.userPayload.sub, true);
+    const user = await this.userService.findUser(request.user.id, true);
     const url = se.otpauthURL({
       secret: user.otpSecret,
       label: `PingPong(${user.username})`,
@@ -134,6 +135,6 @@ export class UserController {
 
   @Put('/update/disable2FA')
   async disable2FA(@Req() request: RequestType) {
-    await this.userService.disable2FA(request.userPayload.sub);
+    await this.userService.disable2FA(request.user.id);
   }
 }

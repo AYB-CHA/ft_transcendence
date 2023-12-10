@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
-import { useMyGames } from "../../games/repo";
+import { useMyGames } from "../../../games/repo";
 import Alert from "@/components/Alert";
 import Avatar from "@/components/Avatar";
 import { User } from "@/types/user";
@@ -75,7 +75,8 @@ export function History({ id }: { id: string }) {
       {isLoading && <Spinner />}
       {error && <Alert variant="danger">Failed to get Games</Alert>}
       {!isLoading && !error && !history?.length && <Alert>No Games</Alert>}
-      <div className="border bg-dark-dim flex lg:w-[70%]">
+      {history && history.length > 0 && <>
+        <div className="border bg-dark-dim flex lg:w-[70%]">
         <div className="w-full">
           <p className="border-b text-xl p-6">Match History</p>
           <div className="p-4 space-y-4 max-h-96 overflow-auto">
@@ -103,6 +104,7 @@ export function History({ id }: { id: string }) {
           />}
         </div>
       </div>
+      </>}
     </div>
   );
 }
