@@ -69,17 +69,14 @@ export class ChannelSocketGateway
     }
 
     this.clients.push({ id, socket: client, channelId });
-    // console.log('connect: ', this.clients);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     const id = this.userService.getClientIdFromSocket(client);
-    // console.log(id);
 
     this.clients = this.clients.filter((c) => {
       return c.id != id;
     });
-    // console.log('disconnect: ', this.clients);
   }
 
   @SubscribeMessage('newMessage')

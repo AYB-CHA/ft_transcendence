@@ -133,6 +133,7 @@ function Notifications() {
     return io(url.toString(), {
       withCredentials: true,
       transports: ["websocket"],
+      forceNew: true,
     });
   }, []);
 

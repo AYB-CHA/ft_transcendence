@@ -23,7 +23,7 @@ export default class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail(undefined, { message: 'the email must be a valid email address' })
   @MaxLength(100)
   email: string;
 

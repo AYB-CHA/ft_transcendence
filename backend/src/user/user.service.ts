@@ -120,8 +120,7 @@ export class UserService {
       : null;
 
     const avatar = new URL(this.config.get('BACKEND_BASEURL'));
-
-    avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
+    avatar.pathname += `public/avatars/${Math.ceil(Math.random() * 7)}.png`;
 
     const secret = se.generateSecret({});
 
@@ -249,9 +248,9 @@ export class UserService {
   }
 
   getClientIdFromSocket(client: Socket) {
-    const authHeader = Cookie.parse(client.handshake.headers.cookie ?? '');
+    const cookies = Cookie.parse(client.handshake.headers.cookie ?? '');
     try {
-      const payload = this.jwtService.verify(authHeader.access_token ?? '');
+      const payload = this.jwtService.verify(cookies.access_token ?? '');
       return payload.sub as string;
     } catch {}
     return null;

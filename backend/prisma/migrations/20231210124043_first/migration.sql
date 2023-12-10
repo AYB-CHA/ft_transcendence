@@ -102,6 +102,7 @@ CREATE TABLE "DMMessage" (
     "id" SERIAL NOT NULL,
     "text" TEXT NOT NULL,
     "senderId" TEXT NOT NULL,
+    "seen" BOOLEAN NOT NULL DEFAULT false,
     "threadId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

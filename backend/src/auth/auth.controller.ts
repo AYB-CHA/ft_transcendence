@@ -137,7 +137,7 @@ export class AuthController {
     response.cookie('access_token', jwtToken, {
       httpOnly: true,
       domain,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: false,
     });
   }

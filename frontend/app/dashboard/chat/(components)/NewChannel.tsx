@@ -39,7 +39,7 @@ export function avatarsBaseUrl() {
   const avatarUrl = new URL(
     process.env["NEXT_PUBLIC_BACKEND_BASEURL"] as string
   );
-  avatarUrl.pathname = "public/avatars/";
+  avatarUrl.pathname += "public/avatars/";
   return avatarUrl.toString();
 }
 

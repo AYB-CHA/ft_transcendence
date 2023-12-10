@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   PropsWithChildren,
+  useState,
 } from "react";
 
 import { Socket, io } from "socket.io-client";
@@ -41,18 +42,21 @@ export default function ChatSocketProvider({
       query: {
         channelId: id,
       },
-      autoConnect: false,
-      reconnection: false,
+      forceNew: true,
     });
   }, [id]);
 
   useEffect(() => {
     socket.connect();
+
     socket.on("criticalChange", () => {
       clearSWRCache();
     });
+
     return () => {
-      if (socket.connected) socket.disconnect();
+      if (socket.connected) {
+        socket.disconnect();
+      }
     };
   }, [socket]);
 

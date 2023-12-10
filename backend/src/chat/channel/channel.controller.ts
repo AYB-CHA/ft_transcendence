@@ -130,11 +130,7 @@ export class ChannelController {
       channelId,
     );
 
-    // const url = new URL(this.configService.get<string>('FRONTEND_BASEURL'));
-    // url.pathname = `/dashboard/invited/channel/${data.id}`;
-
     this.notifier.notify({
-      // link: url.toString(),
       link: `/dashboard/invited/channel/${data.id}`,
       receiverId: userId,
       senderId: request.userPayload.sub,

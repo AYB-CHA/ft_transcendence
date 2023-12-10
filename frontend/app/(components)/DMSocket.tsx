@@ -25,13 +25,15 @@ export default function DMSocketProvider({ children }: PropsWithChildren) {
     const url = new URL(process.env["NEXT_PUBLIC_BACKEND_BASEURL"] ?? "");
     url.protocol = "ws";
     url.pathname = "/dm";
+
     const socket = io(url.toString(), {
-      query: {},
       withCredentials: true,
       transports: ["websocket"],
       reconnection: false,
       autoConnect: false,
+      forceNew: true,
     });
+
     return socket;
   }, []);
 

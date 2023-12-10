@@ -12,7 +12,7 @@ export class FtStrategy {
 
   constructor(private readonly configService: ConfigService) {
     const url = new URL(this.configService.get('BACKEND_BASEURL'));
-    url.pathname = '/auth/back';
+    url.pathname += 'auth/back';
     url.searchParams.append('provider', 'ft');
     this.redirectUrl = url.toString();
   }
@@ -45,9 +45,7 @@ export class FtStrategy {
         fullName: data.usual_full_name,
         username: data.login,
       };
-    } catch (error) {
-      console.error(error);
-    }
+    } catch {}
     throw new InternalServerErrorException();
   }
 

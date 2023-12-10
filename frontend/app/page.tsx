@@ -60,19 +60,21 @@ export default function Home() {
             <div className="w-2/3">
               <Reveal>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas
-                  ex neque magni beatae culpa nulla, deleniti maxime quasi
-                  voluptatum cum veritatis ratione voluptatem nostrum in qui
-                  enim odit aliquid. Velit modi similique dolor sint recusandae
-                  quis repellat ipsum facere sed quaerat asperiores quam,
-                  aspernatur repudiandae necessitatibus minima nesciunt,
-                  consequatur maiores molestiae officia eius corrupti rerum
-                  accusantium laboriosam! Delectus porro eum quam, nisi at
-                  consequuntur suscipit quo incidunt modi et. Delectus ipsum
-                  esse explicabo fugit maxime, exercitationem ipsam possimus
-                  veniam laboriosam ut. Doloribus earum illum, sapiente pariatur
-                  consectetur sequi sed nam, quis eligendi recusandae, cum
-                  praesentium eaque? Nostrum molestiae harum accusamus?
+                  Welcome to The Missing PingPong, the ultimate online
+                  destination for table tennis enthusiasts! Our website is
+                  designed to bring the thrill of ping pong to your fingertips
+                  while connecting you with friends in real-time. Challenge your
+                  pals to exhilarating ping pong matches in our user-friendly
+                  gaming interface, complete with responsive controls for a
+                  seamless playing experience. What sets us apart is our
+                  integrated chat system, allowing you to engage with your
+                  friends through direct messages or create custom channels for
+                  group discussions. Share strategies, celebrate victories, and
+                  enjoy the camaraderie as you compete for ping pong supremacy.
+                  With The Missing PingPong, the joy of playing your favorite
+                  sport is just a click away, bringing together the excitement
+                  of competition and the warmth of real-time communication. Join
+                  the community and let the games and conversations begin!
                 </p>
               </Reveal>
             </div>

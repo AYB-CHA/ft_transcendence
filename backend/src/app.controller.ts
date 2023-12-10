@@ -6,7 +6,7 @@ import { HelloTranscendence } from './types';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get('/')
   getHello(): HelloTranscendence {
     return 'Hello Transcendence!';
   }

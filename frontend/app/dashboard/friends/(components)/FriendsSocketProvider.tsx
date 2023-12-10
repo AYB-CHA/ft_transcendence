@@ -21,6 +21,7 @@ export function FriendsSocketProvider({ children }: PropsWithChildren) {
     url.protocol = "ws";
     return io(url.toString(), {
       withCredentials: true,
+      forceNew: true,
       transports: ["websocket"],
     });
   }, []);

@@ -28,7 +28,7 @@ export default class UpdateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail(undefined, { message: 'the email must be a valid email address' })
   @MinLength(5)
   @MaxLength(100)
   email: string;

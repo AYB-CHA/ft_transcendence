@@ -10,12 +10,13 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe());
+
   app.useStaticAssets(join(__dirname, '..', '..', 'public'), {
     prefix: '/public',
     index: false,
   });
-  const url = new URL(process.env['BACKEND_BASEURL']);
-  await app.listen(url.port, url.hostname);
+
+  await app.listen('4000', '0.0.0.0');
 }
 
 bootstrap();

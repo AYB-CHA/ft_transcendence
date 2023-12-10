@@ -59,7 +59,7 @@ export default function GlowCard({
         }}
       />
       <motion.div
-        className="absolute blur-2xl h-[100px] aspect-square rounded-full bg-gray-300 -z-10 -translate-x-1/2 -translate-y-1/2"
+        className="absolute blur-2xl h-[100px] top-full left-full aspect-square rounded-full bg-gray-300 -z-10 -translate-x-1/2 -translate-y-1/2"
         animate={{
           top: ["100%", "0%", "0%", "100%", "100%"],
           left: ["100%", "100%", "0%", "0%", "100%"],

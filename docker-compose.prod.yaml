@@ -5,8 +5,6 @@ services:
     image: postgres:bullseye
     container_name: postgres
     restart: always
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
@@ -17,7 +15,8 @@ services:
     container_name: frontend
     restart: always
     working_dir: /app
-    command: bash -c 'yarn && yarn dev'
+    # command: bash -c 'yarn && yarn build && yarn dev'
+    command: bash -c 'yarn && yarn build && yarn start'
     env_file:
       - .env
     volumes:
@@ -28,7 +27,8 @@ services:
     container_name: backend
     restart: always
     working_dir: /app
-    command: bash -c "yarn && yarn start:dev"
+    # command: bash -c "yarn && yarn db:gen && yarn db:deploy && yarn build && yarn start:dev"
+    command: bash -c "yarn && yarn db:gen && yarn db:deploy && yarn build && yarn start:prod"
     env_file:
       - .env
     volumes:
@@ -39,7 +39,6 @@ services:
     container_name: nginx
     restart: always
     ports:
-      - 0.0.0.0:3000:3000
-      - 0.0.0.0:4000:4000
+      - 0.0.0.0:80:80
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
