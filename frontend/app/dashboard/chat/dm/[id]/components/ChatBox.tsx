@@ -13,7 +13,7 @@ import { formatMessages } from "../../../channel/[id]/(components)/MessagesBox";
 import { MessageType } from "../../../channel/[id]/(components)/ChatBox";
 import { useDMSocket } from "@/app/(components)/DMSocket";
 import { notFound, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MehIcon } from "lucide-react";
 import { useAuth } from "@/hooks/auth";
 import { AxiosError } from "axios";
@@ -32,10 +32,12 @@ async function getOldMessages(url: string) {
 }
 
 export default function ChatBox() {
-  const { mutate } = useSWRConfig();
-  const { user: me } = useAuth();
-  const { id: chatThreadId } = useParams();
+  const boxRef = useRef<HTMLDivElement | null>(null);
   const socket = useDMSocket();
+
+  const { user: me } = useAuth();
+  const { mutate } = useSWRConfig();
+  const { id: chatThreadId } = useParams();
   const { id } = useParams();
   const [messages, setMessages] = useState<MessageType[]>([]);
 
@@ -49,6 +51,12 @@ export default function ChatBox() {
   );
 
   if (error?.response?.status === 404) throw notFound();
+
+  function scrollDown() {
+    if (boxRef.current) boxRef.current.scrollTop = boxRef.current.scrollHeight;
+  }
+
+  useEffect(scrollDown, [messages]);
 
   const { data: otherUser, isLoading } = useSWR(
     `/chat/dm/thread/other/${chatThreadId}`,
@@ -99,26 +107,27 @@ export default function ChatBox() {
           </div>
         ) : (
           <>
-            <div className="grow h-0 overflow-auto">
-              <div className="flex flex-col p-4 gap-4">
-                {formatMessages(messages).map((messagesGroup) => {
-                  if (messagesGroup[0].senderId === me?.id)
-                    return (
-                      <MyMessage
-                        avatar={me.avatar}
-                        username={me.username}
-                        key={messagesGroup[0].id}
-                        messages={messagesGroup}
-                      />
-                    );
+            <div
+              ref={boxRef}
+              className="grow h-0 overflow-auto flex flex-col p-4 gap-4"
+            >
+              {formatMessages(messages).map((messagesGroup) => {
+                if (messagesGroup[0].senderId === me?.id)
                   return (
-                    <OtherMessage
+                    <MyMessage
+                      avatar={me.avatar}
+                      username={me.username}
                       key={messagesGroup[0].id}
                       messages={messagesGroup}
                     />
                   );
-                })}
-              </div>
+                return (
+                  <OtherMessage
+                    key={messagesGroup[0].id}
+                    messages={messagesGroup}
+                  />
+                );
+              })}
             </div>
             <CardFooter>
               <ChatBoxInput handler={sendMessage} />
