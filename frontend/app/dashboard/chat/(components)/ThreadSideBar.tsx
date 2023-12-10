@@ -81,9 +81,6 @@ export default function ThreadSideBar() {
                   </Link>
                 </div>
                 <div>
-                  <div className="mb-2">
-                    <span className="text-gray-500 text-xs">5:16 PM</span>
-                  </div>
                   <OnlineStatus status={thread.user.status !== "OFFLINE"} />
                 </div>
               </div>
