@@ -27,6 +27,7 @@ export class GithubStrategy {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       if (!response.ok) throw new BadRequestException();
       const emailsResponse = await fetch('https://api.github.com/user/emails', {
         headers: {

@@ -7,7 +7,7 @@ import {
   useMotionValue,
 } from "framer-motion";
 
-import { LucideProps, XIcon } from "lucide-react";
+import { LucideProps, ShieldAlertIcon, XIcon } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 
 function NotificationItem({
@@ -138,4 +138,12 @@ export function ToastContainer() {
       </AnimatePresence>
     </motion.div>
   );
+}
+
+export function dispatchServerError() {
+  dispatchNotification({
+    title: "Server Error.",
+    description: "An error happened while processing the request.",
+    icon: ShieldAlertIcon,
+  });
 }

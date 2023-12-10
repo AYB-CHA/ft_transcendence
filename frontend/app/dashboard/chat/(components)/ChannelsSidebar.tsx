@@ -1,8 +1,9 @@
 "use client";
 import useSWR from "swr";
+import React from "react";
 import axios from "@/lib/axios";
 import ChatGroup from "./ChatGroup";
-import React, { useEffect } from "react";
+
 import MemberLabeLoading from "../channel/[id]/(components)/MemberLabeLoading";
 import { ChannelType } from "../channel/[id]/(components)/ChannelController";
 import { useParams } from "next/navigation";

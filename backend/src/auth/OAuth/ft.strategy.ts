@@ -8,8 +8,15 @@ import { RegisterUserType } from 'src/types';
 
 @Injectable()
 export class FtStrategy {
-  redirectUrl = 'http://localhost:4000/auth/back?provider=ft';
-  constructor(private readonly configService: ConfigService) {}
+  private readonly redirectUrl: string;
+
+  constructor(private readonly configService: ConfigService) {
+    const url = new URL(this.configService.get('BACKEND_BASEURL'));
+    url.pathname = '/auth/back';
+    url.searchParams.append('provider', 'ft');
+    this.redirectUrl = url.toString();
+  }
+
   getRedirectUrl() {
     const url = new URL('https://api.intra.42.fr/oauth/authorize');
     url.searchParams.append(

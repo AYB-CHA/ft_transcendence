@@ -14,6 +14,7 @@ import Input from "@/components/input/Input";
 import Button from "@/components/Button";
 import axios from "@/lib/axios";
 import Card from "@/components/card/Card";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export type SearchFriendsModalProps = {
   isOpen: boolean;
@@ -31,36 +32,56 @@ export function SearchFriendsModal({
 
   function addFriend(userId: string) {
     return async () => {
-      await axios.post("/user/friends/add/" + userId);
-      mutate();
+      try {
+        await axios.post("/user/friends/add/" + userId);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   function removeFriend(requestId: string) {
     return async () => {
-      await axios.delete("/user/friends/remove/" + requestId);
-      mutate();
+      try {
+        await axios.delete("/user/friends/remove/" + requestId);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   function acceptInvitation(requestId: string) {
     return async () => {
-      await axios.patch(`/user/friends/requests/accept/${requestId}`);
-      mutate();
+      try {
+        await axios.patch(`/user/friends/requests/accept/${requestId}`);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   function rejectInvitation(requestId: string) {
     return async () => {
-      await axios.delete(`/user/friends/requests/reject/${requestId}`);
-      mutate();
+      try {
+        await axios.delete(`/user/friends/requests/reject/${requestId}`);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
   function cancelInvitation(requestId: string) {
     return async () => {
-      await axios.delete("/user/friends/requests/cancel/" + requestId);
-      mutate();
+      try {
+        await axios.delete("/user/friends/requests/cancel/" + requestId);
+        mutate();
+      } catch {
+        dispatchServerError();
+      }
     };
   }
 
@@ -120,6 +141,7 @@ export function SearchFriendsModal({
               className="bg-dark-dim border-0 py-4"
               placeholder="Search"
               icon={<Search size={16} />}
+              name="searchInput"
               onChange={(event) => setQuery(event.target.value)}
             />
           </Card>

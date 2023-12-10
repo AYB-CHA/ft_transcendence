@@ -44,7 +44,7 @@ export function useAuth({
     },
     {
       onErrorRetry: () => {},
-    }
+    },
   );
 
   useEffect(() => {
@@ -54,17 +54,17 @@ export function useAuth({
     ) {
       return push("/auth/2fa");
     }
+
     if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
-    if (middleware === "auth" && !user && serverError) logOut();
+
+    if (middleware === "auth" && serverError?.response?.status === 401)
+      logOut();
   }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const logOut = async () => {
-    try {
-      await rawAxios.post("/auth/logout");
-    } catch {}
-
+    push("/");
     mutate(undefined, { revalidate: false });
-    push("/auth/login");
+    rawAxios.post("/auth/logout");
   };
 
   const login = async (usernameOrEmail: string, password: string) => {
@@ -99,7 +99,6 @@ export function useAuth({
       await axios.post("/auth/verify/2fa", {
         verificationCode,
       });
-      console.log("ok");
       mutate();
       push("/dashboard");
     } catch {

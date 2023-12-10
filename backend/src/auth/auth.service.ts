@@ -55,7 +55,15 @@ export class AuthService {
       userId = user.id;
       totp = user.is2FAEnabled ? true : undefined;
     } catch {
-      userId = await this.userService.createUser({ ...userData, authProvider });
+      try {
+        userId = await this.userService.createUser({
+          ...userData,
+          authProvider,
+        });
+      } catch {
+        redirectUrl.searchParams.append('userNameOrEmailError', '');
+        return { url: redirectUrl.toString() };
+      }
     }
 
     redirectUrl.searchParams.append(

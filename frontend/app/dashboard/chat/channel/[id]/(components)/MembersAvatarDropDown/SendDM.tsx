@@ -4,9 +4,14 @@ import { useRouter } from "next/navigation";
 
 import axios from "@/lib/axios";
 import React from "react";
+import { dispatchServerError } from "@/app/lib/Toast";
 
 export async function getDmId(userId: string) {
-  return (await axios.post("/chat/dm/thread", { userId })).data.id;
+  try {
+    return (await axios.post("/chat/dm/thread", { userId })).data.id;
+  } catch {
+    dispatchServerError();
+  }
 }
 
 export default function SendDM({ userId }: { userId: string }) {
@@ -16,6 +21,7 @@ export default function SendDM({ userId }: { userId: string }) {
     <DropdownMenuItem
       onClick={async () => {
         const id = await getDmId(userId);
+        if (!id) return;
         push(`/dashboard/chat/dm/${id}`);
       }}
     >

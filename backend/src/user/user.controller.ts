@@ -30,9 +30,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/me')
-  async me(@Req() request: RequestType) {
+  me(@Req() request: RequestType) {
     try {
-      return await this.userService.findUser(request.userPayload.sub);
+      return this.userService.findUser(request.userPayload.sub);
     } catch {
       throw new UnauthorizedException();
     }

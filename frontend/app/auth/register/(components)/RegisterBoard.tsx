@@ -42,6 +42,7 @@ export default function RegisterBoard() {
           placeholder="Full Name"
           icon={<User size={17} />}
           onChange={(e) => setFullName(e.target.value)}
+          name="fullname"
           value={fullName}
         />
       </div>
@@ -51,6 +52,7 @@ export default function RegisterBoard() {
           placeholder="username"
           icon={<Fingerprint size={17} />}
           onChange={(e) => setUsername(e.target.value)}
+          name="username"
           value={username}
         />
       </div>
@@ -61,6 +63,7 @@ export default function RegisterBoard() {
           icon={<Mail size={17} />}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
+          name="email"
           value={email}
         />
       </div>
@@ -70,6 +73,7 @@ export default function RegisterBoard() {
           placeholder="password"
           icon={<KeyRoundIcon size={17} type="password" />}
           type="password"
+          name="password"
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />

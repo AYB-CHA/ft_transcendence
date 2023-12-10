@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   Injectable,
   NotFoundException,
@@ -40,7 +41,7 @@ export class ChannelService {
       });
       return { ...invitation.Channel };
     } catch {
-      throw new UnauthorizedException([]);
+      throw new ForbiddenException([]);
     }
   }
 
@@ -79,6 +80,7 @@ export class ChannelService {
             id: true,
             channelId: true,
             recipientId: true,
+            senderId: true,
           },
         });
 
@@ -92,8 +94,11 @@ export class ChannelService {
             channelId: true,
           },
         });
-        await this.prisma.channelInvitations.delete({
-          where: { id: channelInvitation.id },
+        await this.prisma.channelInvitations.deleteMany({
+          where: {
+            channelId: data.channelId,
+            recipientId: userId,
+          },
         });
         return data;
       } catch {
@@ -101,7 +106,7 @@ export class ChannelService {
       }
     } catch (e) {
       if (e instanceof HttpException) throw e;
-      throw new UnauthorizedException([]);
+      throw new ForbiddenException([]);
     }
   }
 
@@ -185,13 +190,13 @@ export class ChannelService {
         },
       });
     } catch {
-      throw new UnauthorizedException([]);
+      throw new ForbiddenException([]);
     }
   }
 
   async getMessagesOnChannel(channelId: string, userId: string) {
     if (!(await this.isUserBelongsToChannel(userId, channelId)))
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     return (
       await this.prisma.messages.findMany({
         where: {
@@ -222,7 +227,7 @@ export class ChannelService {
         name: { contains: query, mode: 'insensitive' },
       },
       take: 10,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { users: { _count: 'desc' } },
       select: {
         id: true,
         avatar: true,
@@ -303,20 +308,15 @@ export class ChannelService {
               },
             },
           },
+          orderBy: {
+            createdAt: 'asc',
+          },
         },
       },
     });
 
     if (!userData) throw new NotFoundException();
-    // const response: any[] = [];
-    // userData.users.forEach((user) =>
-    //   response.push({
-    //     ...user.User,
-    //     role: user.role,
-    //     isMuted: user.mutedAt !== null,
-    //   }),
-    // );
-    // console.log(response);
+
     return userData.users.map((user) => {
       return {
         ...user.User,
@@ -495,7 +495,6 @@ export class ChannelService {
         },
       });
     } catch (error) {
-      console.error(error);
       throw new BadRequestException(['no channel found']);
     }
 
@@ -531,7 +530,7 @@ export class ChannelService {
       this.channelGlue.emit({ name: 'NEW_CHANNEL_MEMBER', channelId });
       return;
     }
-    throw new BadRequestException(['no channel found']);
+    throw new NotFoundException(['no channel found']);
   }
 
   async leaveChannel(channelId: string, userId: string) {
@@ -589,7 +588,7 @@ export class ChannelService {
   async getUserChannels(userId: string) {
     const channels = await this.prisma.channel.findMany({
       where: { users: { some: { User: { id: userId } } } },
-      orderBy: { updatedAt: 'asc' },
+      orderBy: { createdAt: 'asc' },
       select: {
         id: true,
         name: true,

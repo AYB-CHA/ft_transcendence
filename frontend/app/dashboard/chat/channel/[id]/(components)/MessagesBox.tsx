@@ -7,11 +7,11 @@ import axios from "@/lib/axios";
 import useSWR from "swr";
 
 import { ChannelType } from "./ChannelController";
-import { useChannelChatSocket } from "../page";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserType } from "@/hooks/auth";
 import { MessageType } from "./ChatBox";
+import { useChannelChatSocket } from "../providers/ChatSocketProvider";
 
 async function getOldMessages(url: string) {
   return (await axios.get<MessageType[]>(url)).data;
@@ -47,6 +47,7 @@ export default function MessagesBox({
   channel: ChannelType | undefined;
   isLoading: boolean;
 }) {
+  const boxRef = useRef<HTMLDivElement | null>(null);
   const { id } = useParams();
   const socket = useChannelChatSocket();
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -59,18 +60,26 @@ export default function MessagesBox({
     }
   );
 
+  function scrollDown() {
+    if (boxRef.current) boxRef.current.scrollTop = boxRef.current.scrollHeight;
+  }
+
+  useEffect(scrollDown, [messages]);
+
   useEffect(() => {
     if (oldMessages) setMessages(oldMessages);
   }, [oldMessages]);
 
+  const newMessageHandler = (message: MessageType) => {
+    setMessages((oldMessages) => [...oldMessages, message]);
+  };
+
   useEffect(() => {
-    socket?.on("newMessage", (message: MessageType) => {
-      setMessages((oldMessages) => [...oldMessages, message]);
-    });
+    socket?.on("newMessage", newMessageHandler);
     return () => {
-      socket?.off("newMessage");
+      socket?.off("newMessage", newMessageHandler);
     };
-  }, [id, socket]);
+  }, [socket]);
 
   function sendMessage(text: string) {
     socket?.emit("newMessage", { channelId: id, text });
@@ -78,28 +87,29 @@ export default function MessagesBox({
 
   return (
     <>
-      <div className="grow h-0 overflow-auto">
-        <div className="flex flex-col p-4 gap-4">
-          {me &&
-            formatMessages(messages).map((messagesGroup) => {
-              if (messagesGroup[0].senderId === me?.id) {
-                return (
-                  <MyMessage
-                    avatar={me.avatar}
-                    username={me.username}
-                    key={messagesGroup[0].id}
-                    messages={messagesGroup}
-                  />
-                );
-              }
+      <div
+        ref={boxRef}
+        className="grow h-0 flex p-4 flex-col gap-4 overflow-auto"
+      >
+        {me &&
+          formatMessages(messages).map((messagesGroup) => {
+            if (messagesGroup[0].senderId === me?.id) {
               return (
-                <OtherMessage
+                <MyMessage
+                  avatar={me.avatar}
+                  username={me.username}
                   key={messagesGroup[0].id}
                   messages={messagesGroup}
                 />
               );
-            })}
-        </div>
+            }
+            return (
+              <OtherMessage
+                key={messagesGroup[0].id}
+                messages={messagesGroup}
+              />
+            );
+          })}
       </div>
       <CardFooter>
         {isLoading ? (

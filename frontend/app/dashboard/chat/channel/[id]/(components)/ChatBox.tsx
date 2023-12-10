@@ -6,8 +6,9 @@ import useSWR from "swr";
 
 import { ChannelType, getChannelData } from "./ChannelController";
 import { notFound, useParams } from "next/navigation";
-import { MehIcon } from "lucide-react";
+import { CircleSlash, MehIcon } from "lucide-react";
 import { useAuth } from "@/hooks/auth";
+import { AxiosError } from "axios";
 
 export type MessageType = {
   text: string;
@@ -19,7 +20,7 @@ export default function ChatBox() {
   const { user: me } = useAuth();
   const { id } = useParams();
 
-  const { data, isLoading, error } = useSWR<ChannelType>(
+  const { data, isLoading, error } = useSWR<ChannelType, AxiosError>(
     `/chat/channel/${id}`,
     getChannelData,
     {
@@ -28,7 +29,7 @@ export default function ChatBox() {
     }
   );
 
-  if (error) throw notFound();
+  if (error?.response?.status === 404) throw notFound();
 
   return (
     <Card className="col-span-2">
@@ -38,9 +39,9 @@ export default function ChatBox() {
         </CardHeader>
         {data?.amIBaned ? (
           <div className="flex h-full justify-center items-center flex-col gap-4 text-dark-semi-light">
-            <MehIcon
+            <CircleSlash
               className="text-dark-semi-light"
-              size={50}
+              size={40}
               strokeWidth={1}
             />
             <span className="text-xs">You are baned from this channel.</span>

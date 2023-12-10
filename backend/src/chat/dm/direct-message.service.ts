@@ -1,7 +1,7 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
 import { UserService } from 'src/user/user.service';
@@ -139,7 +139,7 @@ export class DirectMessageService {
         await this.getThreadOtherUserId(threadId, userId),
       )
     )
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
 
     try {
       const { id } = await this.prisma.dMThread.findFirstOrThrow({
@@ -166,7 +166,7 @@ export class DirectMessageService {
         },
       });
     } catch (error) {}
-    throw new UnauthorizedException();
+    throw new ForbiddenException();
   }
 
   async getThreadID(initiatorId: string, userId: string) {

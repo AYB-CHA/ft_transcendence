@@ -1,8 +1,8 @@
 import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
-import { clearSWRCache } from "../page";
 import dayjs from "dayjs";
+import { clearSWRCache } from "../providers/ChatSocketProvider";
 
 dayjs.extend(relativeTime);
 
@@ -45,8 +45,8 @@ export default function ChatBoxInput({
       ) : (
         <>
           <div className="flex gap-3 text-gray-500">
-            <ImageIcon size={20} strokeWidth={1} />
-            <Link size={20} strokeWidth={1} />
+            {/* <ImageIcon size={20} strokeWidth={1} />
+            <Link size={20} strokeWidth={1} /> */}
             <Swords size={20} strokeWidth={1} />
           </div>
           <div className="grow">
@@ -55,6 +55,7 @@ export default function ChatBoxInput({
               type="text"
               placeholder="Start new message"
               value={message}
+              name="message"
               onChange={(e) => {
                 setMessage(e.target.value);
               }}
