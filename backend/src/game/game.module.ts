@@ -4,9 +4,19 @@ import { GameGateway } from './game.gateway';
 import { GameController } from './game.controller';
 import { GameQueue } from './queue.game';
 import { MatchService } from './match.service';
+import { GameInvitationGateway } from './game-invitation.gateway';
+import { GameInvitationController } from './game-invitation.controller';
+import { GameInvitationService } from './game-invitation.service';
 
 @Module({
-  controllers: [GameController],
-  providers: [GameGateway, GameService, GameQueue, MatchService],
+  controllers: [GameController, GameInvitationController],
+  providers: [
+    GameGateway,
+    GameService,
+    GameQueue,
+    MatchService,
+    GameInvitationGateway,
+    GameInvitationService,
+  ],
 })
 export class GameModule {}

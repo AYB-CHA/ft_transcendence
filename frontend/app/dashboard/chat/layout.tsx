@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 
 import NewChat from "./(components)/NewChat";
 import PopularChannels from "./(components)/PopularChannels";
+import { GameInviteSocketProvider } from "../games/match/GameInvitationSocket";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const path = usePathname();
