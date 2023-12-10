@@ -40,6 +40,15 @@ export function KeyRecorder({
     if (!ref.current) return;
     const width = ref.current.parentElement?.clientWidth ?? 0;
     setWidth(width);
+    const onWidthChange = () => {
+      const width = ref.current?.parentElement?.clientWidth ?? 0;
+      setWidth(width);
+    };
+
+    window.addEventListener("resize", onWidthChange);
+    return () => {
+      window.removeEventListener("resize", onWidthChange);
+    };
   }, [ref]);
 
   return (

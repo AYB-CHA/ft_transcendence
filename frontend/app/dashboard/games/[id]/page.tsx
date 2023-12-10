@@ -84,7 +84,7 @@ function GameIndex() {
   if (!game) return <div>Game not found</div>;
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex gap-2 items-center flex-wrap justify-between font-bold w-full ">
         <UserScore
           score={

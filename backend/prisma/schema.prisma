@@ -36,6 +36,8 @@ model User {
 
   optSecret    String
   is2FAEnabled Boolean @default(false)
+  
+  xp     Int    @default(0)
 
   status UserStatus @default(OFFLINE)
 

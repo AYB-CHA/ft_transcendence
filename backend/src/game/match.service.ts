@@ -30,4 +30,14 @@ export class MatchService {
     });
     return match;
   }
+
+  async getLeaderboard() {
+    const users = await this.prisma.user.findMany({
+      orderBy: {
+        xp: 'desc',
+      },
+    });
+    console.log(users);
+    return users;
+  }
 }

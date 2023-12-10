@@ -1,7 +1,9 @@
 import { Box } from "./box";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
-import { Config, sendEvent, useWs } from "../../repo";
+import { sendEvent, useWs } from "../../repo";
+import { useThemeStore } from "@/app/store/theme";
+import { Config } from "@/types/game/config";
 
 type PaddleProps = {
   down?: number;
@@ -11,6 +13,8 @@ type PaddleProps = {
 export const Paddle = ({ down, config }: PaddleProps) => {
   const meshLeft = useRef<THREE.Mesh>(null!);
   const meshRight = useRef<THREE.Mesh>(null!);
+
+  const [color] = useThemeStore((state) => [state.theme.paddle]);
 
   const sizeX = config.worldWidth * config.paddleSizeX;
   const sizeY = config.worldHeight * config.paddleSizeY;
@@ -44,7 +48,7 @@ export const Paddle = ({ down, config }: PaddleProps) => {
       <Box
         ref={meshRight}
         mmaterial={{
-          color: "orange",
+          color: color,
         }}
         position={[w2 - 0.25, 0, 0]}
         scale={[sizeX, sizeY, 0.1]}
@@ -52,7 +56,7 @@ export const Paddle = ({ down, config }: PaddleProps) => {
       <Box
         ref={meshLeft}
         mmaterial={{
-          color: "orange",
+          color: color,
         }}
         scale={[sizeX, sizeY, 0.1]}
         position={[-w2 + 0.25, 0, 0]}

@@ -84,6 +84,10 @@ export class GameService {
     return games;
   }
 
+  async getLeaderboard() {
+    return this.matchService.getLeaderboard();
+  }
+
   async peer(client: Socket, userId: string) {
     const initiator = userId;
     let opponent: string | undefined;
@@ -218,16 +222,34 @@ export class GameService {
       partscore = 0;
     }
 
-    await this.prisma.match.update({
-      where: { id: match.id },
-      data: {
-        status: 'FINISHED',
-        initiatorStatus: initWithdrawl ? 'UNFINISHED' : 'FINISHED',
-        initiatorScore: initscore,
-        participantStatus: partWithdrawl ? 'UNFINISHED' : 'FINISHED',
-        participantScore: partscore,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.match.update({
+        where: { id: match.id },
+        data: {
+          status: 'FINISHED',
+          initiatorStatus: initWithdrawl ? 'UNFINISHED' : 'FINISHED',
+          initiatorScore: initscore,
+          participantStatus: partWithdrawl ? 'UNFINISHED' : 'FINISHED',
+          participantScore: partscore,
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: match.initiator.id },
+        data: {
+          xp: {
+            increment: initscore,
+          },
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: match.participant.id },
+        data: {
+          xp: {
+            increment: partscore,
+          },
+        },
+      }),
+    ]);
   }
 
   async gameOver(match: Pitch, update: (data: any) => void) {

@@ -5,6 +5,7 @@ import useSwr from "swr";
 import APIClient from "@/lib/axios";
 import { socket } from "./socket";
 import { Config } from "@/types/game/config";
+import { User } from "@/types/user";
 
 export async function configGet() {
   return await APIClient.get("games/config").then<Config>((res) => res.data);
@@ -23,6 +24,12 @@ export function useConfig() {
 
 export function useGames(id: string | undefined) {
   return useSwr(["/games", id], id ? my_games : null, {});
+}
+
+export function useLeaderboard() {
+  return useSwr("games/users/leaderboard", () =>
+    APIClient.get<User[]>("/games/users/leaderboard").then((res) => res.data),
+  );
 }
 
 export function useGame(id: string) {

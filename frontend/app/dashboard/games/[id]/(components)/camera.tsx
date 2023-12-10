@@ -9,7 +9,6 @@ interface CameraProps {
 
 export function Camera({ config, isFinished }: CameraProps) {
   const { camera } = useThree();
-
   useEffect(() => {
     if (isFinished) {
       camera.position.set(0, -30, 2);

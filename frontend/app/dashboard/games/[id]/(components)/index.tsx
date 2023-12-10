@@ -14,6 +14,7 @@ import { useSWRConfig } from "swr";
 import { socket } from "../../socket";
 import { Scoreboard } from "@/types/game/scoreboard";
 import { Camera } from "./camera";
+import { useThemeStore } from "@/app/store/theme";
 
 interface GameProps {
   status: "READY" | "FINISHED";
@@ -27,6 +28,7 @@ export function Game({ status, id }: GameProps) {
   const { mutate } = useSWRConfig();
 
   const { data: config, isLoading, error } = useConfig();
+  const [color] = useThemeStore((state) => [state.theme.pitch]);
 
   useEffect(() => {
     if (isFinished) return;
@@ -66,7 +68,7 @@ export function Game({ status, id }: GameProps) {
     }
   }, [round.count]);
 
-  const colorMap = useLoader(TextureLoader, "/pitch-green.png");
+  const colorMap = useLoader(TextureLoader, `/pitch-${color}.png`);
   if (isLoading || !config) {
     return <div>Loading...</div>;
   }
@@ -109,7 +111,7 @@ export function Game({ status, id }: GameProps) {
         </div>
         {isFinished && (
           <div className="h-[inherit] absolute top-0 flex items-center justify-center w-full bg-slate-900/60">
-            <h2 className="text-8xl">GameOver</h2>
+            <h2 className="text-4xl sm:text-8xl">GameOver</h2>
             <p></p>
           </div>
         )}

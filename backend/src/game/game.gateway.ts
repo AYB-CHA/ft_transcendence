@@ -58,7 +58,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.eventLoop(client.id, ({ event, data, users }) => {
       users.forEach((user: string) => {
         this.server.to(user).emit(event, data);
-        //client.emit(event, data);
       });
     });
   }
