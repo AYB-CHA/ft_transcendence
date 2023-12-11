@@ -68,24 +68,8 @@ export class UserController {
       email: body.email,
       fullName: body.fullName,
       username: body.username,
-      password: body.password,
-      passwordConfirmation: body.passwordConfirmation,
     });
     return user;
-  }
-
-  @Put('/update/password')
-  async updatePassword(
-    @Req() request: RequestType,
-    @Body() body: UpdateUserPasswordDto,
-  ) {
-    await this.userService.updatePassword(
-      {
-        newPassword: body.newPassword,
-        oldPassword: body.oldPassword,
-      },
-      request.user.id,
-    );
   }
 
   @Put('/update/enable2FA')

@@ -1,14 +1,13 @@
 "use client";
 import Avatar from "@/components/Avatar";
 import Button from "@/components/Button";
-import { Achievments } from "./(components)/achievments";
-// import History from "./(components)/history";
+import { Achievments } from "./../(components)/achievments";
 import { useAuth } from "@/hooks/auth";
 import Spinner from "@/components/Spinner";
 import Alert from "@/components/Alert";
 import dynamic  from "next/dynamic";
 
-const History = dynamic(() => import("./(components)/history").then(mod=> mod.History), {
+const History = dynamic(() => import("./../(components)/history").then(mod=> mod.History), {
   ssr: false,
 });
 

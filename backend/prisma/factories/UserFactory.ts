@@ -16,7 +16,6 @@ export default class UserFactory extends Factory<Prisma.UserCreateInput> {
       fullName: `${firstName} ${lastName}`,
       email: faker.internet.email({ firstName, lastName }),
       username: faker.internet.userName({ firstName, lastName }),
-      password: hashSync('password', 10),
       avatar: faker.image.avatar(),
       optSecret: 'TODO',
     };

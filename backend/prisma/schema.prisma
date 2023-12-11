@@ -26,13 +26,7 @@ model User {
   username String  @unique
   email    String  @unique
   fullName String
-  password String?
   avatar   String
-
-  // authProvider AuthProvider?
-
-  // ftId     Int?
-  // githubId Int?
 
   optSecret    String
   is2FAEnabled Boolean @default(false)

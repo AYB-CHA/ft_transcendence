@@ -93,23 +93,12 @@ export class UserService {
       where: { id },
       data: {
         avatar: userData.avatar,
-        username: userData.username,
-        email: userData.email,
         fullName: userData.fullName,
       },
     });
   }
 
   async createUser(userData: RegisterUserType): Promise<User> {
-    // bcrypt
-    // const password = userData.password
-    //   ? hashSync(userData?.password, 10)
-    //   : null;
-
-    // const avatar = new URL(this.config.get('BACKEND_BASEURL'));
-
-    // avatar.pathname = `/public/avatars/${Math.ceil(Math.random() * 7)}.png`;
-
     const secret = se.generateSecret({});
 
     return await this.prisma.user.create({
@@ -117,25 +106,11 @@ export class UserService {
         fullName: userData.fullName,
         email: userData.email,
         username: userData.username,
-        // password,
         avatar: userData.avatar,
-        // avatar.toString(),
         optSecret: secret.hex,
-        // authProvider: userData.authProvider,
-        // githubId:
-        //   userData.authProvider === 'GITHUB'
-        //     ? userData.providerId
-        //     : undefined,
-        // ftId:
-        //   userData.authProvider === 'FT' ? userData.providerId : undefined,
       },
-      // select: {
-      //   id: true,
-      // },
     });
   }
-
-  async updatePassword(_userPasswords: UpdateUserPasswordType, _id: string) {}
 
   async findUser(id: string, includeSensitives: boolean = false) {
     const data = await this.prisma.user.findFirstOrThrow({
@@ -148,7 +123,6 @@ export class UserService {
         email: true,
         fullName: true,
         username: true,
-        password: includeSensitives,
         optSecret: includeSensitives,
         is2FAEnabled: true,
         status: true,
@@ -161,7 +135,6 @@ export class UserService {
       email: data.email,
       fullName: data.fullName,
       username: data.username,
-      //password: data.password ?? undefined,
       otpSecret: data.optSecret ?? undefined,
       is2FAEnabled: data.is2FAEnabled,
       status: data.status,
@@ -172,20 +145,6 @@ export class UserService {
     return this.prisma.user.findFirstOrThrow({
       where: {
         OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
-      },
-    });
-  }
-
-  findUserByUsername(username: string) {
-    return this.prisma.user.findFirstOrThrow({ where: { username } });
-  }
-
-  findUserByProviderId(_id: number, _provider: 'FT' | 'GITHUB') {
-    return this.prisma.user.findFirstOrThrow({
-      where: {
-        //authProvider: provider,
-        //githubId: provider === 'GITHUB' ? id : undefined,
-        //ftId: provider === 'FT' ? id : undefined,
       },
     });
   }
