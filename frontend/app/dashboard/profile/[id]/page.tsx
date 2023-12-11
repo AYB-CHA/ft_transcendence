@@ -2,13 +2,13 @@
 import Avatar from "@/components/Avatar";
 import Button from "@/components/Button";
 import { Achievments } from "./../(components)/achievments";
-import { useAuth } from "@/hooks/auth";
 import Spinner from "@/components/Spinner";
 import Alert from "@/components/Alert";
 import dynamic from "next/dynamic";
 import { ROUTER } from "@/lib/ROUTER";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useUser } from "../../games/repo";
 
 const History = dynamic(
   () => import("./../(components)/history").then((mod) => mod.History),
@@ -17,15 +17,10 @@ const History = dynamic(
   },
 );
 
-type profileType = {
-  id: string;
-  name: string;
-  avatar: string;
-  email: string;
-};
-
 export default function Page() {
-  const { user, isLoading, error } = useAuth();
+  const { id } = useParams();
+  const { data: user, isLoading, error } = useUser(id as string);
+  const actualId = id === "me" ? (user?.id as string) : (id as string);
   return (
     <div className="container h-full flex place-items-center justify-center flex-col gap-4">
       {isLoading && <Spinner />}
@@ -45,8 +40,8 @@ export default function Page() {
               <Button>GO TO SETTINGS</Button>
             </Link>
           </div>
-          <Achievments id={user.id} />
-          <History id={user.id} />
+          <Achievments id={actualId} />
+          <History id={actualId} />
         </>
       )}
     </div>

@@ -8,7 +8,7 @@ async function seedAchievements() {
   try {
     const achievementsData = [
       {
-        name: 'Score 1 point',
+        name: 'new player',
         description: 'score your first point',
         icon: 'new_player.png',
         maxProgress: 1,

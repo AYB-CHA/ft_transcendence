@@ -47,6 +47,7 @@ export class AchievementsService {
         },
       })
       .then((achievements) => {
+        console.log(achievements);
         return achievements.map(({ users, ...ach }) => ({
           ...ach,
           obtained: users.length > 0,
