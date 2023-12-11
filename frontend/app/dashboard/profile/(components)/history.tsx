@@ -88,20 +88,29 @@ export function History({ id }: HistoryProps) {
     <div className="lg:flex gap-4 w-full">
       {isLoading && <Spinner />}
       {error && <Alert variant="danger">Failed to get Games</Alert>}
-          <div className="border bg-dark-dim flex lg:w-[70%]">
-            <div className="w-full">
-              <p className="border-b text-xl p-6">Match History</p>
-              <div className="p-4 space-y-4 max-h-96 overflow-auto">
-                {history?.length === 0 && <p className="text-center text-xl">No Games</p>}
-                {history && history.length > 0 && (history?.map((game) => (
-                  <MatchHistory key={game.id} match={game} />
-                )))}
-              </div>
-            </div>
+      <div className="border bg-dark-dim flex lg:w-[70%]">
+        <div className="w-full">
+          <p className="border-b text-xl p-6">Match History</p>
+          <div className="p-4 space-y-4 max-h-96 overflow-auto">
+            {history?.length === 0 && (
+              <p className="text-center text-xl">No Games</p>
+            )}
+            {history &&
+              history.length > 0 &&
+              history?.map((game) => (
+                <MatchHistory key={game.id} match={game} />
+              ))}
           </div>
-          <div className="border lg:w-[30%]">
-            <p className="border-b text-xl p-6">Stats</p>
-            <div className="flex items-center relative">
+        </div>
+      </div>
+      <div className="border lg:w-[30%]">
+        <p className="border-b text-xl p-6">Stats</p>
+        <div className="flex items-center justify-center relative">
+          {history?.length === 0 && (
+            <p className="text-center text-xl p-4">No Games</p>
+          )}
+          {history && history.length > 0 && (
+            <>
               <div className="flex flex-col items-center absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <Swords className="w-10 h-10" />
                 <p className="text-xl">
@@ -115,8 +124,10 @@ export function History({ id }: HistoryProps) {
                   lostGames={myLostGames?.length}
                 />
               )}
-            </div>
-          </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

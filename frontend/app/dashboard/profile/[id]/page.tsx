@@ -36,9 +36,11 @@ export default function Page() {
               <p className="text-2xl">{user.fullName}</p>
               <p>{user.username}</p>
             </div>
-            <Link href={ROUTER.SETTINGS}>
-              <Button>GO TO SETTINGS</Button>
-            </Link>
+            {id === "me" && (
+              <Link href={ROUTER.SETTINGS}>
+                <Button>GO TO SETTINGS</Button>
+              </Link>
+            )}
           </div>
           <Achievments id={actualId} />
           <History id={actualId} />
