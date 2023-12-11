@@ -117,10 +117,13 @@ export class GameService {
     const userId = GameService.findUser(clientId);
     const match = GameService.user2match.get(userId);
     if (!match || match.status !== 'PLAYING') return;
-    console.log('move paddle', userId, dir);
     const user = this.getPlayerBy(match, userId);
-    const h2 = GAME_CONFIG.h2;
-    user.paddleY = add_in(user.paddleY, 0.1 * (dir === 1 ? 1 : -1), -h2, h2);
+    const h2 =
+      GAME_CONFIG.worldHeight / 2 -
+      0.5 * GAME_CONFIG.worldHeight * GAME_CONFIG.paddleSizeY;
+
+    if (dir === 1) user.paddleY = add_in(user.paddleY, 0.1, -h2, h2);
+    else user.paddleY = add_in(user.paddleY, 0.1 * -1, -h2, h2);
 
     const event =
       userId === match.initiator.id
@@ -284,7 +287,7 @@ export class GameService {
         // end game
         break;
       }
-      const speed = 20;
+      const speed = 10;
       const time = data.dis / speed;
       const to = match.ball.pos.add(match.ball.dir.mul(data.dis));
       update({
@@ -420,10 +423,14 @@ export class GameService {
 
   getClientIdFromSocket(client: Socket) {
     const authHeader = Cookie.parse(client.handshake.headers.cookie ?? '');
+    console.log(authHeader.accessToken);
     try {
-      const payload = this.jwtService.verify(authHeader.access_token ?? '');
-      return payload.sub as string;
-    } catch {}
+      const payload = this.jwtService.verify(authHeader.accessToken ?? '');
+      console.log(payload);
+      return payload.id as string;
+    } catch (err) {
+      console.log(err);
+    }
     return null;
   }
 

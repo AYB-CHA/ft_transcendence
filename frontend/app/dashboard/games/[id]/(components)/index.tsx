@@ -56,7 +56,7 @@ export function Game({ status, id }: GameProps) {
   useEffect(() => {
     if (isFinished) return;
     const whistle = document.getElementById("game-crowd") as HTMLAudioElement;
-    whistle.play();
+    whistle.oncanplay = () => whistle.play();
   }, [isFinished]);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function Game({ status, id }: GameProps) {
       const whistle = document.getElementById(
         "game-whistle",
       ) as HTMLAudioElement;
-      whistle.play();
+      whistle.oncanplay = () => whistle.play();
     }
   }, [round.count]);
 

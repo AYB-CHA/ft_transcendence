@@ -29,7 +29,6 @@ export class GameController {
 
   @Get('/users/leaderboard')
   getLeaderboard() {
-    console.log('leaderboarddd');
     return this.gameService.getLeaderboard();
   }
 }

@@ -46,10 +46,11 @@ export const GAME_CONFIG = {
   h2: 0,
 };
 
-(GAME_CONFIG.h2 =
+GAME_CONFIG.h2 =
   GAME_CONFIG.worldHeight / 2 -
-  0.5 * GAME_CONFIG.worldHeight * GAME_CONFIG.paddleSizeY),
-  (GAME_CONFIG.aspect = GAME_CONFIG.height / GAME_CONFIG.width);
+  0.5 * GAME_CONFIG.worldHeight * GAME_CONFIG.paddleSizeY;
+
+GAME_CONFIG.aspect = GAME_CONFIG.height / GAME_CONFIG.width;
 
 GAME_CONFIG.worldHeight =
   2 *

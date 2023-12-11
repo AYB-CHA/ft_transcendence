@@ -5,7 +5,6 @@ import useSWR from "swr";
 import { dispatchNotification } from "@/app/lib/Toast";
 import { AxiosError, isAxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { camelCaseToNormal } from "@/lib/string";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
 
@@ -58,7 +57,7 @@ export function useAuth({
     if (middleware === "guest" && redirectIfAuth && user) push(redirectIfAuth);
 
     if (middleware === "auth" && serverError?.response?.status === 401)
-      logOut();
+      push("/auth/login");
   }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const logOut = async () => {
@@ -68,33 +67,6 @@ export function useAuth({
 
     mutate(undefined, { revalidate: false });
     rawAxios.post("/auth/logout");
-  };
-
-  const login = async (usernameOrEmail: string, password: string) => {
-    try {
-      const response = await axios.post("api/auth/login", {
-        usernameOrEmail,
-        password,
-      });
-
-      mutate();
-      push("/dashboard");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError(camelCaseToNormal(error.response?.data.message[0]));
-      }
-    }
-  };
-
-  const register = async (data: { [key: string]: string }) => {
-    try {
-      const response = await axios.post("auth/register", data);
-      push("/dashboard/settings");
-      mutate();
-    } catch (error) {
-      if (error instanceof AxiosError)
-        setError(camelCaseToNormal(error.response?.data.message[0]));
-    }
   };
 
   const verify2FA = async (verificationCode: string) => {
@@ -116,8 +88,6 @@ export function useAuth({
   return {
     user,
     error,
-    register,
-    login,
     logOut,
     isLoading,
     verify2FA,

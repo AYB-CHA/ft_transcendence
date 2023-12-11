@@ -78,7 +78,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('PEERING', 'PENDING');
     const userId = GameService.findUser(client.id);
     if (!userId) {
-      console.error('No user found, please login first.');
+      console.error('No user found.');
       client.disconnect();
     }
     const match = await this.gameService.peer(client, userId);
