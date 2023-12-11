@@ -3,6 +3,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { clearSWRCache } from "../providers/ChatSocketProvider";
+import InviteToGame from "../../../(components)/InviteToGame";
 
 dayjs.extend(relativeTime);
 
@@ -44,11 +45,7 @@ export default function ChatBoxInput({
         </div>
       ) : (
         <>
-          <div className="flex gap-3 text-gray-500">
-            {/* <ImageIcon size={20} strokeWidth={1} />
-            <Link size={20} strokeWidth={1} /> */}
-            <Swords size={20} strokeWidth={1} />
-          </div>
+          <InviteToGame />
           <div className="grow">
             <input
               className="bg-transparent w-full focus:outline-none placeholder:text-gray-500"

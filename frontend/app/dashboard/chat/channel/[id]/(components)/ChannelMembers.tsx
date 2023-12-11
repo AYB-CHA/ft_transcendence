@@ -26,7 +26,7 @@ export type ChannelMemberType = {
   status: UserStatusType;
 };
 
-const strContainsInsensitive = (haystack: string, needle: string) => {
+export const strContainsInsensitive = (haystack: string, needle: string) => {
   return haystack.toLocaleLowerCase().includes(needle.toLocaleLowerCase());
 };
 export default function ChannelMembers({

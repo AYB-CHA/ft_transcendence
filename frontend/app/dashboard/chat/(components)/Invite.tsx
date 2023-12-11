@@ -103,7 +103,7 @@ export default function Invite({
                 />
                 <div className="mt-4">
                   <span className="text-gray-500 text-xs">
-                    No none channel members were found.
+                    No channel members were found.
                   </span>
                 </div>
               </div>
