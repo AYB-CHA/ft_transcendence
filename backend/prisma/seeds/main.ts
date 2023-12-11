@@ -8,76 +8,22 @@ async function seedAchievements() {
   try {
     const achievementsData = [
       {
-        name: 'New player',
-        description: 'Play your first match',
+        name: 'Score 1 point',
+        description: 'score your first point',
         icon: 'new_player.png',
         maxProgress: 1,
       },
       {
-        name: 'player 7',
-        description: 'win 7 matchs in a row',
-        icon: 'win_7.png',
-        maxProgress: 7,
-      },
-      {
         name: 'player 10',
-        description: 'win 10 matchs in a row',
-        icon: 'win_10.png',
+        description: 'score 10 goals',
+        icon: 'win_7.png',
         maxProgress: 10,
       },
       {
-        name: 'player 20',
-        description: 'win 20 matchs in a row',
-        icon: 'win_20.png',
-        maxProgress: 20,
-      },
-      {
         name: 'player 100',
-        description: 'win 100 matchs in a row',
-        icon: 'win_100.png',
+        description: 'score 100 goals',
+        icon: 'win_10.png',
         maxProgress: 100,
-      },
-      {
-        name: 'fast win',
-        description: 'wins a match in less than 5 minutes',
-        icon: 'fast_win.png',
-        maxProgress: 1,
-      },
-      {
-        name: 'friendship bond',
-        description: 'play with a friend',
-        icon: 'defi.png',
-        maxProgress: 1,
-      },
-      {
-        name: 'new theme',
-        description: 'change theme',
-        icon: 'new_theme.png',
-        maxProgress: 1, //ismail can affect this
-      },
-      {
-        name: 'messenger',
-        description: 'sent first message',
-        icon: 'messenger.png',
-        maxProgress: 1,
-      },
-      {
-        name: 'connected',
-        description: 'joined 5 channels',
-        icon: 'connected_5.png',
-        maxProgress: 5,
-      },
-      {
-        name: 'member',
-        description: 'joined a channel',
-        icon: 'member_group.png',
-        maxProgress: 1,
-      },
-      {
-        name: 'administrator',
-        description: 'become an administrator',
-        icon: 'admin.png',
-        maxProgress: 1,
       },
     ];
     for (const achievement of achievementsData) {

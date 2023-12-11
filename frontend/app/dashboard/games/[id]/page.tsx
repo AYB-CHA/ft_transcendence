@@ -117,6 +117,12 @@ export default function Page() {
     <div className="container">
       <div className="mt-10"></div>
       <GameIndex />
+      <pre>
+        {`
+          arrow up - to go up
+          arrow down - to go down
+        `}
+      </pre>
       <audio src="/whistle.mp3" id="game-whistle" />
       <audio loop src="/crowd.mp3" id="game-crowd" />
     </div>

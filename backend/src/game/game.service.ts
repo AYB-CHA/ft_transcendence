@@ -206,6 +206,7 @@ export class GameService {
           initiatorScore: initscore,
           participantStatus: partWithdrawl ? 'UNFINISHED' : 'FINISHED',
           participantScore: partscore,
+          endedAt: new Date(),
         },
       }),
       this.prisma.user.update({
@@ -432,6 +433,27 @@ export class GameService {
       console.log(err);
     }
     return null;
+  }
+
+  async linkAchievement(xp: number, userId: string) {
+    const achievements = await this.prisma.achievement.findMany({});
+    for (const ach of achievements) {
+      if (ach.maxProgress > xp) continue;
+      const linked = await this.prisma.achievementProgress.findFirst({
+        where: { userId: userId, achievementName: ach.name },
+      });
+
+      if (linked) continue;
+      await this.prisma.achievementProgress.create({
+        data: {
+          userId: userId,
+          achievementName: ach.name,
+          obtained: true,
+          progress: xp,
+          obtainedAt: new Date(),
+        },
+      });
+    }
   }
 
   async getState() {
