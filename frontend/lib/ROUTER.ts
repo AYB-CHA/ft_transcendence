@@ -4,4 +4,6 @@ export const ROUTER = {
   GAMES: "/dashboard/games",
   DASHBOARD: "/dashboard",
   LOGIN: "/auth/login",
+  SETTINGS: "/dashboard/settings",
+  MY_PROFILE: "/dashboard/profile/me",
 };

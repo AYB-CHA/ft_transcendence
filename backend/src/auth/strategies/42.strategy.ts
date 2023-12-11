@@ -6,9 +6,10 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
-  constructor(private readonly authservive: AuthService,
-    private readonly configService:ConfigService
-    ) {
+  constructor(
+    private readonly authservive: AuthService,
+    protected readonly configService: ConfigService,
+  ) {
     super({
       clientID: configService.get('FT_PUBLIC_KEY'),
       clientSecret: configService.get('FT_SECRET_TOKEN'),

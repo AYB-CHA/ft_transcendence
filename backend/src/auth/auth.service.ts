@@ -38,7 +38,7 @@ export class AuthService {
   async login(res: Response, user: User) {
     //sign the token that we have before the tfa
     this.sign(res, { id: user.id, isLogged: !user.is2FAEnabled });
-    res.redirect(user.is2FAEnabled ? '/auth/2fa' : '/');
+    res.redirect(user.is2FAEnabled ? '/auth/2fa' : '/dashboard/settings');
   }
 
   async jwtValidation(payload: any) {
@@ -71,6 +71,10 @@ export class AuthService {
   }
 
   logout(res: Response) {
-    res.clearCookie('accessToken');
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: false,
+      maxAge: 24 * 3600000,
+    });
   }
 }

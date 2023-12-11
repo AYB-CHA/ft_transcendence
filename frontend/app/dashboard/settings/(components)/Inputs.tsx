@@ -45,8 +45,6 @@ export default function Inputs({}: {}) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   useEffect(() => {
     setAvatar(user?.avatar ?? "");
@@ -68,10 +66,6 @@ export default function Inputs({}: {}) {
         fullName,
         username,
         email,
-        password: password.length ? password : undefined,
-        passwordConfirmation: password.length
-          ? passwordConfirmation
-          : undefined,
       });
       dispatchNotification({
         title: "Success",
@@ -124,6 +118,7 @@ export default function Inputs({}: {}) {
                 <div>
                   <Label>Username</Label>
                   <Input
+                    readOnly
                     placeholder="Username"
                     icon={<Fingerprint size={17} />}
                     value={username}
@@ -134,41 +129,13 @@ export default function Inputs({}: {}) {
                 <div className="col-span-2">
                   <Label>Email</Label>
                   <Input
+                    readOnly
                     placeholder="Email"
                     icon={<Mail size={17} />}
                     value={email}
                     name="email"
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
-                  />
-                </div>
-                <div className="col-span-2 text-xs text-dark-semi-light flex gap-2">
-                  <Info size={17} strokeWidth={1} />
-                  If you wish to keep your password unchanged, you can leave the
-                  password field empty.
-                </div>
-                <div>
-                  <Label>Password</Label>
-                  <Input
-                    disabled={!!user.passwordless}
-                    placeholder="Password"
-                    icon={<KeyRoundIcon size={17} type="password" />}
-                    type="password"
-                    name="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                  />
-                </div>
-                <div>
-                  <Label>Password confirmation</Label>
-                  <Input
-                    disabled={!!user.passwordless}
-                    placeholder="Password confirmation"
-                    icon={<Repeat size={17} type="password" />}
-                    type="password"
-                    name="passwordConfirmation"
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    value={passwordConfirmation}
                   />
                 </div>
               </div>

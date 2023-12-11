@@ -6,11 +6,16 @@ import { Achievments } from "./(components)/achievments";
 import { useAuth } from "@/hooks/auth";
 import Spinner from "@/components/Spinner";
 import Alert from "@/components/Alert";
-import dynamic  from "next/dynamic";
+import dynamic from "next/dynamic";
+import { ROUTER } from "@/lib/ROUTER";
+import Link from "next/link";
 
-const History = dynamic(() => import("./(components)/history").then(mod=> mod.History), {
-  ssr: false,
-});
+const History = dynamic(
+  () => import("./(components)/history").then((mod) => mod.History),
+  {
+    ssr: false,
+  },
+);
 
 type profileType = {
   id: string;
@@ -36,7 +41,9 @@ export default function Page() {
               <p className="text-2xl">{user.fullName}</p>
               <p>{user.username}</p>
             </div>
-            <Button>GO TO SETTINGS</Button>
+            <Link href={ROUTER.SETTINGS}>
+              <Button>GO TO SETTINGS</Button>
+            </Link>
           </div>
           <Achievments id={user.id} />
           <History id={user.id} />

@@ -62,11 +62,20 @@ export function useAuth({
 
   const logOut = async () => {
     try {
-      await rawAxios.post("api/auth/logout");
-    } catch {}
+      await rawAxios.post(
+        process.env["NEXT_PUBLIC_BACKEND_BASEURL"] + "auth/logout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+    } catch (err) {
+      console.log(err);
+    }
 
-    mutate(undefined, { revalidate: false });
-    rawAxios.post("/auth/logout");
+    //mutate(undefined, { revalidate: false });
+    //rawAxios.post("/auth/logout");
+    location.href = "/";
   };
 
   const verify2FA = async (verificationCode: string) => {

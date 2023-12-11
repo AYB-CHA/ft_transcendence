@@ -52,7 +52,7 @@ export default function EditAvatar({
         onChange={submitFile}
       />
       <div className="border-2 border-primary h-32 w-32 rounded-full overflow-hidden">
-        <div className="relative">
+        <div className="relative h-full w-full">
           {isLoading && (
             <div className="absolute inset-0 bg-dark-dim/80 flex justify-center items-center">
               <Spinner />
@@ -60,7 +60,7 @@ export default function EditAvatar({
           )}
           <Image
             src={src}
-            className="h-full w-full"
+            className="h-full w-full object-cover"
             alt="Avatar"
             width={128}
             height={128}
