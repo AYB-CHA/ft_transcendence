@@ -55,7 +55,10 @@ export class ChannelSocketGateway
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
+    
     const id = this.userService.getClientIdFromSocket(client);
+    
+    console.log("CONNECTING", id);
 
     const channelId: string =
       (client.handshake.query?.channelId as string) ?? '';
@@ -73,6 +76,8 @@ export class ChannelSocketGateway
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     const id = this.userService.getClientIdFromSocket(client);
+    
+    console.log("CONNECTING", id);
 
     this.clients = this.clients.filter((c) => {
       return c.id != id;

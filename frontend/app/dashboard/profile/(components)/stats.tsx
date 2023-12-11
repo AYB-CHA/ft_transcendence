@@ -1,10 +1,7 @@
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import * as am5 from "@amcharts/amcharts5";
 import * as am5percent from "@amcharts/amcharts5/percent";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 export interface StatsProps {
   wonGames: number;
@@ -22,7 +19,7 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
       am5percent.PieChart.new(root, {
         layout: root.verticalLayout,
         innerRadius: am5.percent(80),
-      }),
+      })
     );
 
     let series = chart.series.push(
@@ -30,7 +27,7 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
         valueField: "value",
         categoryField: "category",
         alignLabels: false,
-      }),
+      })
     );
 
     series.labels.template.setAll({
@@ -46,7 +43,7 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
       "colors",
       am5.ColorSet.new(root, {
         colors: [am5.color(0xc2c4c0), am5.color(0x0f1015)],
-      }),
+      })
     );
 
     series.data.setAll([
@@ -60,7 +57,7 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
         x: am5.percent(50),
         marginTop: 15,
         marginBottom: 15,
-      }),
+      })
     );
     legend.hide(0);
 

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export const POST = () => {
   const cookieStore = cookies();
-  cookieStore.set("access_token", "", {
+  cookieStore.set("accessToken", "", {
     httpOnly: true,
     sameSite: "lax",
     secure: false,
