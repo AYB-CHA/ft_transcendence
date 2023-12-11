@@ -10,7 +10,7 @@ interface GameButtonProps {
   className?: string;
 }
 
-export function NewGameButton({ className }: GameButtonProps) {
+function NewGameButton({ className }: GameButtonProps) {
   return (
     <Link href={ROUTER.NEW_GAME}>
       <Button className={className}>New Game</Button>

@@ -12,8 +12,7 @@ export interface StatsProps {
 }
 
 export default function Stats({ wonGames, lostGames }: StatsProps) {
-  const totalGames = (wonGames ?? 0) + (lostGames ?? 0);
-  const chartRef = useRef<ChartJS | null>(null);
+  const chartRef = useRef<am5.Root | null>(null);
 
   useLayoutEffect(() => {
     let root = am5.Root.new("chartdiv");
@@ -23,7 +22,7 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
       am5percent.PieChart.new(root, {
         layout: root.verticalLayout,
         innerRadius: am5.percent(80),
-      })
+      }),
     );
 
     let series = chart.series.push(
@@ -31,30 +30,28 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
         valueField: "value",
         categoryField: "category",
         alignLabels: false,
-      })
+      }),
     );
 
     series.labels.template.setAll({
       textType: "circular",
       centerX: 0,
       centerY: 0,
-      fill: am5.color(0xC2C4C0),
-     
+      fill: am5.color(0xc2c4c0),
     });
 
     // series.labelsContainer
 
-    series.set("colors", am5.ColorSet.new(root, {
-      colors: [
-        am5.color(0xC2C4C0),
-        am5.color(0x0F1015),
-      ],
-    }))
-    
+    series.set(
+      "colors",
+      am5.ColorSet.new(root, {
+        colors: [am5.color(0xc2c4c0), am5.color(0x0f1015)],
+      }),
+    );
 
     series.data.setAll([
       { value: wonGames, category: "Won" },
-      { value: lostGames, category: "Lost" }
+      { value: lostGames, category: "Lost" },
     ]);
 
     let legend = chart.children.push(
@@ -63,14 +60,14 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
         x: am5.percent(50),
         marginTop: 15,
         marginBottom: 15,
-      })
+      }),
     );
     legend.hide(0);
 
     legend.data.setAll(series.dataItems);
     series.appear(1000, 100);
     chartRef.current = root;
-  }, []);
+  }, [wonGames, lostGames]);
 
   useEffect(() => {
     return () => {
@@ -78,5 +75,5 @@ export default function Stats({ wonGames, lostGames }: StatsProps) {
     };
   }, []);
 
-  return <div  id="chartdiv"  style={{ width: "100%", height: "24rem" }}></div>;
+  return <div id="chartdiv" style={{ width: "100%", height: "24rem" }}></div>;
 }

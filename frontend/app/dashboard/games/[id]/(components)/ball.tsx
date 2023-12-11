@@ -5,9 +5,11 @@ import {
 } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { Vector3 } from "three";
-import { Config, useWs } from "../../repo";
+import { useWs } from "../../repo";
 import { Sphere } from "./sphere";
+// @ts-ignore
 import TWEEN, { Tween } from "@tweenjs/tween.js";
+import { Config } from "@/types/game/config";
 
 type BallProps = ThreeElements["mesh"] & {
   mmaterial?: MeshStandardMaterialProps;
@@ -50,8 +52,6 @@ export function Ball({ config }: BallProps) {
       dis: data.dis,
     }),
   });
-
-  console.log("BALL", ball);
 
   return (
     <>

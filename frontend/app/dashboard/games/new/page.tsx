@@ -18,12 +18,7 @@ interface CompititorProps {
   image?: string;
 }
 
-export function Compititor({
-  className,
-  name,
-  username,
-  image,
-}: CompititorProps) {
+function Compititor({ className, name, username, image }: CompititorProps) {
   return (
     <div className="grow border rounded min-h-[250px] p-4 w-48 flex flex-col justify-center">
       <Avatar

@@ -71,11 +71,10 @@ function GameIndex() {
     mutate(["match", game.id]);
   }, [finished, game, mutate]);
 
-  console.log(scoreboard, "scoreboard");
-
   useEffect(() => {
-    socket.connect();
+    if (!socket.connected) socket.connect();
     return () => {
+      if (!socket.connected) return;
       socket.disconnect();
     };
   }, []);
