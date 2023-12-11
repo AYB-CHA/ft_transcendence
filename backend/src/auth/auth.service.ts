@@ -11,17 +11,6 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async localValidation(email: string, password: string) {
-    const user = await this.userService.findUserByEmail(email);
-    if (!user) {
-      throw new Error(`User with email ${email} not found`);
-    }
-    if (password !== user.password) {
-      return null;
-    }
-    return user;
-  }
-
   async _42Validation(payload: any) {
     let user = await this.userService.findOneByEmail(payload.email);
     if (!user) {
