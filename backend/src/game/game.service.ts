@@ -226,6 +226,8 @@ export class GameService {
         },
       }),
     ]);
+    await this.linkAchievement(initscore, match.initiator.id);
+    await this.linkAchievement(partscore, match.participant.id);
   }
 
   async gameOver(match: Pitch, update: (data: any) => void) {
