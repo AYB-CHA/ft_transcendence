@@ -47,7 +47,6 @@ import { ROUTER } from "@/lib/ROUTER";
 
 import { io } from "socket.io-client";
 import { dispatchServerError } from "@/app/lib/Toast";
-import { useRouter } from "next/navigation";
 
 type NotificationType =
   | "CHANNEL_INVITATION"
@@ -250,7 +249,6 @@ function Notifications() {
 export default function NavBar() {
   const { user, logOut, isLoading } = useAuth({ middleware: "auth" });
   const pathname = usePathname();
-  const router = useRouter();
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
     {

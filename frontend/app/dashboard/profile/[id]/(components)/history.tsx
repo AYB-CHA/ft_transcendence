@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
-import { useGames } from "../../games/repo";
+import { useGames } from "@/app/dashboard/games/repo";
 import Alert from "@/components/Alert";
 import Avatar from "@/components/Avatar";
 import { User } from "@/types/user";
@@ -89,34 +89,38 @@ export function History({ id }: HistoryProps) {
       {isLoading && <Spinner />}
       {error && <Alert variant="danger">Failed to get Games</Alert>}
       {!isLoading && !error && !history?.length && <Alert>No Games</Alert>}
-      <div className="border bg-dark-dim flex lg:w-[70%]">
-        <div className="w-full">
-          <p className="border-b text-xl p-6">Match History</p>
-          <div className="p-4 space-y-4 max-h-96 overflow-auto">
-            {history?.map((game) => (
-              <MatchHistory key={game.id} match={game} />
-            ))}
+      {history && history.length > 0 && (
+        <>
+          <div className="border bg-dark-dim flex lg:w-[70%]">
+            <div className="w-full">
+              <p className="border-b text-xl p-6">Match History</p>
+              <div className="p-4 space-y-4 max-h-96 overflow-auto">
+                {history?.map((game) => (
+                  <MatchHistory key={game.id} match={game} />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="border lg:w-[30%]">
-        <p className="border-b text-xl p-6">Stats</p>
-        <div className="flex items-center relative">
-          <div className="flex flex-col items-center absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Swords className="w-10 h-10" />
-            <p className="text-xl">
-              {(myWonGames?.length ?? 0) + (myLostGames?.length ?? 0)} TOTAL
-              GAMES
-            </p>
+          <div className="border lg:w-[30%]">
+            <p className="border-b text-xl p-6">Stats</p>
+            <div className="flex items-center relative">
+              <div className="flex flex-col items-center absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <Swords className="w-10 h-10" />
+                <p className="text-xl">
+                  {(myWonGames?.length ?? 0) + (myLostGames?.length ?? 0)} TOTAL
+                  GAMES
+                </p>
+              </div>
+              {myWonGames != undefined && myLostGames != undefined && (
+                <Stats
+                  wonGames={myWonGames?.length}
+                  lostGames={myLostGames?.length}
+                />
+              )}
+            </div>
           </div>
-          {myWonGames != undefined && myLostGames != undefined && (
-            <Stats
-              wonGames={myWonGames?.length}
-              lostGames={myLostGames?.length}
-            />
-          )}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

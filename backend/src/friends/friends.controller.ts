@@ -27,12 +27,12 @@ export class FriendsController {
 
   @Get()
   findFriends(@Req() request: RequestType) {
-    return this.friends.findFriends(request.userPayload.sub);
+    return this.friends.findFriends(request.user.id);
   }
 
   @Get('/requests')
   findFriendRequests(@Req() request: RequestType) {
-    return this.friends.findFriendRequests(request.userPayload.sub);
+    return this.friends.findFriendRequests(request.user.id);
   }
 
   @Post('/add/:id')
@@ -41,12 +41,12 @@ export class FriendsController {
     @Param('id', ParseUUIDPipe) targetId: string,
   ) {
     const result = await this.friends.addFriend(
-      request.userPayload.sub,
+      request.user.id,
       targetId,
     );
-    this.notifier.notify([request.userPayload.sub, targetId]);
+    this.notifier.notify([request.user.id, targetId]);
     this.notification.notify({
-      senderId: request.userPayload.sub,
+      senderId: request.user.id,
       link: '/dashboard/friends?tab=friend-requests',
       type: 'FRIEND_INVITAION',
       receiverId: targetId,
@@ -60,7 +60,7 @@ export class FriendsController {
     @Param('id', ParseUUIDPipe) requestId: string,
   ) {
     const result = await this.friends.removeFriend(
-      request.userPayload.sub,
+      request.user.id,
       requestId,
     );
     this.notifier.notify([result.senderId, result.receiverId]);
@@ -73,7 +73,7 @@ export class FriendsController {
     @Param('id', ParseUUIDPipe) requestId: string,
   ) {
     const result = await this.friends.cancelRequest(
-      request.userPayload.sub,
+      request.user.id,
       requestId,
     );
     this.notifier.notify([result.senderId, result.receiverId]);
@@ -86,7 +86,7 @@ export class FriendsController {
     @Param('id', ParseUUIDPipe) requestId: string,
   ) {
     const result = await this.friends.acceptRequest(
-      request.userPayload.sub,
+      request.user.id,
       requestId,
     );
     this.notifier.notify([result.senderId, result.receiverId]);
@@ -99,7 +99,7 @@ export class FriendsController {
     @Param('id', ParseUUIDPipe) requestId: string,
   ) {
     const result = await this.friends.rejectRequest(
-      request.userPayload.sub,
+      request.user.id,
       requestId,
     );
     this.notifier.notify([result.senderId, result.receiverId]);

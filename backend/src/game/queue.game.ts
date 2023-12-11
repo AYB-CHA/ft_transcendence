@@ -26,8 +26,7 @@ export class GameQueue {
     return this.players;
   }
 
-  hasEnoughPlayers(userId: string) {
-    console.log('number of players', this.players.size);
+  consumePlayer(userId: string) {
     if (this.players.size >= 2) {
       const last = this.getLast(userId);
       this.pop(last);

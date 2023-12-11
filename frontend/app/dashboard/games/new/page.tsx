@@ -79,7 +79,7 @@ export default function NewGame() {
       setCount((c) => (c % 6) + 1);
     }, 100);
     console.log("connecting");
-    socket.connect();
+    if (!socket.connected) socket.connect();
     console.log(socket.connected);
     socket.on("connect", () => {
       console.log("connected");
@@ -87,7 +87,7 @@ export default function NewGame() {
     });
     return () => {
       socket.off("connect");
-      socket.disconnect();
+      if (socket.connected) socket.disconnect();
       clearInterval(i);
     };
   }, []);

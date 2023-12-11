@@ -62,14 +62,17 @@ export function useAuth({
   }, [middleware, user, push, redirectIfAuth, serverError]);
 
   const logOut = async () => {
-    push("/");
+    try {
+      await rawAxios.post("api/auth/logout");
+    } catch {}
+
     mutate(undefined, { revalidate: false });
     rawAxios.post("/auth/logout");
   };
 
   const login = async (usernameOrEmail: string, password: string) => {
     try {
-      const response = await axios.post("auth/login", {
+      const response = await axios.post("api/auth/login", {
         usernameOrEmail,
         password,
       });
@@ -96,8 +99,8 @@ export function useAuth({
 
   const verify2FA = async (verificationCode: string) => {
     try {
-      await axios.post("/auth/verify/2fa", {
-        verificationCode,
+      await axios.post("auth/verify/2fa", {
+        code: verificationCode,
       });
       mutate();
       push("/dashboard");

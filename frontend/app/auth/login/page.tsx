@@ -1,25 +1,17 @@
 import ProvidersButtons from "../(components)/ProvidersButtons";
-import Link from "next/link";
-import LoginBoard from "./(components)/LoginBoard";
 
 export default function page() {
   return (
-    <>
-      <LoginBoard />
-      <div className="h-px bg-dark-semi-dim relative mb-6">
-        <span className="bg-dark-dim absolute left-1/2 text-xs top-1/2 -translate-y-1/2 -translate-x-1/2 px-1">
-          OR
-        </span>
-      </div>
-      <div className="mb-6">
+    <div className="min-h-[300px] flex items-center flex-col justify-center">
+      <h2 className="text-2xl text-center mb-4 font-bold">PING PONG</h2>
+      <div className="mb-6 w-full">
         <ProvidersButtons />
       </div>
       <div className="text-center">
-        <span className="text-gray-500">Don’t have an account?</span>
-        <Link href={"/auth/register"}>
-          <span className="text-primary font-medium"> sign up</span>
-        </Link>
+        <span className="text-gray-500">
+          By Click on the button above you agree to our terms{" "}
+        </span>
       </div>
-    </>
+    </div>
   );
 }

@@ -19,16 +19,16 @@ export class NotificationController {
 
   @Get()
   findNotifications(@Req() req: RequestType) {
-    return this.notifications.findNotifications(req.userPayload.sub);
+    return this.notifications.findNotifications(req.user.id);
   }
 
   @Delete()
   clearNotifications(@Req() req: RequestType) {
-    return this.notifications.clearNotifications(req.userPayload.sub);
+    return this.notifications.clearNotifications(req.user.id);
   }
 
   @Patch(':id')
   markAsRead(@Req() req: RequestType, @Param('id') id: string) {
-    return this.notifications.markAsRead(req.userPayload.sub, id);
+    return this.notifications.markAsRead(req.user.id, id);
   }
 }

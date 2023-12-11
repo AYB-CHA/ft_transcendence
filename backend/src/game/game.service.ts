@@ -1,45 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DistanceResult, Vec, add_in, between, getP } from './game.utils';
-import { GAME_CONFIG } from './config';
+import { GAME_CONFIG, Pitch, defaultMatch } from './config';
 import { PrismaService } from 'src/db/prisma.service';
 import * as Cookie from 'cookie';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
-import { Match } from '@prisma/client';
 import { GameQueue } from './queue.game';
 import { MatchService } from './match.service';
-
-type MatchStatus = 'FINISHED' | 'INIT' | 'PLAYING' | 'GOAL';
-
-function defaultMatch(match: Match, initiator: string) {
-  return {
-    id: match.id,
-    status: 'INIT' as MatchStatus,
-    rounds: 0,
-    participant: {
-      id: match.participantId,
-      status: 'READY',
-      paddleY: 0,
-      score: 0,
-      clientId: '',
-      disconnect: false,
-    },
-    initiator: {
-      id: match.initiatorId,
-      status: 'READY',
-      paddleY: 0,
-      score: 0,
-      clientId: initiator,
-      disconnect: false,
-    },
-    ball: {
-      pos: Vec(),
-      dir: Vec(-1, -1, 0),
-    },
-  };
-}
-
-type Pitch = ReturnType<typeof defaultMatch>;
 
 export function paddleCollision(
   ball: Pitch['ball'],
@@ -88,36 +55,31 @@ export class GameService {
     return this.matchService.getLeaderboard();
   }
 
-  async peer(client: Socket, userId: string) {
-    const initiator = userId;
-    let opponent: string | undefined;
-    if (!this.gameQueue.addPlayer(userId)) return;
-    while (true) {
+  async peer(client: Socket, initiator: string) {
+    if (!this.gameQueue.addPlayer(initiator)) return;
+    for (let i = 0; i < 10; i++) {
       if (client.disconnected) return;
-      {
-        const match = GameService.user2match.get(userId);
-        if (match && match.status === 'INIT') {
-          return match;
-        }
+      // check if user is already in a match
+      const existingMatch = GameService.user2match.get(initiator);
+      if (existingMatch && existingMatch.status === 'INIT') {
+        return existingMatch;
       }
-      if (!(opponent = this.gameQueue.hasEnoughPlayers(userId))) {
-        console.log('waiting for opponent', userId);
+
+      // check if there is an opponent
+      const opponent = this.gameQueue.consumePlayer(initiator);
+      if (!opponent) {
+        console.log('waiting for opponent', initiator);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         continue;
       }
 
-      if (!initiator || !opponent)
-        throw new Error('initiator or opponent is null');
-
+      // remove initiator and opponent from queue
       this.gameQueue.pop(opponent);
       this.gameQueue.pop(initiator);
 
-      const match = await this.matchService.create(initiator, opponent);
-      const _match = defaultMatch(match, initiator);
-      GameService.user2match.set(initiator, _match);
-      GameService.user2match.set(opponent, _match);
-      return _match;
+      return await this.createMatch(initiator, opponent);
     }
+    return false;
   }
 
   static getUserByClientId(clientId: string) {
@@ -127,6 +89,15 @@ export class GameService {
   static getMatchByclientId(clientId: string) {
     const userId = GameService.findUser(clientId);
     return GameService.user2match.get(userId);
+  }
+
+  async createMatch(initiator: string, participant: string) {
+    const match = await this.matchService.create(initiator, participant);
+
+    const _match = defaultMatch(match);
+    GameService.user2match.set(initiator, _match);
+    GameService.user2match.set(participant, _match);
+    return _match;
   }
 
   isGoal(data: DistanceResult, match: Pitch, dir: number) {
@@ -145,18 +116,11 @@ export class GameService {
   movePaddle(clientId: string, dir: number) {
     const userId = GameService.findUser(clientId);
     const match = GameService.user2match.get(userId);
-    if (!match) return;
-    if (match.status !== 'PLAYING') return;
-    const user =
-      match.initiator.id === userId ? match.initiator : match.participant;
-    const h2 =
-      GAME_CONFIG.worldHeight / 2 -
-      0.5 * GAME_CONFIG.worldHeight * GAME_CONFIG.paddleSizeY;
-    if (dir == 1) {
-      user.paddleY = add_in(user.paddleY, 0.1, -h2, h2);
-    } else {
-      user.paddleY = add_in(user.paddleY, -0.1, -h2, h2);
-    }
+    if (!match || match.status !== 'PLAYING') return;
+    console.log('move paddle', userId, dir);
+    const user = this.getPlayerBy(match, userId);
+    const h2 = GAME_CONFIG.h2;
+    user.paddleY = add_in(user.paddleY, 0.1 * (dir === 1 ? 1 : -1), -h2, h2);
 
     const event =
       userId === match.initiator.id
@@ -179,6 +143,14 @@ export class GameService {
       pos: match.ball.pos.pure(),
       dir: match.ball.dir.pure(),
     };
+  }
+
+  getPlayerBy(match: Pitch, userId: string, other = false) {
+    if (other)
+      return match.initiator.id === userId
+        ? match.participant
+        : match.initiator;
+    return match.initiator.id === userId ? match.initiator : match.participant;
   }
 
   async startRound(match: Pitch, update: (data: any) => void) {

@@ -82,6 +82,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.disconnect();
     }
     const match = await this.gameService.peer(client, userId);
+    if (match === false) {
+      client.emit('TIMEOUT', 'No opponent found.');
+      return;
+    }
     const opponent = await this.userService.findUser(
       match.initiator.id === userId ? match.participant.id : match.initiator.id,
     );
