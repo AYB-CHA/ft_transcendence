@@ -1,11 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma.service';
-import { compareSync, hashSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { UserSearchEntity } from './types.d';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
-
 import * as Cookie from 'cookie';
 import * as se from 'speakeasy';
 
@@ -14,6 +12,7 @@ import {
   UpdateUserPasswordType,
   UpdateUserType,
 } from 'src/types';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -89,18 +88,7 @@ export class UserService {
       userData.email,
       id,
     );
-    if (userData.password && (await this.findUser(id)).passwordless) {
-      throw new BadRequestException(["you can't change your password"]);
-    }
 
-    if (
-      userData.password &&
-      userData.password !== userData.passwordConfirmation
-    )
-      throw new BadRequestException(['confirmation password does not match']);
-    const password = userData.password
-      ? hashSync(userData?.password, 10)
-      : null;
     return await this.prisma.user.update({
       where: { id },
       data: {
@@ -108,57 +96,30 @@ export class UserService {
         username: userData.username,
         email: userData.email,
         fullName: userData.fullName,
-        password,
       },
     });
   }
 
-  async createUser(userData: RegisterUserType) {
+  async createUser(userData: RegisterUserType): Promise<User> {
     // bcrypt
-    const password = userData.password
-      ? hashSync(userData?.password, 10)
-      : null;
-
-    const avatar = new URL(this.config.get('BACKEND_BASEURL'));
-    avatar.pathname += `public/avatars/${Math.ceil(Math.random() * 7)}.png`;
+    // const password = userData.password
+    //   ? hashSync(userData?.password, 10)
+    //   : null;
 
     const secret = se.generateSecret({});
 
-    return (
-      await this.prisma.user.create({
-        data: {
-          fullName: userData.fullName,
-          email: userData.email,
-          username: userData.username,
-          password,
-          avatar: avatar.toString(),
-          optSecret: secret.hex,
-          authProvider: userData.authProvider,
-          githubId:
-            userData.authProvider === 'GITHUB'
-              ? userData.providerId
-              : undefined,
-          ftId:
-            userData.authProvider === 'FT' ? userData.providerId : undefined,
-        },
-        select: {
-          id: true,
-        },
-      })
-    ).id;
+    return await this.prisma.user.create({
+      data: {
+        fullName: userData.fullName,
+        email: userData.email,
+        username: userData.username,
+        avatar: userData.avatar,
+        optSecret: secret.hex,
+      },
+    });
   }
 
-  async updatePassword(userPasswords: UpdateUserPasswordType, id: string) {
-    const user = await this.findUser(id, true);
-    if (compareSync(userPasswords.oldPassword, user.password)) {
-      await this.prisma.user.update({
-        where: { id },
-        data: { password: hashSync(userPasswords.newPassword, 10) },
-      });
-      return;
-    }
-    throw new BadRequestException(["old password doesn't match you password"]);
-  }
+  async updatePassword(_userPasswords: UpdateUserPasswordType, _id: string) {}
 
   async findUser(id: string, includeSensitives: boolean = false) {
     const data = await this.prisma.user.findFirstOrThrow({
@@ -174,7 +135,6 @@ export class UserService {
         password: includeSensitives,
         optSecret: includeSensitives,
         is2FAEnabled: true,
-        authProvider: true,
         status: true,
       },
     });
@@ -185,9 +145,8 @@ export class UserService {
       email: data.email,
       fullName: data.fullName,
       username: data.username,
-      password: data.password ?? undefined,
+      //password: data.password ?? undefined,
       otpSecret: data.optSecret ?? undefined,
-      passwordless: data.authProvider != null,
       is2FAEnabled: data.is2FAEnabled,
       status: data.status,
     };
@@ -205,18 +164,28 @@ export class UserService {
     return this.prisma.user.findFirstOrThrow({ where: { username } });
   }
 
-  findUserByProviderId(id: number, provider: 'FT' | 'GITHUB') {
+  findUserByProviderId(_id: number, _provider: 'FT' | 'GITHUB') {
     return this.prisma.user.findFirstOrThrow({
       where: {
-        authProvider: provider,
-        githubId: provider === 'GITHUB' ? id : undefined,
-        ftId: provider === 'FT' ? id : undefined,
+        //authProvider: provider,
+        //githubId: provider === 'GITHUB' ? id : undefined,
+        //ftId: provider === 'FT' ? id : undefined,
       },
     });
   }
 
   findUserByEmail(email: string) {
     return this.prisma.user.findFirstOrThrow({ where: { email } });
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    const user: User | null = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
   }
 
   findUsers(
@@ -254,5 +223,19 @@ export class UserService {
       return payload.sub as string;
     } catch {}
     return null;
+  }
+  async check2FA(id: string, tfaCode: string) {
+    const user = await this.findUser(id, true);
+
+    console.log(user.otpSecret, tfaCode, 'check2FA');
+    if (
+      !se.totp.verify({
+        secret: user.otpSecret,
+        token: tfaCode,
+        encoding: 'hex',
+      })
+    ) {
+      throw new BadRequestException(['invalid 2FA code']);
+    }
   }
 }

@@ -10,4 +10,11 @@ export const POST = () => {
     expires: new Date(),
   });
   return NextResponse.json({ message: "Signed out" });
+  // const cookieStore = cookies();
+  // cookieStore.set("access_token", "", {
+  //   httpOnly: true,
+  //   secure: false,
+  //   expires: new Date(),
+  // });
+  // return NextResponse.json({ message: "Signed out" });
 };

@@ -1,0 +1,22 @@
+{
+  "name": "ft_transcendence",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "pnpm --stream -r run dev",
+    "db:migrate": "pnpm -F app db:migrate",
+    "db:gen": "pnpm -F app db:generate",
+    "db:seed": "pnpm -F app db:seed",
+    "db:push": "pnpm -F app db:push"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@amcharts/amcharts5": "^5.6.2",
+    "chart.js": "^4.4.1",
+    "react-chartjs-2": "^5.2.0"
+  }
+}

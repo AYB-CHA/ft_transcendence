@@ -33,7 +33,7 @@ export class ChannelController {
   ) {}
   @Get()
   async getChannels(@Req() request: RequestType) {
-    return await this.channelService.getUserChannels(request.userPayload.sub);
+    return await this.channelService.getUserChannels(request.user.id);
   }
 
   @Get('discover')
@@ -42,7 +42,7 @@ export class ChannelController {
     @Query('search') searchParam: string = '',
   ) {
     return await this.channelService.discoverNewChannels(
-      request.userPayload.sub,
+      request.user.id,
       searchParam,
     );
   }
@@ -51,26 +51,26 @@ export class ChannelController {
   async getChannelData(@Req() request: RequestType, @Param('id') id: string) {
     return await this.channelService.getChannelData(
       id,
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
   @Get('/:id/members')
   async getChannelUsers(@Req() request: RequestType, @Param('id') id: string) {
     return await this.channelService.getChannelUsers(
-      request.userPayload.sub,
+      request.user.id,
       id,
     );
   }
 
   @Post('/join/:id')
   joinChannel(@Req() request: RequestType, @Param('id') channelId: string) {
-    return this.channelService.joinChannel(channelId, request.userPayload.sub);
+    return this.channelService.joinChannel(channelId, request.user.id);
   }
 
   @Delete('/:id/leave')
   leaveChannel(@Req() request: RequestType, @Param('id') channelId: string) {
-    return this.channelService.leaveChannel(channelId, request.userPayload.sub);
+    return this.channelService.leaveChannel(channelId, request.user.id);
   }
 
   @Post('/protected/:id/join')
@@ -82,7 +82,7 @@ export class ChannelController {
     return this.channelService.joinProtectedChannel(
       channelId,
       body.password,
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
@@ -100,7 +100,7 @@ export class ChannelController {
     @Param('id', ParseUUIDPipe) invitationId: string,
   ) {
     return this.channelService.getInvitationChannelPublicData(
-      request.userPayload.sub,
+      request.user.id,
       invitationId,
     );
   }
@@ -111,7 +111,7 @@ export class ChannelController {
     @Param('id', ParseUUIDPipe) invitationId: string,
   ) {
     return this.channelService.joinPrivateChannel(
-      request.userPayload.sub,
+      request.user.id,
       invitationId,
     );
   }
@@ -125,7 +125,7 @@ export class ChannelController {
     if (!userId) throw new BadRequestException();
 
     const data = await this.channelService.inviteToPrivateChannel(
-      request.userPayload.sub,
+      request.user.id,
       userId,
       channelId,
     );
@@ -133,7 +133,7 @@ export class ChannelController {
     this.notifier.notify({
       link: `/dashboard/invited/channel/${data.id}`,
       receiverId: userId,
-      senderId: request.userPayload.sub,
+      senderId: request.user.id,
       type: 'CHANNEL_INVITATION',
       channelId: channelId,
     });
@@ -154,7 +154,7 @@ export class ChannelController {
         topic: body.topic,
         password: body.password ?? null,
       },
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
@@ -162,7 +162,7 @@ export class ChannelController {
   deleteChannel(@Param('id') id: string, @Req() request: RequestType) {
     return this.channelService.deleteChannelByOwner(
       id,
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
@@ -170,7 +170,7 @@ export class ChannelController {
   getMessages(@Param('id') channelId: string, @Req() request: RequestType) {
     return this.channelService.getMessagesOnChannel(
       channelId,
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 
@@ -183,7 +183,7 @@ export class ChannelController {
     return await this.channelService.updateChannel(
       id,
       body,
-      request.userPayload.sub,
+      request.user.id,
     );
   }
 }

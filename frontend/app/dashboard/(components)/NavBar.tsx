@@ -40,12 +40,13 @@ import {
   BellOff,
   MessageSquare,
   UserPlus,
-  ShieldAlert,
+  Gamepad2,
 } from "lucide-react";
+
+import { ROUTER } from "@/lib/ROUTER";
 
 import { io } from "socket.io-client";
 import { dispatchServerError } from "@/app/lib/Toast";
-import { useRouter } from "next/navigation";
 
 type NotificationType =
   | "CHANNEL_INVITATION"
@@ -123,7 +124,7 @@ function Notifications() {
     async (key: string) => {
       const { data } = await axios.get(key);
       return data;
-    }
+    },
   );
 
   const socket = useMemo(() => {
@@ -182,7 +183,7 @@ function Notifications() {
 
   const unreadCount = useMemo(
     () => data?.reduce((acc, item) => acc + (item.read ? 0 : 1), 0) ?? 0,
-    [data]
+    [data],
   );
 
   return (
@@ -249,9 +250,12 @@ function Notifications() {
 export default function NavBar() {
   const { user, logOut, isLoading } = useAuth({ middleware: "auth" });
   const pathname = usePathname();
-  const router = useRouter();
 
   const navLinks: { href: string; count?: number; icon: React.ReactNode }[] = [
+    {
+      href: ROUTER.GAMES,
+      icon: <Gamepad2 strokeWidth={1} />,
+    },
     {
       href: "/dashboard/friends",
       icon: <Users strokeWidth={1} />,
@@ -294,22 +298,24 @@ export default function NavBar() {
               <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push("/dashboard/")}>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => router.push("/dashboard/friends")}
-                >
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Friends</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => router.push("/dashboard/settings")}
-                >
-                  <SettingsIcon className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
+                <Link href="/dashboard/profile">
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/dashboard/friends">
+                  <DropdownMenuItem>
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Friends</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/dashboard/settings">
+                  <DropdownMenuItem>
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logOut}>
                   <LogOut className="mr-2 h-4 w-4" />

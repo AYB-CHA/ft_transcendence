@@ -2,15 +2,16 @@ import { Request } from 'express';
 
 export type HelloTranscendence = 'Hello Transcendence!';
 
-export type RequestType = Request & { userPayload: { sub: string } };
+export type RequestType = Request & { user: { id: string } };
 
 export type RegisterUserType = {
-  providerId?: number;
+//  providerId?: number;
   username: string;
   email: string;
   fullName: string;
-  password?: string;
-  authProvider?: 'FT' | 'GITHUB';
+  // password?: string;
+  // authProvider?: 'FT' | 'GITHUB';
+  avatar: string;
 };
 
 export type UpdateUserType = {

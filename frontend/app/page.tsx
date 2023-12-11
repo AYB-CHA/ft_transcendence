@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 import IntroGame from "./auth/register/(components)/IntroGame";
 import GlowCardBody from "@/components/GlowCard/GlowCardBody";
 import GlowCard from "@/components/GlowCard/GlowCard";
-import Button from "@/components/Button";
-import Link from "next/link";
 import StartPlayingButton from "./(components)/StartPlayingButton";
 
 function Reveal({ children }: PropsWithChildren) {
