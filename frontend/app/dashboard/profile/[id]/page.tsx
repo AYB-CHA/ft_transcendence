@@ -2,10 +2,11 @@
 import Avatar from "@/components/Avatar";
 import Button from "@/components/Button";
 import { Achievments } from "./../(components)/achievments";
-import { useAuth } from "@/hooks/auth";
 import Spinner from "@/components/Spinner";
 import Alert from "@/components/Alert";
 import dynamic  from "next/dynamic";
+import { useParams } from "next/navigation";
+import { useUser } from "../../games/repo";
 
 const History = dynamic(() => import("./../(components)/history").then(mod=> mod.History), {
   ssr: false,
@@ -19,7 +20,8 @@ type profileType = {
 };
 
 export default function Page() {
-  const { user, isLoading, error } = useAuth();
+  const {id} = useParams();
+  const { data: user, isLoading, error } = useUser(id as string);
   return (
     <div className="container h-full flex place-items-center justify-center flex-col gap-4">
       {isLoading && <Spinner />}

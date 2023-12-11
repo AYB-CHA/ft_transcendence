@@ -18,6 +18,10 @@ export async function my_games(keys: [string, string]) {
   );
 }
 
+export function useUser(id: string){
+  return useSwr(["/user", id], () => APIClient.get<User>(`/user/${id}`).then(res => res.data))
+}
+
 export function useConfig() {
   return useSwr("game/config", configGet, {});
 }

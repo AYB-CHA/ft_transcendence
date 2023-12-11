@@ -297,7 +297,7 @@ export default function NavBar() {
               <DropDownAvatar className="h-10 w-10" src={user?.avatar ?? null}>
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <Link href="/dashboard/profile">
+                <Link href="/dashboard/profile/me">
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>

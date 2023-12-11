@@ -1,29 +1,28 @@
+import { cn } from "@/app/lib/cn";
 import Image from "next/image";
 
 interface AchievementIconProps {
     src: string;
     className?: string;
     obtained: boolean;
+    title: string;
 }
 
 export function AchievementIcon({
     src,
     className,
     obtained,
+    title,
 }: AchievementIconProps) {
-    const not_src = `/not_${src}`;
-    src = `/${src}`;
-    console.log(src, obtained);
-
     return (
         <Image
-            src={obtained ? src : not_src}
-            className={className}
+            src={"/" + src}
+            className={cn(className, !obtained && "grayscale")}
             height={40}
             width={40}
             unoptimized
             alt="achievement"
-            title={src}
+            title={title}
         />
     );
 }

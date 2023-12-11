@@ -31,6 +31,7 @@ export function Achievments({ id }: AchievmentsProps) {
               key={achievement.name}
               src={achievement.icon}
               obtained={achievement.obtained}
+              title={achievement.name}
             />
           ))}
         </div>
