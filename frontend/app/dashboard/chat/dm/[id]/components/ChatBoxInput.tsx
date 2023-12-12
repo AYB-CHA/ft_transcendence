@@ -2,9 +2,11 @@ import { ImageIcon, Link, SendHorizonal, Swords } from "lucide-react";
 import { useState } from "react";
 
 export default function ChatBoxInput({
+  startGame,
   handler,
 }: {
   handler: (message: string) => void;
+  startGame: () => void;
 }) {
   const [message, setMessage] = useState("");
   return (
@@ -18,7 +20,7 @@ export default function ChatBoxInput({
       }}
     >
       <div className="flex gap-3 text-gray-500">
-        <Swords size={20} strokeWidth={1} />
+        <Swords onClick={startGame} size={20} strokeWidth={1} />
       </div>
       <div className="grow">
         <input
