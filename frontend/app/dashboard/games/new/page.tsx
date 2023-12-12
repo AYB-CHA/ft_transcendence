@@ -42,6 +42,8 @@ export default function NewGame() {
     defaultValue: undefined,
   });
 
+  const timeout = useWs<boolean>("TIMEOUT", { defaultValue: false });
+
   const [count, setCount] = React.useState(0);
   const arr = [
     "Ismail ait bella",
@@ -73,11 +75,8 @@ export default function NewGame() {
     const i = setInterval(() => {
       setCount((c) => (c % 6) + 1);
     }, 100);
-    console.log("connecting");
     if (!socket.connected) socket.connect();
-    console.log(socket.connected);
     socket.on("connect", () => {
-      console.log("connected");
       sendEvent("PEERING", {});
     });
     return () => {
@@ -104,35 +103,47 @@ export default function NewGame() {
 
   return (
     <div className="h-screen flex flex-col items-center gap-10 justify-center">
-      {status === "PENDING" && (
+      {timeout && <h2 className="text-2xl font-bold"> NO COMPATITOR FOUND </h2>}
+      {!timeout && status === "PENDING" && (
         <h2 className="text-2xl font-bold"> LOOK FOR A COMPATITOR </h2>
       )}
-      {status === "CONNECTING" && (
+      {!timeout && status === "CONNECTING" && (
         <h2 className="text-2xl font-bold"> CONNECTING </h2>
       )}
-      {lanuchGame && (
+      {!timeout && lanuchGame && (
         <h2 className="text-2xl font-bold">REDIRECTING TO GAME...</h2>
       )}
 
-      <p className="text-2xl">
-        <span className="animate-bounce w-2 h-6 inline-block">.</span>
-        <span className="animate-bounce delay-100 w-2 h-6 inline-block">.</span>
-        <span className="animate-bounce delay-200 w-2 h-6 inline-block">.</span>
-      </p>
+      {!timeout && (
+        <p className="text-2xl">
+          <span className="animate-bounce w-2 h-6 inline-block">.</span>
+          <span className="animate-bounce delay-100 w-2 h-6 inline-block">
+            .
+          </span>
+          <span className="animate-bounce delay-200 w-2 h-6 inline-block">
+            .
+          </span>
+        </p>
+      )}
+
       <div className="flex gap-x-5 gap-y-10 flex-wrap text-center items-center">
-        <Compititor
-          name={initiator.fullName}
-          username={initiator.username}
-          image={initiator.avatar}
-        />
-        <div>
-          <Swords className="h-24 w-24" />
-        </div>
-        <Compititor
-          name={participant.fullName}
-          username={participant.username}
-          image={participant.avatar}
-        />
+        {!timeout && (
+          <>
+            <Compititor
+              name={initiator.fullName}
+              username={initiator.username}
+              image={initiator.avatar}
+            />
+            <div>
+              <Swords className="h-24 w-24" />
+            </div>
+            <Compititor
+              name={participant.fullName}
+              username={participant.username}
+              image={participant.avatar}
+            />
+          </>
+        )}
 
         <div className="w-full ">
           <Link href={ROUTER.GAMES}>

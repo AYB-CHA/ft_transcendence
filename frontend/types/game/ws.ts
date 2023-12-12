@@ -7,6 +7,7 @@ export const EMITED_MESSAGES = [
   "LAUNCH_GAME",
   "ANNOUNCE",
   "FINISHED",
+  "TIMEOUT",
 ] as const;
 
 export const SEND_MESSAGE_TYPE = [

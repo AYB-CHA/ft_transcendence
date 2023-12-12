@@ -79,6 +79,7 @@ export class GameService {
 
       return await this.createMatch(initiator, opponent);
     }
+    this.gameQueue.pop(initiator);
     return false;
   }
 
