@@ -6,15 +6,22 @@ import { Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import AuthCode from "react-auth-code-input";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { logOut, verify2FA } = useAuth();
   const [code, setCode] = useState("");
+  const router = useRouter();
 
   const handelSubmit = async () => {
     if (code.length !== 6) return;
     verify2FA(code);
   };
+
+  async function userLogout() {
+    await logOut();
+    router.push("/auth/login");
+  }
 
   return (
     <div className="">
@@ -41,9 +48,9 @@ export default function Page() {
         />
       </div>
       <div className="flex gap-2 justify-end">
-        <Link href={"/auth/login"} onClick={logOut}>
-          <Button variant="secondary">Cancel</Button>
-        </Link>
+        <Button variant="secondary" onClick={userLogout}>
+          Cancel
+        </Button>
         <Button className="w-full" onClick={handelSubmit}>{`Let's Go`}</Button>
       </div>
     </div>

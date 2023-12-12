@@ -1,5 +1,5 @@
 "use client";
-import Avatar from "@/components/Avatar";
+
 import Button from "@/components/Button";
 import { ROUTER } from "@/lib/ROUTER";
 import { sendEvent, useWs } from "../repo";
@@ -10,26 +10,7 @@ import { socket } from "../socket";
 import Link from "next/link";
 import { GameLaunch } from "@/types/game/game";
 import { useAuth } from "@/hooks/auth";
-
-interface CompititorProps {
-  className?: string;
-  name: string;
-  username: string;
-  image?: string;
-}
-
-function Compititor({ className, name, username, image }: CompititorProps) {
-  return (
-    <div className="grow border rounded min-h-[250px] p-4 w-48 flex flex-col justify-center">
-      <Avatar
-        src={image ?? "http://github.com/shadcn.png"}
-        className="h-20 w-20 mx-auto"
-      />
-      <p className="font-bold mt-2 text-xl truncate">{name}</p>
-      <p className="text-gray-500 truncate">@{username}</p>
-    </div>
-  );
-}
+import { Compititor } from "./Compititor";
 
 export default function NewGame() {
   const router = useRouter();

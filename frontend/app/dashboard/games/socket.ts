@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const url = new URL(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000");
+const url = new URL(process.env.NEXT_PUBLIC_BACKEND_BASEURL ?? "");
 
 url.protocol = "ws";
 url.pathname = "/game";

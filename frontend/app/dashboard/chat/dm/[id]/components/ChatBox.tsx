@@ -12,13 +12,15 @@ import axios from "@/lib/axios";
 import { formatMessages } from "../../../channel/[id]/(components)/MessagesBox";
 import { MessageType } from "../../../channel/[id]/(components)/ChatBox";
 import { useDMSocket } from "@/app/(components)/DMSocket";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { MehIcon } from "lucide-react";
 import { useAuth } from "@/hooks/auth";
 import { AxiosError } from "axios";
 
+import { dispatchServerError } from "@/app/lib/Toast";
 import useSWR, { useSWRConfig } from "swr";
+import APIClient from "@/lib/axios";
 
 export type OtherUserType = {
   id: string;
@@ -34,6 +36,7 @@ async function getOldMessages(url: string) {
 export default function ChatBox() {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const socket = useDMSocket();
+  const router = useRouter();
 
   const { user: me } = useAuth();
   const { mutate } = useSWRConfig();
@@ -92,6 +95,21 @@ export default function ChatBox() {
     socket?.emit("newMessage", { text, threadId: id });
   }
 
+  function startGame() {
+    if (me && otherUser) {
+      APIClient.post("/game-invite", {
+        senderId: me.id,
+        receiverId: otherUser.id,
+      })
+        .then(() => {
+          router.push("/dashboard/games/match");
+        })
+        .catch(() => {
+          dispatchServerError();
+        });
+    }
+  }
+
   return (
     <Card className="col-span-3">
       <div className="flex flex-col h-full">
@@ -130,7 +148,7 @@ export default function ChatBox() {
               })}
             </div>
             <CardFooter>
-              <ChatBoxInput handler={sendMessage} />
+              <ChatBoxInput startGame={startGame} handler={sendMessage} />
             </CardFooter>
           </>
         )}

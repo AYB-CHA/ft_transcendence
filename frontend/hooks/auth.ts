@@ -7,6 +7,7 @@ import { AxiosError, isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
+import APIClient from "@/lib/axios";
 
 export type UserType = {
   id: string;
@@ -43,7 +44,7 @@ export function useAuth({
     },
     {
       onErrorRetry: () => {},
-    },
+    }
   );
 
   useEffect(() => {
@@ -62,20 +63,17 @@ export function useAuth({
 
   const logOut = async () => {
     try {
-      await rawAxios.post(
-        process.env["NEXT_PUBLIC_BACKEND_BASEURL"] + "auth/logout",
-        {},
-        {
-          withCredentials: true,
-        },
+      await APIClient.post(
+        process.env["NEXT_PUBLIC_BACKEND_BASEURL"] + "auth/logout"
       );
     } catch (err) {
       console.log(err);
     }
 
-    //mutate(undefined, { revalidate: false });
-    //rawAxios.post("/auth/logout");
-    location.href = "/";
+    mutate(undefined, { revalidate: false });
+    push("/");
+    // rawAxios.post("/auth/logout");
+    // location.href = "/";
   };
 
   const verify2FA = async (verificationCode: string) => {

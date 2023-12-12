@@ -13,9 +13,7 @@ export class TfaAuthGuard {
     async canActivate(context: ExecutionContext): Promise<boolean>  {
         const request = context.switchToHttp().getRequest();
         const token = JwtStrategy.extractJWT(request);
-        const payload = this.jwtService.verify(token, {
-            secret: 'PASSWORD',
-        });
+        const payload = this.jwtService.verify(token);
         request.user = await this.userService.findUser(payload.id, false);
         return !payload.isLogged;
     }

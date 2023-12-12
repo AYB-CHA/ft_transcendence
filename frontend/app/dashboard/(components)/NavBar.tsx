@@ -124,7 +124,7 @@ function Notifications() {
     async (key: string) => {
       const { data } = await axios.get(key);
       return data;
-    },
+    }
   );
 
   const socket = useMemo(() => {
@@ -183,7 +183,7 @@ function Notifications() {
 
   const unreadCount = useMemo(
     () => data?.reduce((acc, item) => acc + (item.read ? 0 : 1), 0) ?? 0,
-    [data],
+    [data]
   );
 
   return (

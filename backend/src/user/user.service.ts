@@ -193,9 +193,15 @@ export class UserService {
 
   getClientIdFromSocket(client: Socket) {
     const cookies = Cookie.parse(client.handshake.headers.cookie ?? '');
+
+    console.log(cookies);
+    
+
     try {
-      const payload = this.jwtService.verify(cookies.access_token ?? '');
-      return payload.sub as string;
+      const payload = this.jwtService.verify(cookies.accessToken ?? '');
+      
+      
+      return payload.id as string;
     } catch {}
     return null;
   }

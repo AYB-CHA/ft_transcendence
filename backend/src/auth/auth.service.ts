@@ -63,7 +63,7 @@ export class AuthService {
     res.clearCookie('accessToken', {
       httpOnly: true,
       secure: false,
-      maxAge: 24 * 3600000,
+      maxAge: 0,
     });
   }
 }
